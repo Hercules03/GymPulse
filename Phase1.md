@@ -13,9 +13,10 @@ Provision AWS infrastructure using CDK with IoT Core, storage, compute, Location
 
 ## Step 1: Project Structure Setup
 **Duration**: 15 minutes  
-**Tools**: Local filesystem, CDK CLI
+**Status**: ⏳ Pending
 
 ### 1.1 Initialize CDK Project
+- [ ] Create project directory and initialize CDK app
 ```bash
 mkdir gym-pulse-infra
 cd gym-pulse-infra
@@ -23,6 +24,7 @@ cdk init app --language typescript
 ```
 
 ### 1.2 Create Directory Structure
+- [ ] Set up organized project structure
 ```
 gym-pulse-infra/
 ├── lib/
@@ -43,6 +45,7 @@ gym-pulse-infra/
 ```
 
 ### 1.3 Install Dependencies
+- [ ] Install required CDK packages
 ```bash
 npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/aws-apigateway @aws-cdk/aws-location @aws-cdk/aws-bedrock
 ```
@@ -51,14 +54,15 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 
 ## Step 2: IoT Core Infrastructure
 **Duration**: 30 minutes  
-**AI Tool**: Amazon Q Developer for CDK patterns
+**Status**: ⏳ Pending
 
 ### 2.1 Create IoT Device Policy
-- **Prompt Q Developer**: "Generate CDK code for IoT device policy with MQTT topics org/{gymId}/machines/{machineId}/status"
-- Define least-privilege permissions for device publishing
-- Enable retained messages for last-known state
+- [ ] **Prompt Q Developer**: "Generate CDK code for IoT device policy with MQTT topics org/{gymId}/machines/{machineId}/status"
+- [ ] Define least-privilege permissions for device publishing
+- [ ] Enable retained messages for last-known state
 
 ### 2.2 Configure MQTT Topics Structure
+- [ ] Set up MQTT topic patterns and QoS settings
 ```typescript
 // Topics pattern: org/{gymId}/machines/{machineId}/status
 // Retained messages: true
@@ -66,21 +70,22 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 2.3 Setup Device Shadow (Optional)
-- Configure device shadow for health monitoring
-- Heartbeat mechanism for stale device detection
+- [ ] Configure device shadow for health monitoring
+- [ ] Heartbeat mechanism for stale device detection
 
 ### 2.4 Create IoT Rule for Lambda Trigger
-- Route MQTT messages to transform Lambda
-- Filter and transform JSON payload
-- Error handling and dead letter queue
+- [ ] Route MQTT messages to transform Lambda
+- [ ] Filter and transform JSON payload
+- [ ] Error handling and dead letter queue
 
 ---
 
 ## Step 3: Storage Layer - DynamoDB
 **Duration**: 25 minutes  
-**AI Tool**: Q Developer for time-series table design
+**Status**: ⏳ Pending
 
 ### 3.1 Current State Table
+- [ ] Create current state table for real-time machine status
 ```typescript
 // Table: gym-pulse-current-state
 // Partition Key: machineId (string)
@@ -89,6 +94,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 3.2 Time-Series Events Table
+- [ ] Create events table for historical tracking
 ```typescript
 // Table: gym-pulse-events
 // Partition Key: machineId (string)
@@ -98,6 +104,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 3.3 Aggregates Table
+- [ ] Create aggregates table for analytics and heatmaps
 ```typescript
 // Table: gym-pulse-aggregates
 // Partition Key: gymId#category (string)
@@ -107,6 +114,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 3.4 Alerts Table
+- [ ] Create alerts table for user notifications
 ```typescript
 // Table: gym-pulse-alerts
 // Partition Key: userId (string)
@@ -119,17 +127,18 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 
 ## Step 4: Compute Layer - Lambda Functions
 **Duration**: 45 minutes  
-**AI Tool**: Q Developer for Lambda scaffolding
+**Status**: ⏳ Pending
 
 ### 4.1 IoT Ingest/Transform Lambda
-- **Prompt**: "Create Python Lambda for IoT message processing with state transitions"
-- Process occupied→free, free→occupied transitions
-- Update current_state table
-- Write events to time-series table
-- Trigger aggregation updates
-- WebSocket notification publishing
+- [ ] **Prompt**: "Create Python Lambda for IoT message processing with state transitions"
+- [ ] Process occupied→free, free→occupied transitions
+- [ ] Update current_state table
+- [ ] Write events to time-series table
+- [ ] Trigger aggregation updates
+- [ ] WebSocket notification publishing
 
 ### 4.2 API Handler Lambdas
+- [ ] Create REST API endpoint handlers
 ```python
 # GET /branches - List branches with free counts
 # GET /branches/{id}/categories/{category}/machines - Machine details
@@ -138,6 +147,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 4.3 WebSocket Handler Lambdas
+- [ ] Create WebSocket connection handlers
 ```python
 # $connect - Connection management
 # $disconnect - Cleanup subscriptions
@@ -145,6 +155,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 4.4 Bedrock Tool Handler Lambdas
+- [ ] Create chatbot tool handlers
 ```python
 # getAvailabilityByCategory - Query current state + aggregates
 # getRouteMatrix - Amazon Location integration
@@ -152,18 +163,19 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 4.5 Aggregation Lambda
-- Scheduled every 15 minutes via EventBridge
-- Compute occupancy ratios per machine/category
-- Update aggregates table
-- Trigger forecast calculations
+- [ ] Scheduled every 15 minutes via EventBridge
+- [ ] Compute occupancy ratios per machine/category
+- [ ] Update aggregates table
+- [ ] Trigger forecast calculations
 
 ---
 
 ## Step 5: API Gateway Setup
 **Duration**: 30 minutes  
-**AI Tool**: Q Developer for API Gateway patterns
+**Status**: ⏳ Pending
 
 ### 5.1 REST API Endpoints
+- [ ] Create REST API with Lambda integrations
 ```typescript
 // API Gateway REST API with Lambda integrations
 // CORS enabled for web frontend
@@ -171,6 +183,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 5.2 WebSocket API
+- [ ] Create WebSocket API for real-time updates
 ```typescript
 // WebSocket API for real-time updates
 // Connection management with DynamoDB
@@ -178,17 +191,18 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 5.3 API Documentation
-- OpenAPI spec generation
-- Postman collection export
-- Integration testing endpoints
+- [ ] OpenAPI spec generation
+- [ ] Postman collection export
+- [ ] Integration testing endpoints
 
 ---
 
 ## Step 6: Amazon Location Service
 **Duration**: 20 minutes  
-**AI Tool**: Q Developer for Location Service CDK
+**Status**: ⏳ Pending
 
 ### 6.1 Route Calculator Resource
+- [ ] Create route calculator for ETA computation
 ```typescript
 // Route calculator for ETA computation
 // Optimization: fastest route
@@ -197,17 +211,18 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 6.2 IAM Permissions
-- Lambda execution role permissions
-- Route calculation API access
-- Batch route matrix operations
+- [ ] Lambda execution role permissions
+- [ ] Route calculation API access
+- [ ] Batch route matrix operations
 
 ---
 
 ## Step 7: Bedrock Agent Configuration
 **Duration**: 35 minutes  
-**AI Tool**: Q Developer for Bedrock setup
+**Status**: ⏳ Pending
 
 ### 7.1 Agent Runtime Setup
+- [ ] Configure Bedrock agent with Converse API
 ```typescript
 // Bedrock agent with Converse API
 // Tool-use enabled configuration
@@ -215,6 +230,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 7.2 Tool Schema Definitions
+- [ ] Define tool schemas for availability and routing
 ```json
 {
   "getAvailabilityByCategory": {
@@ -241,16 +257,18 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 7.3 Agent Endpoint Configuration
-- API Gateway integration
-- Request/response mapping
-- Error handling and timeouts
+- [ ] API Gateway integration
+- [ ] Request/response mapping
+- [ ] Error handling and timeouts
 
 ---
 
 ## Step 8: Environment Configuration
-**Duration**: 15 minutes
+**Duration**: 15 minutes  
+**Status**: ⏳ Pending
 
 ### 8.1 CDK Context Values
+- [ ] Configure gym branches and categories
 ```json
 {
   "gymBranches": [
@@ -263,6 +281,7 @@ npm install @aws-cdk/aws-iot @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/
 ```
 
 ### 8.2 Constants File
+- [ ] Create configuration constants
 ```typescript
 export const GYM_CONFIG = {
   MQTT_TOPIC_PATTERN: 'org/{gymId}/machines/{machineId}/status',
@@ -275,20 +294,25 @@ export const GYM_CONFIG = {
 ---
 
 ## Step 9: Deployment and Testing
-**Duration**: 25 minutes
+**Duration**: 25 minutes  
+**Status**: ⏳ Pending
 
 ### 9.1 Bootstrap CDK (if first time)
+- [ ] Bootstrap CDK environment
 ```bash
 cdk bootstrap
 ```
 
 ### 9.2 Synthesize and Deploy
+- [ ] Deploy all CDK stacks
 ```bash
 cdk synth
 cdk deploy --all --require-approval never
 ```
 
 ### 9.3 Smoke Test Endpoints
+- [ ] Test API Gateway endpoints
+- [ ] Test WebSocket connections
 ```bash
 # Test API Gateway endpoints
 curl -X GET https://{api-id}.execute-api.{region}.amazonaws.com/prod/branches
@@ -298,6 +322,7 @@ wscat -c wss://{websocket-id}.execute-api.{region}.amazonaws.com/prod
 ```
 
 ### 9.4 IoT Core Testing
+- [ ] Test MQTT message publishing
 ```bash
 # Publish test message to MQTT topic
 aws iot-data publish --topic "org/hk-central/machines/leg-press-01/status" --payload '{"status":"occupied","timestamp":1234567890}'
@@ -306,20 +331,22 @@ aws iot-data publish --topic "org/hk-central/machines/leg-press-01/status" --pay
 ---
 
 ## Step 10: Evidence Capture for Hackathon
-**Duration**: 15 minutes
+**Duration**: 15 minutes  
+**Status**: ⏳ Pending
 
 ### 10.1 Q Developer/Kiro Usage Documentation
-- Screenshot code generation sessions
-- Save chat transcripts with AI assistant
-- Commit messages indicating AI-generated code
-- PR descriptions with AI contribution details
+- [ ] Screenshot code generation sessions
+- [ ] Save chat transcripts with AI assistant
+- [ ] Commit messages indicating AI-generated code
+- [ ] PR descriptions with AI contribution details
 
 ### 10.2 Console-to-Code Capture
-- Record any manual console configurations
-- Generate equivalent CDK code using Q Developer
-- Document the conversion process
+- [ ] Record any manual console configurations
+- [ ] Generate equivalent CDK code using Q Developer
+- [ ] Document the conversion process
 
 ### 10.3 Git Commit Evidence
+- [ ] Create commit with AI generation evidence
 ```bash
 git add .
 git commit -m "feat: Phase 1 infrastructure setup
