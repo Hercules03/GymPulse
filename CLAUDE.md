@@ -1,0 +1,2 @@
+- The project PRD in @PRD.md please make sure you read this PRD and understand what's the project is going to do
+- @Plan.md this is the plan of how to develop this project. Please follow the plan to develop
