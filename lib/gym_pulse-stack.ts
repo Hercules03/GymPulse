@@ -3,8 +3,10 @@ import * as iot from 'aws-cdk-lib/aws-iot';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as apigatewayv2 from 'aws-cdk-lib/aws-apigatewayv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as location from 'aws-cdk-lib/aws-location';
+import * as bedrock from 'aws-cdk-lib/aws-bedrock';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
@@ -346,6 +348,42 @@ def handler(event, context):
       principal: new iam.ServicePrincipal('iot.amazonaws.com'),
       sourceArn: iotRule.attrArn,
     });
+
+    // WebSocket API for real-time updates (placeholder)
+    // TODO: Implement WebSocket API Gateway V2 for live machine status updates
+    // - Connection management Lambda
+    // - Broadcast Lambda for real-time notifications
+    // - Connection store in DynamoDB
+
+    // Bedrock Agent Configuration (placeholder)
+    // TODO: Configure Bedrock Agent with Converse API
+    // - Knowledge base for tool schemas
+    // - Agent with tool-use capabilities
+    // - Integration with availability and route-matrix tools
+    const bedrockAgentRole = new iam.Role(this, 'BedrockAgentRole', {
+      assumedBy: new iam.ServicePrincipal('bedrock.amazonaws.com'),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonBedrockFullAccess')
+      ],
+      inlinePolicies: {
+        'LambdaInvokePolicy': new iam.PolicyDocument({
+          statements: [
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: ['lambda:InvokeFunction'],
+              resources: [
+                availabilityToolLambda.functionArn,
+                routeMatrixToolLambda.functionArn
+              ]
+            })
+          ]
+        })
+      }
+    });
+
+    // Add Bedrock permissions to tool Lambdas
+    availabilityToolLambda.grantInvoke(new iam.ServicePrincipal('bedrock.amazonaws.com'));
+    routeMatrixToolLambda.grantInvoke(new iam.ServicePrincipal('bedrock.amazonaws.com'));
 
     // Outputs
     new cdk.CfnOutput(this, 'ApiGatewayUrl', {
