@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Project Documentation
+    url: https://github.com/[your-username]/GymPulse/blob/main/README.md
+    about: Check the README for project overview and architecture
+  - name: 🏗️ Phase Documentation
+    url: https://github.com/[your-username]/GymPulse/blob/main/Plan.md
+    about: Review the development plan and phase breakdown
+  - name: 🤖 AI Evidence & Templates
+    url: https://github.com/[your-username]/GymPulse/blob/main/docs/ai-generation-templates.md
+    about: AI code generation templates and evidence documentation
