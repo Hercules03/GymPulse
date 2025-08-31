@@ -213,12 +213,12 @@ class GymPulseStack(Stack):
         # Amazon Location Service
         # ========================================
         
-        # Route calculator for ETA computation
-        route_calculator = location.CfnRouteCalculator(
-            self, "RouteCalculator",
-            calculator_name="gym-pulse-route-calculator",
-            data_source="Here",  # Using HERE as data provider
-        )
+        # Route calculator for ETA computation (TODO: Enable in Phase 6)
+        # route_calculator = location.CfnRouteCalculator(
+        #     self, "RouteCalculator",
+        #     calculator_name="gym-pulse-route-calculator",
+        #     data_source="Here",  # Using HERE as data provider
+        # )
 
         # ========================================
         # API Gateway Setup
@@ -289,12 +289,13 @@ class GymPulseStack(Stack):
                         ),
                     ),
                 ],
-                error_action=iot.CfnTopicRule.ActionProperty(
-                    republish=iot.CfnTopicRule.RepublishActionProperty(
-                        role_arn="arn:aws:iam::123456789012:role/iot-error-role",
-                        topic="error/gym-pulse"
-                    )
-                )
+                # TODO: Configure error handling role in production
+                # error_action=iot.CfnTopicRule.ActionProperty(
+                #     republish=iot.CfnTopicRule.RepublishActionProperty(
+                #         role_arn="arn:aws:iam::123456789012:role/iot-error-role",
+                #         topic="error/gym-pulse"
+                #     )
+                # )
             ),
         )
 
@@ -323,14 +324,14 @@ class GymPulseStack(Stack):
             source_arn=iot_rule.attr_arn,
         )
 
-        # Location Service permissions
-        route_matrix_tool_lambda.add_to_role_policy(
-            iam.PolicyStatement(
-                effect=iam.Effect.ALLOW,
-                actions=["geo:CalculateRouteMatrix"],
-                resources=[route_calculator.attr_arn]
-            )
-        )
+        # Location Service permissions (TODO: Enable in Phase 6)
+        # route_matrix_tool_lambda.add_to_role_policy(
+        #     iam.PolicyStatement(
+        #         effect=iam.Effect.ALLOW,
+        #         actions=["geo:CalculateRouteMatrix"],
+        #         resources=[route_calculator.attr_arn]
+        #     )
+        # )
 
         # Bedrock agent role for tool invocation
         bedrock_agent_role = iam.Role(
@@ -396,8 +397,8 @@ class GymPulseStack(Stack):
             description="Route matrix tool Lambda ARN for Bedrock agent",
         )
 
-        CfnOutput(
-            self, "RouteCalculatorName",
-            value=route_calculator.calculator_name,
-            description="Amazon Location Route Calculator name",
-        )
+        # CfnOutput(
+        #     self, "RouteCalculatorName",
+        #     value=route_calculator.calculator_name,
+        #     description="Amazon Location Route Calculator name",
+        # )
