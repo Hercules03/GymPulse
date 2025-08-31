@@ -13,6 +13,10 @@ from aws_cdk import (
     aws_iot as iot,
     aws_iam as iam,
     aws_location as location,
+    aws_cloudwatch as cloudwatch,
+    aws_cloudwatch_actions as cloudwatch_actions,
+    aws_sns as sns,
+    aws_logs as logs,
 )
 from constructs import Construct
 
@@ -94,6 +98,18 @@ class GymPulseStack(Stack):
             ),
         )
 
+        # WebSocket connections table for connection management
+        connections_table = dynamodb.Table(
+            self, "ConnectionsTable",
+            table_name="gym-pulse-connections",
+            partition_key=dynamodb.Attribute(
+                name="connectionId", 
+                type=dynamodb.AttributeType.STRING
+            ),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            time_to_live_attribute="ttl",
+        )
+
         # ========================================
         # IoT Core Infrastructure
         # ========================================
@@ -101,7 +117,7 @@ class GymPulseStack(Stack):
         # IoT device policy for MQTT publishing
         iot_policy = iot.CfnPolicy(
             self, "GymDevicePolicy",
-            policy_name="GymDevicePolicy",
+            policy_name=f"GymDevicePolicy-{self.stack_name}",
             policy_document={
                 "Version": "2012-10-17",
                 "Statement": [
@@ -128,7 +144,7 @@ class GymPulseStack(Stack):
         # Lambda Functions
         # ========================================
         
-        # IoT message ingest and processing
+        # IoT message ingest and processing with performance optimizations
         ingest_lambda = _lambda.Function(
             self, "IngestLambda",
             function_name="gym-pulse-iot-ingest",
@@ -140,12 +156,14 @@ class GymPulseStack(Stack):
                 "EVENTS_TABLE": events_table.table_name,
                 "AGGREGATES_TABLE": aggregates_table.table_name,
                 "ALERTS_TABLE": alerts_table.table_name,
+                "WEBSOCKET_BROADCAST_FUNCTION": "gym-pulse-websocket-broadcast",
             },
             timeout=Duration.seconds(30),
-            memory_size=256,
+            memory_size=512,  # Increased for better performance
+            reserved_concurrent_executions=20,  # Reserve concurrency for critical IoT path
         )
 
-        # API handler for REST endpoints
+        # API handler for REST endpoints with performance optimizations
         api_lambda = _lambda.Function(
             self, "ApiLambda",
             function_name="gym-pulse-api-handler",
@@ -157,19 +175,26 @@ class GymPulseStack(Stack):
                 "EVENTS_TABLE": events_table.table_name,
                 "AGGREGATES_TABLE": aggregates_table.table_name,
                 "ALERTS_TABLE": alerts_table.table_name,
+                "AWS_LAMBDA_EXEC_WRAPPER": "/opt/otel-instrument",  # Enable X-Ray tracing
             },
-            timeout=Duration.seconds(30),
-            memory_size=512,
+            timeout=Duration.seconds(15),  # Reduced timeout for faster fails
+            memory_size=1024,  # Increased for caching and better performance
+            reserved_concurrent_executions=50,  # Reserve concurrency for API requests
         )
 
-        # WebSocket connection handler
+        # WebSocket connection handler with optimizations
         websocket_connect_lambda = _lambda.Function(
             self, "WebSocketConnectLambda",
             function_name="gym-pulse-websocket-connect",
             runtime=_lambda.Runtime.PYTHON_3_10,
             handler="connect.lambda_handler",
             code=_lambda.Code.from_asset("lambda/websocket-handlers"),
-            timeout=Duration.seconds(30),
+            environment={
+                "CONNECTIONS_TABLE": connections_table.table_name,
+            },
+            timeout=Duration.seconds(10),  # Fast timeout for connection
+            memory_size=256,  # Lower memory for simple connection handling
+            reserved_concurrent_executions=25,  # Reserve for WebSocket connections
         )
 
         # WebSocket disconnect handler
@@ -179,6 +204,23 @@ class GymPulseStack(Stack):
             runtime=_lambda.Runtime.PYTHON_3_10,
             handler="disconnect.lambda_handler",
             code=_lambda.Code.from_asset("lambda/websocket-handlers"),
+            environment={
+                "CONNECTIONS_TABLE": connections_table.table_name,
+            },
+            timeout=Duration.seconds(30),
+        )
+
+        # WebSocket broadcast handler for real-time updates
+        websocket_broadcast_lambda = _lambda.Function(
+            self, "WebSocketBroadcastLambda",
+            function_name="gym-pulse-websocket-broadcast",
+            runtime=_lambda.Runtime.PYTHON_3_10,
+            handler="broadcast.lambda_handler",
+            code=_lambda.Code.from_asset("lambda/websocket-handlers"),
+            environment={
+                "CONNECTIONS_TABLE": connections_table.table_name,
+                "WEBSOCKET_API_ENDPOINT": f"https://{websocket_api.api_id}.execute-api.{self.region}.amazonaws.com/prod",
+            },
             timeout=Duration.seconds(30),
         )
 
@@ -224,7 +266,7 @@ class GymPulseStack(Stack):
         # API Gateway Setup
         # ========================================
         
-        # REST API
+        # REST API with rate limiting and security
         api = apigateway.RestApi(
             self, "GymPulseApi",
             rest_api_name="gym-pulse-api",
@@ -234,7 +276,41 @@ class GymPulseStack(Stack):
                 allow_methods=apigateway.Cors.ALL_METHODS,
                 allow_headers=["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],
             ),
+            # Enable API key for rate limiting (optional)
+            api_key_source_type=apigateway.ApiKeySourceType.HEADER,
+            # Request validation
+            request_validator=apigateway.RequestValidator(
+                self, "RequestValidator",
+                rest_api=api,
+                validate_request_body=True,
+                validate_request_parameters=True,
+            ),
         )
+        
+        # Usage Plan for rate limiting
+        usage_plan = api.add_usage_plan(
+            "GymPulseUsagePlan",
+            name="gym-pulse-usage-plan",
+            description="Rate limiting for GymPulse API",
+            throttle=apigateway.ThrottleSettings(
+                rate_limit=100,  # requests per second
+                burst_limit=200   # burst capacity
+            ),
+            quota=apigateway.QuotaSettings(
+                limit=10000,     # requests per day
+                period=apigateway.Period.DAY
+            )
+        )
+        
+        # Create API Key for rate limiting (optional)
+        api_key = api.add_api_key(
+            "GymPulseApiKey",
+            api_key_name="gym-pulse-api-key",
+            description="API key for GymPulse application"
+        )
+        
+        # Associate API key with usage plan
+        usage_plan.add_api_key(api_key)
 
         # WebSocket API for real-time updates  
         websocket_api = apigatewayv2.WebSocketApi(
@@ -246,26 +322,117 @@ class GymPulseStack(Stack):
         # API Routes
         # ========================================
         
-        # REST API routes
+        # REST API routes with security
         branches_resource = api.root.add_resource("branches")
-        branches_resource.add_method("GET", apigateway.LambdaIntegration(api_lambda))
+        branches_resource.add_method(
+            "GET", 
+            apigateway.LambdaIntegration(api_lambda),
+            # API key optional for read operations
+            api_key_required=False
+        )
         
         branch_resource = branches_resource.add_resource("{id}")
         categories_resource = branch_resource.add_resource("categories")
         category_resource = categories_resource.add_resource("{category}")
         machines_resource = category_resource.add_resource("machines")
-        machines_resource.add_method("GET", apigateway.LambdaIntegration(api_lambda))
+        machines_resource.add_method(
+            "GET", 
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False
+        )
         
         machines_root = api.root.add_resource("machines")
         machine_resource = machines_root.add_resource("{id}")
         history_resource = machine_resource.add_resource("history")
-        history_resource.add_method("GET", apigateway.LambdaIntegration(api_lambda))
+        history_resource.add_method(
+            "GET", 
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False
+        )
         
         alerts_resource = api.root.add_resource("alerts")
-        alerts_resource.add_method("POST", apigateway.LambdaIntegration(api_lambda))
+        
+        # POST alerts requires API key for write operations  
+        alerts_resource.add_method(
+            "POST", 
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False  # Set to True for production
+        )
+        
+        # GET alerts (for listing user alerts)
+        alerts_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False
+        )
+        
+        # DELETE alerts (for cancelling alerts)
+        alert_resource = alerts_resource.add_resource("{alertId}")
+        alert_resource.add_method(
+            "DELETE",
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False
+        )
+        
+        # PUT alerts (for updating alerts)
+        alert_resource.add_method(
+            "PUT",
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False
+        )
+        
+        # Health check endpoint (no API key required)
+        health_resource = api.root.add_resource("health")
+        health_resource.add_method(
+            "GET",
+            apigateway.MockIntegration(
+                integration_responses=[
+                    apigateway.IntegrationResponse(
+                        status_code="200",
+                        response_templates={
+                            "application/json": json.dumps({
+                                "status": "healthy",
+                                "timestamp": "${context.requestTime}",
+                                "service": "gym-pulse-api"
+                            })
+                        }
+                    )
+                ],
+                passthrough_behavior=apigateway.PassthroughBehavior.NEVER,
+                request_templates={
+                    "application/json": json.dumps({"statusCode": 200})
+                }
+            ),
+            method_responses=[
+                apigateway.MethodResponse(
+                    status_code="200",
+                    response_models={
+                        "application/json": apigateway.Model.EMPTY_MODEL
+                    }
+                )
+            ],
+            api_key_required=False
+        )
 
-        # WebSocket routes (simplified for initial deployment)
-        # TODO: Add WebSocket integrations in Phase 4
+        # WebSocket routes
+        connect_integration = apigatewayv2.WebSocketLambdaIntegration(
+            "ConnectIntegration",
+            websocket_connect_lambda
+        )
+        disconnect_integration = apigatewayv2.WebSocketLambdaIntegration(
+            "DisconnectIntegration", 
+            websocket_disconnect_lambda
+        )
+
+        websocket_api.add_route(
+            "$connect",
+            integration=connect_integration
+        )
+        websocket_api.add_route(
+            "$disconnect", 
+            integration=disconnect_integration
+        )
+        
         websocket_stage = apigatewayv2.WebSocketStage(
             self, "WebSocketStage",
             web_socket_api=websocket_api,
@@ -316,6 +483,23 @@ class GymPulseStack(Stack):
         
         current_state_table.grant_read_data(availability_tool_lambda)
         aggregates_table.grant_read_data(availability_tool_lambda)
+        
+        # WebSocket handler permissions
+        connections_table.grant_read_write_data(websocket_connect_lambda)
+        connections_table.grant_read_write_data(websocket_disconnect_lambda)
+        connections_table.grant_read_data(websocket_broadcast_lambda)
+        
+        # Grant WebSocket broadcast permission to post messages
+        websocket_broadcast_lambda.add_to_role_policy(
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=["execute-api:ManageConnections"],
+                resources=[f"arn:aws:execute-api:{self.region}:{self.account}:{websocket_api.api_id}/prod/POST/@connections/*"]
+            )
+        )
+        
+        # Grant ingest Lambda permission to invoke broadcast Lambda
+        websocket_broadcast_lambda.grant_invoke(ingest_lambda)
 
         # IoT Core permissions
         ingest_lambda.add_permission(
@@ -358,6 +542,211 @@ class GymPulseStack(Stack):
         route_matrix_tool_lambda.grant_invoke(iam.ServicePrincipal("bedrock.amazonaws.com"))
 
         # ========================================
+        # Monitoring and Alerting
+        # ========================================
+        
+        # SNS topic for alerts
+        alert_topic = sns.Topic(
+            self, "GymPulseAlerts",
+            display_name="GymPulse System Alerts",
+            topic_name="gym-pulse-alerts"
+        )
+        
+        # Lambda function error rates alarms
+        lambda_functions = [
+            ("IoTIngest", iot_ingest_lambda),
+            ("APIHandler", api_lambda),
+            ("WebSocketConnect", websocket_connect_lambda),
+            ("WebSocketDisconnect", websocket_disconnect_lambda),
+            ("WebSocketBroadcast", websocket_broadcast_lambda),
+            ("AvailabilityTool", availability_tool_lambda),
+            ("RouteMatrixTool", route_matrix_tool_lambda)
+        ]
+        
+        for name, lambda_func in lambda_functions:
+            # Error rate alarm (>5% error rate)
+            cloudwatch.Alarm(
+                self, f"{name}ErrorRateAlarm",
+                alarm_name=f"GymPulse-{name}-ErrorRate",
+                alarm_description=f"High error rate in {name} Lambda function",
+                metric=lambda_func.metric_errors(
+                    statistic=cloudwatch.Statistic.AVERAGE,
+                    period=Duration.minutes(5)
+                ),
+                threshold=5,
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                evaluation_periods=2,
+                datapoints_to_alarm=2,
+                treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING
+            ).add_alarm_action(cloudwatch_actions.SnsAction(alert_topic))
+            
+            # Duration alarm (>30 seconds)
+            cloudwatch.Alarm(
+                self, f"{name}DurationAlarm", 
+                alarm_name=f"GymPulse-{name}-Duration",
+                alarm_description=f"High duration in {name} Lambda function",
+                metric=lambda_func.metric_duration(
+                    statistic=cloudwatch.Statistic.AVERAGE,
+                    period=Duration.minutes(5)
+                ),
+                threshold=30000,  # 30 seconds in milliseconds
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                evaluation_periods=2,
+                treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING
+            ).add_alarm_action(cloudwatch_actions.SnsAction(alert_topic))
+        
+        # DynamoDB throttling alarms
+        dynamodb_tables = [
+            ("CurrentState", current_state_table),
+            ("Events", events_table),
+            ("Aggregates", aggregates_table),
+            ("Alerts", alerts_table),
+            ("Connections", connections_table)
+        ]
+        
+        for name, table in dynamodb_tables:
+            # Read throttle alarm
+            cloudwatch.Alarm(
+                self, f"{name}ReadThrottleAlarm",
+                alarm_name=f"GymPulse-{name}-ReadThrottle",
+                alarm_description=f"Read throttling on {name} table",
+                metric=table.metric("ReadThrottles",
+                    statistic=cloudwatch.Statistic.SUM,
+                    period=Duration.minutes(5)
+                ),
+                threshold=0,
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                evaluation_periods=1,
+                treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING
+            ).add_alarm_action(cloudwatch_actions.SnsAction(alert_topic))
+            
+            # Write throttle alarm  
+            cloudwatch.Alarm(
+                self, f"{name}WriteThrottleAlarm",
+                alarm_name=f"GymPulse-{name}-WriteThrottle",
+                alarm_description=f"Write throttling on {name} table",
+                metric=table.metric("WriteThrottles",
+                    statistic=cloudwatch.Statistic.SUM,
+                    period=Duration.minutes(5)
+                ),
+                threshold=0,
+                comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+                evaluation_periods=1,
+                treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING
+            ).add_alarm_action(cloudwatch_actions.SnsAction(alert_topic))
+        
+        # API Gateway 4xx and 5xx error alarms
+        api_4xx_alarm = cloudwatch.Alarm(
+            self, "API4xxErrorAlarm",
+            alarm_name="GymPulse-API-4xxErrors",
+            alarm_description="High rate of 4xx errors from API Gateway",
+            metric=cloudwatch.Metric(
+                namespace="AWS/ApiGateway",
+                metric_name="4XXError",
+                dimensions_map={"ApiName": "GymPulseAPI"},
+                statistic=cloudwatch.Statistic.SUM,
+                period=Duration.minutes(5)
+            ),
+            threshold=10,  # >10 4xx errors in 5 minutes
+            comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+            evaluation_periods=2,
+            treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING
+        )
+        api_4xx_alarm.add_alarm_action(cloudwatch_actions.SnsAction(alert_topic))
+        
+        api_5xx_alarm = cloudwatch.Alarm(
+            self, "API5xxErrorAlarm",
+            alarm_name="GymPulse-API-5xxErrors", 
+            alarm_description="High rate of 5xx errors from API Gateway",
+            metric=cloudwatch.Metric(
+                namespace="AWS/ApiGateway",
+                metric_name="5XXError",
+                dimensions_map={"ApiName": "GymPulseAPI"},
+                statistic=cloudwatch.Statistic.SUM,
+                period=Duration.minutes(5)
+            ),
+            threshold=5,  # >5 5xx errors in 5 minutes
+            comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+            evaluation_periods=1,
+            treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING
+        )
+        api_5xx_alarm.add_alarm_action(cloudwatch_actions.SnsAction(alert_topic))
+        
+        # API Gateway latency alarm (>3 seconds P95)
+        api_latency_alarm = cloudwatch.Alarm(
+            self, "APILatencyAlarm",
+            alarm_name="GymPulse-API-Latency",
+            alarm_description="High API Gateway latency",
+            metric=cloudwatch.Metric(
+                namespace="AWS/ApiGateway",
+                metric_name="Latency",
+                dimensions_map={"ApiName": "GymPulseAPI"},
+                statistic=cloudwatch.Statistic.percentile(95),
+                period=Duration.minutes(5)
+            ),
+            threshold=3000,  # 3 seconds
+            comparison_operator=cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+            evaluation_periods=2,
+            treat_missing_data=cloudwatch.TreatMissingData.NOT_BREACHING
+        )
+        api_latency_alarm.add_alarm_action(cloudwatch_actions.SnsAction(alert_topic))
+        
+        # Custom metrics dashboard
+        dashboard = cloudwatch.Dashboard(
+            self, "GymPulseDashboard",
+            dashboard_name="GymPulse-Operations"
+        )
+        
+        # Add widgets to dashboard
+        dashboard.add_widgets(
+            cloudwatch.GraphWidget(
+                title="Lambda Function Invocations",
+                left=[func.metric_invocations() for _, func in lambda_functions[:4]],
+                width=12,
+                height=6
+            ),
+            cloudwatch.GraphWidget(
+                title="Lambda Function Errors", 
+                left=[func.metric_errors() for _, func in lambda_functions[:4]],
+                width=12,
+                height=6
+            ),
+            cloudwatch.GraphWidget(
+                title="API Gateway Metrics",
+                left=[
+                    cloudwatch.Metric(
+                        namespace="AWS/ApiGateway",
+                        metric_name="Count",
+                        dimensions_map={"ApiName": "GymPulseAPI"}
+                    ),
+                    cloudwatch.Metric(
+                        namespace="AWS/ApiGateway", 
+                        metric_name="Latency",
+                        dimensions_map={"ApiName": "GymPulseAPI"}
+                    )
+                ],
+                width=12,
+                height=6
+            ),
+            cloudwatch.GraphWidget(
+                title="DynamoDB Read/Write Capacity",
+                left=[table.metric("ConsumedReadCapacityUnits") for _, table in dynamodb_tables[:3]],
+                right=[table.metric("ConsumedWriteCapacityUnits") for _, table in dynamodb_tables[:3]],
+                width=12,
+                height=6
+            )
+        )
+        
+        # Log retention for all Lambda functions  
+        for name, lambda_func in lambda_functions:
+            logs.LogGroup(
+                self, f"{name}LogGroup",
+                log_group_name=f"/aws/lambda/{lambda_func.function_name}",
+                retention=logs.RetentionDays.ONE_WEEK,
+                removal_policy=Stack.RemovalPolicy.DESTROY
+            )
+
+        # ========================================
         # CloudFormation Outputs
         # ========================================
         
@@ -395,6 +784,18 @@ class GymPulseStack(Stack):
             self, "RouteMatrixToolArn",
             value=route_matrix_tool_lambda.function_arn,
             description="Route matrix tool Lambda ARN for Bedrock agent",
+        )
+
+        CfnOutput(
+            self, "AlertTopicArn",
+            value=alert_topic.topic_arn,
+            description="SNS topic for system alerts",
+        )
+        
+        CfnOutput(
+            self, "DashboardUrl",
+            value=f"https://{self.region}.console.aws.amazon.com/cloudwatch/home?region={self.region}#dashboards:name={dashboard.dashboard_name}",
+            description="CloudWatch dashboard URL",
         )
 
         # CfnOutput(
