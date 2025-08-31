@@ -72,7 +72,7 @@ Initialize mono-repo structure and set up AI assistants (Amazon Q Developer or K
 - [x] **Prompt AI**: "Generate CDK starter stack with placeholders for IoT Core, DynamoDB, API Gateway, Bedrock agent, and Location Service"
 - [x] Create base CDK app structure
 - [x] Add placeholder constructs for all AWS services
-- [x] Include proper TypeScript types and imports
+- [x] Include proper Python types and imports
 
 ### 4.2 Infrastructure Planning
 - [x] Document planned AWS resources

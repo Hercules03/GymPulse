@@ -365,13 +365,13 @@ Co-Authored-By: Amazon Q Developer <noreply@aws.amazon.com>"
 ---
 
 ## Success Criteria
-- [ ] All CDK stacks deploy successfully
-- [ ] IoT Core accepts MQTT messages
-- [ ] API endpoints return valid responses
-- [ ] WebSocket connections establish
-- [ ] Bedrock agent responds to test queries
-- [ ] Location Service calculates ETAs
-- [ ] Evidence documented for hackathon submission
+- [x] All CDK stacks deploy successfully
+- [x] IoT Core accepts MQTT messages
+- [x] API endpoints return valid responses
+- [x] WebSocket connections establish
+- [x] Bedrock agent responds to test queries
+- [x] Location Service calculates ETAs
+- [x] Evidence documented for hackathon submission
 
 ## Estimated Total Time: 4.5 hours
 

@@ -1,0 +1,187 @@
+{
+  "branches": [
+    {
+      "id": "hk-central",
+      "name": "Central Branch",
+      "coordinates": {
+        "lat": 22.2819,
+        "lon": 114.1577
+      },
+      "machines": [
+        {
+          "machineId": "leg-press-01",
+          "name": "Leg Press Machine 1",
+          "category": "legs",
+          "type": "leg-press"
+        },
+        {
+          "machineId": "leg-press-02", 
+          "name": "Leg Press Machine 2",
+          "category": "legs",
+          "type": "leg-press"
+        },
+        {
+          "machineId": "squat-rack-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack"
+        },
+        {
+          "machineId": "calf-raise-01",
+          "name": "Calf Raise Machine 1",
+          "category": "legs", 
+          "type": "calf-raise"
+        },
+        {
+          "machineId": "bench-press-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press"
+        },
+        {
+          "machineId": "bench-press-02",
+          "name": "Bench Press 2", 
+          "category": "chest",
+          "type": "bench-press"
+        },
+        {
+          "machineId": "chest-fly-01",
+          "name": "Chest Fly Machine 1",
+          "category": "chest",
+          "type": "chest-fly"
+        },
+        {
+          "machineId": "lat-pulldown-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown"
+        },
+        {
+          "machineId": "rowing-01",
+          "name": "Rowing Machine 1",
+          "category": "back",
+          "type": "rowing"
+        },
+        {
+          "machineId": "pull-up-01",
+          "name": "Pull-up Station 1",
+          "category": "back",
+          "type": "pull-up"
+        }
+      ]
+    },
+    {
+      "id": "hk-causeway",
+      "name": "Causeway Bay Branch",
+      "coordinates": {
+        "lat": 22.2783,
+        "lon": 114.1747
+      },
+      "machines": [
+        {
+          "machineId": "leg-press-03",
+          "name": "Leg Press Machine 3",
+          "category": "legs",
+          "type": "leg-press"
+        },
+        {
+          "machineId": "squat-rack-02",
+          "name": "Squat Rack 2", 
+          "category": "legs",
+          "type": "squat-rack"
+        },
+        {
+          "machineId": "leg-curl-01",
+          "name": "Leg Curl Machine 1",
+          "category": "legs",
+          "type": "leg-curl"
+        },
+        {
+          "machineId": "bench-press-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press"
+        },
+        {
+          "machineId": "incline-press-01",
+          "name": "Incline Press 1",
+          "category": "chest",
+          "type": "incline-press"
+        },
+        {
+          "machineId": "dips-01",
+          "name": "Dips Station 1",
+          "category": "chest",
+          "type": "dips"
+        },
+        {
+          "machineId": "lat-pulldown-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown"
+        },
+        {
+          "machineId": "rowing-02",
+          "name": "Rowing Machine 2",
+          "category": "back",
+          "type": "rowing"
+        },
+        {
+          "machineId": "t-bar-row-01",
+          "name": "T-Bar Row 1",
+          "category": "back",
+          "type": "t-bar-row"
+        }
+      ]
+    }
+  ],
+  "usage_patterns": {
+    "peak_hours": {
+      "morning": {
+        "start": 6,
+        "end": 9,
+        "occupancy_rate": 0.7
+      },
+      "lunch": {
+        "start": 12,
+        "end": 13,
+        "occupancy_rate": 0.6
+      },
+      "evening": {
+        "start": 18,
+        "end": 21,
+        "occupancy_rate": 0.85
+      },
+      "off_peak": {
+        "occupancy_rate": 0.3
+      },
+      "night": {
+        "occupancy_rate": 0.1
+      }
+    },
+    "timing": {
+      "occupied_duration": {
+        "min": 30,
+        "max": 90
+      },
+      "rest_duration": {
+        "min": 60,
+        "max": 180
+      },
+      "session_length": {
+        "min": 900,
+        "max": 2700
+      },
+      "transition_time": {
+        "min": 30,
+        "max": 120
+      }
+    },
+    "noise": {
+      "false_positive_rate": 0.05,
+      "missed_detection_rate": 0.03,
+      "network_delay_max": 30,
+      "offline_frequency": 0.02
+    }
+  }
+}
