@@ -1,0 +1,18 @@
+{
+  "toolSpec": {
+    "name": "getAvailabilityByCategory",
+    "description": "Get gym machine availability by category near user location",
+    "inputSchema": {
+      "json": {
+        "type": "object",
+        "properties": {
+          "lat": {"type": "number", "description": "User latitude"},
+          "lon": {"type": "number", "description": "User longitude"},
+          "radius": {"type": "number", "description": "Search radius in kilometers", "default": 10},
+          "category": {"type": "string", "enum": ["legs", "chest", "back"], "description": "Equipment category"}
+        },
+        "required": ["lat", "lon", "category"]
+      }
+    }
+  }
+}

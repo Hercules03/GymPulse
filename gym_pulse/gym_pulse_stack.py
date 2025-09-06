@@ -7,6 +7,7 @@ from aws_cdk import (
     Duration,
     Stack,
     CfnOutput,
+    RemovalPolicy,
     aws_dynamodb as dynamodb,
     aws_lambda as _lambda,
     aws_apigateway as apigateway,
@@ -253,6 +254,21 @@ class GymPulseStack(Stack):
             timeout=Duration.seconds(30),
         )
 
+        # Bedrock Chat Handler: Orchestrates tool-use conversations
+        chat_handler_lambda = _lambda.Function(
+            self, "ChatHandlerLambda",
+            function_name="gym-pulse-chat-handler",
+            runtime=_lambda.Runtime.PYTHON_3_10,
+            handler="chat-handler.lambda_handler",
+            code=_lambda.Code.from_asset("lambda/bedrock-tools"),
+            environment={
+                "BEDROCK_MODEL_ID": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+                "AVAILABILITY_FUNCTION_ARN": availability_tool_lambda.function_arn,
+                "ROUTE_MATRIX_FUNCTION_ARN": route_matrix_tool_lambda.function_arn,
+            },
+            timeout=Duration.seconds(60),  # Longer timeout for AI processing
+        )
+
         # ========================================
         # Amazon Location Service
         # ========================================
@@ -382,6 +398,30 @@ class GymPulseStack(Stack):
             "PUT",
             apigateway.LambdaIntegration(api_lambda),
             api_key_required=False
+        )
+        
+        # Chat endpoint for Bedrock AI assistant
+        chat_resource = api.root.add_resource("chat")
+        chat_resource.add_method(
+            "POST",
+            apigateway.LambdaIntegration(chat_handler_lambda),
+            api_key_required=False  # Allow free access to chat
+        )
+        
+        # Grant chat handler permission to invoke tool functions
+        availability_tool_lambda.grant_invoke(chat_handler_lambda)
+        route_matrix_tool_lambda.grant_invoke(chat_handler_lambda)
+        
+        # Grant chat handler permission to access Bedrock
+        chat_handler_lambda.add_to_role_policy(
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=[
+                    "bedrock:InvokeModel",
+                    "bedrock:Converse"
+                ],
+                resources=["*"]  # Bedrock models don't support resource-level permissions
+            )
         )
         
         # Health check endpoint (no API key required)
@@ -567,7 +607,8 @@ class GymPulseStack(Stack):
             ("WebSocketDisconnect", websocket_disconnect_lambda),
             ("WebSocketBroadcast", websocket_broadcast_lambda),
             ("AvailabilityTool", availability_tool_lambda),
-            ("RouteMatrixTool", route_matrix_tool_lambda)
+            ("RouteMatrixTool", route_matrix_tool_lambda),
+            ("ChatHandler", chat_handler_lambda)
         ]
         
         for name, lambda_func in lambda_functions:
@@ -618,7 +659,7 @@ class GymPulseStack(Stack):
                 alarm_name=f"GymPulse-{name}-ReadThrottle",
                 alarm_description=f"Read throttling on {name} table",
                 metric=table.metric("ReadThrottles",
-                    statistic=cloudwatch.Statistic.SUM,
+                    statistic="Sum",
                     period=Duration.minutes(5)
                 ),
                 threshold=0,
@@ -633,7 +674,7 @@ class GymPulseStack(Stack):
                 alarm_name=f"GymPulse-{name}-WriteThrottle",
                 alarm_description=f"Write throttling on {name} table",
                 metric=table.metric("WriteThrottles",
-                    statistic=cloudwatch.Statistic.SUM,
+                    statistic="Sum",
                     period=Duration.minutes(5)
                 ),
                 threshold=0,
@@ -651,7 +692,7 @@ class GymPulseStack(Stack):
                 namespace="AWS/ApiGateway",
                 metric_name="4XXError",
                 dimensions_map={"ApiName": "GymPulseAPI"},
-                statistic=cloudwatch.Statistic.SUM,
+                statistic="Sum",
                 period=Duration.minutes(5)
             ),
             threshold=10,  # >10 4xx errors in 5 minutes
@@ -669,7 +710,7 @@ class GymPulseStack(Stack):
                 namespace="AWS/ApiGateway",
                 metric_name="5XXError",
                 dimensions_map={"ApiName": "GymPulseAPI"},
-                statistic=cloudwatch.Statistic.SUM,
+                statistic="Sum",
                 period=Duration.minutes(5)
             ),
             threshold=5,  # >5 5xx errors in 5 minutes
@@ -688,7 +729,7 @@ class GymPulseStack(Stack):
                 namespace="AWS/ApiGateway",
                 metric_name="Latency",
                 dimensions_map={"ApiName": "GymPulseAPI"},
-                statistic=cloudwatch.Statistic.percentile(95),
+                statistic="p95",
                 period=Duration.minutes(5)
             ),
             threshold=3000,  # 3 seconds
@@ -750,7 +791,7 @@ class GymPulseStack(Stack):
                 self, f"{name}LogGroup",
                 log_group_name=f"/aws/lambda/{lambda_func.function_name}",
                 retention=logs.RetentionDays.ONE_WEEK,
-                removal_policy=Stack.RemovalPolicy.DESTROY
+                removal_policy=RemovalPolicy.DESTROY
             )
 
         # ========================================
