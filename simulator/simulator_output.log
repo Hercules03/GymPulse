@@ -1,0 +1,22 @@
+2025-09-06 23:00:38,137 - GymSimulator - INFO - Creating machine simulators...
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-press-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-press-02 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for squat-rack-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for calf-raise-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for bench-press-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for bench-press-02 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for chest-fly-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for lat-pulldown-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for rowing-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for pull-up-01 at hk-central
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-press-03 at hk-causeway
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for squat-rack-02 at hk-causeway
+2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-curl-01 at hk-causeway
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for bench-press-03 at hk-causeway
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for incline-press-01 at hk-causeway
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for dips-01 at hk-causeway
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for lat-pulldown-02 at hk-causeway
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for rowing-02 at hk-causeway
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for t-bar-row-01 at hk-causeway
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Created 19 machine simulators
+2025-09-06 23:00:38,139 - GymSimulator - INFO - Starting simulation for 1 machines...

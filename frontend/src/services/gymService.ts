@@ -166,7 +166,16 @@ class GymService {
    * Get all branches with current availability counts
    */
   async getBranches(): Promise<BranchesResponse> {
-    return apiClient.get<BranchesResponse>('/branches');
+    // The API returns a simple array, so we need to wrap it
+    const branches = await apiClient.get<Branch[]>('/branches');
+    return {
+      branches: branches.map(branch => ({
+        ...branch,
+        coordinates: Array.isArray(branch.coordinates) 
+          ? { lat: branch.coordinates[0], lon: branch.coordinates[1] }
+          : branch.coordinates
+      }))
+    };
   }
 
   /**
