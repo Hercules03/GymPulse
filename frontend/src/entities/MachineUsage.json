@@ -1,0 +1,37 @@
+{
+    "name": "MachineUsage",
+    "type": "object",
+    "properties": {
+      "machine_id": {
+        "type": "string",
+        "description": "Reference to equipment machine_id"
+      },
+      "hour": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 23,
+        "description": "Hour of the day (0-23)"
+      },
+      "usage_percentage": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "Percentage of time machine is occupied during this hour"
+      },
+      "date": {
+        "type": "string",
+        "format": "date",
+        "description": "Date for this usage data"
+      },
+      "predicted_free_time": {
+        "type": "integer",
+        "description": "Predicted minutes until machine becomes free"
+      }
+    },
+    "required": [
+      "machine_id",
+      "hour",
+      "usage_percentage",
+      "date"
+    ]
+  }

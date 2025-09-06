@@ -2,6 +2,7 @@
 GymPulse CDK Stack - Python Implementation
 Real-time gym equipment availability with IoT integration and AI chatbot
 """
+import json
 from aws_cdk import (
     Duration,
     Stack,
@@ -10,6 +11,7 @@ from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigateway,
     aws_apigatewayv2 as apigatewayv2,
+    aws_apigatewayv2_integrations as apigatewayv2_integrations,
     aws_iot as iot,
     aws_iam as iam,
     aws_location as location,
@@ -219,7 +221,7 @@ class GymPulseStack(Stack):
             code=_lambda.Code.from_asset("lambda/websocket-handlers"),
             environment={
                 "CONNECTIONS_TABLE": connections_table.table_name,
-                "WEBSOCKET_API_ENDPOINT": f"https://{websocket_api.api_id}.execute-api.{self.region}.amazonaws.com/prod",
+                # "WEBSOCKET_API_ENDPOINT": f"https://{websocket_api.api_id}.execute-api.{self.region}.amazonaws.com/prod",
             },
             timeout=Duration.seconds(30),
         )
@@ -278,13 +280,14 @@ class GymPulseStack(Stack):
             ),
             # Enable API key for rate limiting (optional)
             api_key_source_type=apigateway.ApiKeySourceType.HEADER,
-            # Request validation
-            request_validator=apigateway.RequestValidator(
-                self, "RequestValidator",
-                rest_api=api,
-                validate_request_body=True,
-                validate_request_parameters=True,
-            ),
+        )
+
+        # Request validation
+        request_validator = apigateway.RequestValidator(
+            self, "RequestValidator",
+            rest_api=api,
+            validate_request_body=True,
+            validate_request_parameters=True,
         )
         
         # Usage Plan for rate limiting
@@ -415,11 +418,11 @@ class GymPulseStack(Stack):
         )
 
         # WebSocket routes
-        connect_integration = apigatewayv2.WebSocketLambdaIntegration(
+        connect_integration = apigatewayv2_integrations.WebSocketLambdaIntegration(
             "ConnectIntegration",
             websocket_connect_lambda
         )
-        disconnect_integration = apigatewayv2.WebSocketLambdaIntegration(
+        disconnect_integration = apigatewayv2_integrations.WebSocketLambdaIntegration(
             "DisconnectIntegration", 
             websocket_disconnect_lambda
         )
@@ -439,6 +442,10 @@ class GymPulseStack(Stack):
             stage_name="prod",
             auto_deploy=True
         )
+
+        # Update WebSocket broadcast Lambda with the endpoint
+        websocket_broadcast_lambda.add_environment("WEBSOCKET_API_ENDPOINT", 
+            f"https://{websocket_api.api_id}.execute-api.{self.region}.amazonaws.com/prod")
 
         # ========================================
         # IoT Rule for Lambda Trigger
@@ -554,7 +561,7 @@ class GymPulseStack(Stack):
         
         # Lambda function error rates alarms
         lambda_functions = [
-            ("IoTIngest", iot_ingest_lambda),
+            ("IoTIngest", ingest_lambda),
             ("APIHandler", api_lambda),
             ("WebSocketConnect", websocket_connect_lambda),
             ("WebSocketDisconnect", websocket_disconnect_lambda),
@@ -570,7 +577,7 @@ class GymPulseStack(Stack):
                 alarm_name=f"GymPulse-{name}-ErrorRate",
                 alarm_description=f"High error rate in {name} Lambda function",
                 metric=lambda_func.metric_errors(
-                    statistic=cloudwatch.Statistic.AVERAGE,
+                    statistic="Average",
                     period=Duration.minutes(5)
                 ),
                 threshold=5,
@@ -586,7 +593,7 @@ class GymPulseStack(Stack):
                 alarm_name=f"GymPulse-{name}-Duration",
                 alarm_description=f"High duration in {name} Lambda function",
                 metric=lambda_func.metric_duration(
-                    statistic=cloudwatch.Statistic.AVERAGE,
+                    statistic="Average",
                     period=Duration.minutes(5)
                 ),
                 threshold=30000,  # 30 seconds in milliseconds
