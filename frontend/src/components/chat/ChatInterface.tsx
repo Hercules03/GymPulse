@@ -36,27 +36,7 @@ const examplePrompts = [
   "What's available at Central branch?"
 ];
 
-// Helper function to extract category from user message
-const extractCategoryFromMessage = (message: string): string | null => {
-  const lowerMessage = message.toLowerCase();
-  
-  // Check for leg-related keywords
-  if (lowerMessage.includes('leg') || lowerMessage.includes('squat') || lowerMessage.includes('calf')) {
-    return 'legs';
-  }
-  
-  // Check for chest-related keywords
-  if (lowerMessage.includes('chest') || lowerMessage.includes('bench') || lowerMessage.includes('press') || lowerMessage.includes('push')) {
-    return 'chest';
-  }
-  
-  // Check for back-related keywords
-  if (lowerMessage.includes('back') || lowerMessage.includes('pull') || lowerMessage.includes('row') || lowerMessage.includes('lat')) {
-    return 'back';
-  }
-  
-  return null;
-};
+// Bedrock agent handles category detection and intent parsing
 
 export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([
@@ -107,72 +87,45 @@ export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
       return;
     }
 
-    // Use real API to get availability
+    // Use Bedrock-powered chat API with tool-use capabilities
     try {
-      // Extract category from message (simple keyword matching)
-      const category = extractCategoryFromMessage(message);
-      
-      if (!category) {
-        const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          type: 'assistant',
-          content: "I can help you find equipment! Try asking about specific muscle groups like 'legs', 'chest', or 'back'. For example: 'I want to do legs nearby'",
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
-        setIsLoading(false);
-        return;
-      }
+      const chatRequest = {
+        message: message,
+        userLocation: userLocation ? {
+          lat: userLocation.lat,
+          lon: userLocation.lon
+        } : undefined,
+        sessionId: 'default'
+      };
 
-      // Default to Hong Kong center if no user location
-      const searchLat = userLocation?.lat || 22.2819;
-      const searchLon = userLocation?.lon || 114.1577;
-      
-      const availabilityResponse = await gymService.getAvailabilityByCategory({
-        lat: searchLat,
-        lon: searchLon,
-        category,
-        radius: 10 // 10km radius
-      });
+      const chatResponse = await gymService.sendChatMessage(chatRequest);
 
-      if (availabilityResponse.branches.length === 0) {
-        const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          type: 'assistant',
-          content: `Sorry, I couldn't find any available ${category} equipment nearby right now. Try checking back later or looking at other locations!`,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
-        setIsLoading(false);
-        return;
-      }
-
-      // Convert API response to recommendations format
-      const recommendations: BranchRecommendation[] = availabilityResponse.branches.map(branch => ({
-        branchId: branch.branchId,
-        name: branch.name,
-        eta: `${Math.round(branch.distance * 5 + 3)} mins`, // Rough ETA calculation
-        distance: `${branch.distance.toFixed(1)} km`,
-        availableCount: branch.freeCount,
-        totalCount: branch.totalCount,
-        category
+      // Convert recommendations from chat response to our format
+      const recommendations: BranchRecommendation[] | undefined = chatResponse.recommendations?.map(rec => ({
+        branchId: rec.branchId,
+        name: rec.name,
+        eta: rec.eta,
+        distance: rec.distance,
+        availableCount: rec.availableCount,
+        totalCount: rec.totalCount,
+        category: rec.category
       }));
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: `Great choice for ${category} day! Here are the best options near you:`,
+        content: chatResponse.response,
         timestamp: new Date(),
         recommendations
       };
       
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Error fetching availability:', error);
+      console.error('Error with chat API:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: "Sorry, I'm having trouble connecting to our system right now. Please try again in a moment!",
+        content: "Sorry, I'm having trouble connecting to our chat system right now. Please try again in a moment!",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);

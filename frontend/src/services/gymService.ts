@@ -158,6 +158,32 @@ export interface RouteMatrixResponse {
   }>;
 }
 
+// Chat API Types
+export interface ChatRequest {
+  message: string;
+  userLocation?: {
+    lat: number;
+    lon: number;
+  };
+  sessionId?: string;
+}
+
+export interface ChatResponse {
+  response: string;
+  recommendations?: Array<{
+    branchId: string;
+    name: string;
+    eta: string;
+    distance: string;
+    availableCount: number;
+    totalCount: number;
+    category: string;
+  }>;
+  toolsUsed?: string[];
+  sessionId: string;
+  fallback?: boolean;
+}
+
 /**
  * Gym Service Class
  */
@@ -250,6 +276,13 @@ class GymService {
   async getRouteMatrix(request: RouteMatrixRequest): Promise<RouteMatrixResponse> {
     return apiClient.post<RouteMatrixResponse>('/tools/route-matrix', request);
   }
+
+  /**
+   * Send message to Bedrock-powered chatbot with tool-use capabilities
+   */
+  async sendChatMessage(request: ChatRequest): Promise<ChatResponse> {
+    return apiClient.post<ChatResponse>('/chat', request);
+  }
 }
 
 // Create and export service instance
@@ -262,4 +295,6 @@ export type {
   Alert,
   HistoryBin,
   BranchAvailability,
+  ChatRequest,
+  ChatResponse,
 };
