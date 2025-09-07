@@ -92,13 +92,17 @@ def lambda_handler(event, context):
             distance = haversine_distance(lat, lon, branch_lat, branch_lon)
             
             if category in branch['categories']:
+                # Get category forecast for this branch
+                category_forecast = get_category_forecast(branch['id'], category)
+                
                 results.append({
                     'branchId': branch['id'],
                     'name': branch['name'],
                     'coordinates': branch['coordinates'],
                     'distance': round(distance, 2),
                     'freeCount': branch['categories'][category]['free'],
-                    'totalCount': branch['categories'][category]['total']
+                    'totalCount': branch['categories'][category]['total'],
+                    'forecast': category_forecast
                 })
         
         # Sort by distance, then by availability (more free machines first)
@@ -119,6 +123,72 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
         }
+
+
+def get_category_forecast(gym_id, category):
+    """
+    Get forecast for category at gym branch
+    Falls back to simple forecast if enhanced forecasting unavailable
+    """
+    try:
+        # Try to import and use enhanced forecasting
+        import sys
+        import os
+        
+        # Add forecast module to path
+        forecast_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'forecast')
+        if forecast_path not in sys.path:
+            sys.path.append(forecast_path)
+        
+        from threshold_tuner import ThresholdTuner
+        from seasonality_model import SeasonalityModel
+        from datetime import datetime
+        
+        # Get enhanced forecast
+        seasonality_model = SeasonalityModel()
+        forecast_result = seasonality_model.get_category_forecast(
+            gym_id, category, datetime.utcnow(), forecast_minutes=30
+        )
+        
+        if 'error' not in forecast_result:
+            forecast_data = forecast_result['forecast']
+            
+            # Classify using threshold tuner
+            threshold_tuner = ThresholdTuner()
+            if forecast_data.get('reliable'):
+                classification = threshold_tuner.classify_availability_forecast(
+                    forecast_data['probability'],
+                    forecast_data['confidence'],
+                    forecast_data['sample_size']
+                )
+                
+                return {
+                    'classification': classification['classification'],
+                    'display_text': classification['display_text'],
+                    'confidence': classification['confidence_level'],
+                    'probability': f"{forecast_data['probability'] * 100:.0f}%",
+                    'reliable': True
+                }
+            else:
+                return {
+                    'classification': 'insufficient_data',
+                    'display_text': 'Limited forecast data',
+                    'confidence': 'low',
+                    'reliable': False
+                }
+        
+    except ImportError:
+        print("Enhanced forecasting not available, using fallback")
+    except Exception as e:
+        print(f"Forecast error for {gym_id}/{category}: {str(e)}")
+    
+    # Fallback forecast
+    return {
+        'classification': 'unavailable',
+        'display_text': 'Forecast unavailable',
+        'confidence': 'none',
+        'reliable': False
+    }
 
 
 def haversine_distance(lat1, lon1, lat2, lon2):

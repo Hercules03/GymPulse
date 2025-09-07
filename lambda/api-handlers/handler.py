@@ -244,6 +244,20 @@ def get_machines(branch_id, category):
                 'coordinates': item.get('coordinates', {}),
                 'alertEligible': item.get('status') == 'occupied'  # Can only set alerts for occupied machines
             }
+            
+            # Add forecast data for this machine
+            try:
+                forecast = calculate_simple_forecast([], machine['machineId'])
+                machine['forecast'] = forecast
+            except Exception as e:
+                print(f"Failed to get forecast for {machine['machineId']}: {str(e)}")
+                machine['forecast'] = {
+                    'likelyFreeIn30m': False,
+                    'classification': 'error',
+                    'display_text': 'Forecast unavailable',
+                    'show_to_user': False
+                }
+            
             machines.append(machine)
         
         # Sort machines by ID for consistent ordering
@@ -404,14 +418,48 @@ def process_events_to_history(events):
 
 def calculate_simple_forecast(history_bins, machine_id):
     """
-    Calculate simple forecast for "likely free in 30m"
-    Based on recent patterns
+    Calculate forecast for "likely free in 30m" using enhanced seasonality model
+    Falls back to simple heuristic if enhanced forecasting unavailable
+    """
+    try:
+        # Try to use enhanced forecasting
+        from .forecast_integration import get_enhanced_forecast
+        enhanced_forecast = get_enhanced_forecast(machine_id)
+        
+        # Convert enhanced format to legacy format for compatibility
+        return {
+            'likelyFreeIn30m': enhanced_forecast.get('likelyFreeIn30m', False),
+            'classification': enhanced_forecast.get('classification', 'unavailable'),
+            'display_text': enhanced_forecast.get('display_text', ''),
+            'color': enhanced_forecast.get('color', 'gray'),
+            'confidence': enhanced_forecast.get('confidence', 'low'),
+            'confidence_text': enhanced_forecast.get('confidence_text', ''),
+            'show_to_user': enhanced_forecast.get('show_to_user', False),
+            'reason': enhanced_forecast.get('reason', 'Forecast based on historical patterns'),
+            'metadata': enhanced_forecast.get('metadata', {})
+        }
+    except ImportError:
+        # Fall back to simple heuristic
+        return calculate_simple_forecast_fallback(history_bins, machine_id)
+    except Exception as e:
+        print(f"Enhanced forecast failed for {machine_id}: {str(e)}")
+        return calculate_simple_forecast_fallback(history_bins, machine_id)
+
+
+def calculate_simple_forecast_fallback(history_bins, machine_id):
+    """
+    Fallback forecast calculation using simple heuristics
     """
     if not history_bins or len(history_bins) < 4:
         return {
             'likelyFreeIn30m': False,
+            'classification': 'insufficient_data',
+            'display_text': 'Insufficient data',
+            'color': 'gray',
             'confidence': 'low',
-            'reason': 'Insufficient historical data'
+            'show_to_user': False,
+            'reason': 'Insufficient historical data (need at least 1 hour)',
+            'metadata': {'sample_size': len(history_bins)}
         }
     
     # Look at recent trend (last 4 bins = 1 hour)
@@ -422,10 +470,32 @@ def calculate_simple_forecast(history_bins, machine_id):
     likely_free = free_ratio > 0.6
     confidence = 'high' if free_ratio > 0.8 or free_ratio < 0.2 else 'medium'
     
+    if likely_free:
+        classification = 'likely_free'
+        display_text = 'Likely free in 30m'
+        color = 'green'
+    elif free_ratio > 0.3:
+        classification = 'possibly_free'
+        display_text = 'Possibly free in 30m'
+        color = 'yellow'
+    else:
+        classification = 'unlikely_free'
+        display_text = 'Unlikely free in 30m'
+        color = 'red'
+    
     return {
         'likelyFreeIn30m': likely_free,
+        'classification': classification,
+        'display_text': display_text,
+        'color': color,
         'confidence': confidence,
-        'reason': f"Based on recent {len(recent_bins)}h pattern ({free_ratio:.0%} free time)"
+        'show_to_user': True,
+        'reason': f"Based on recent {len(recent_bins)}h pattern ({free_ratio:.0%} free time)",
+        'metadata': {
+            'free_ratio': free_ratio,
+            'sample_size': len(recent_bins),
+            'reliable': len(recent_bins) >= 4
+        }
     }
 
 
