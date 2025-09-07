@@ -73,6 +73,10 @@ def lambda_handler(event, context):
             return update_alert(alert_id, event)
         elif path == '/health' and method == 'GET':
             return health_check()
+        elif path.startswith('/forecast/'):
+            # Delegate to forecast handler
+            from forecast import lambda_handler as forecast_handler
+            return forecast_handler(event, context)
         else:
             return {
                 'statusCode': 404,

@@ -1,0 +1,103 @@
+{
+  "load_test": {
+    "target_devices": 50,
+    "test_duration_minutes": 30,
+    "message_rate_per_device": {
+      "min_interval_seconds": 30,
+      "max_interval_seconds": 120
+    },
+    "concurrent_connections": 50,
+    "ramp_up_time_seconds": 60
+  },
+  "branches": [
+    {
+      "id": "hk-central",
+      "name": "Central Branch",
+      "coordinates": {
+        "lat": 22.2819,
+        "lon": 114.1577
+      },
+      "load_test_machines": 25
+    },
+    {
+      "id": "hk-causeway", 
+      "name": "Causeway Bay Branch",
+      "coordinates": {
+        "lat": 22.2783,
+        "lon": 114.1747
+      },
+      "load_test_machines": 25
+    }
+  ],
+  "machine_types": {
+    "legs": {
+      "types": ["leg-press", "squat-rack", "leg-curl", "calf-raise", "leg-extension"],
+      "weight": 0.35
+    },
+    "chest": {
+      "types": ["bench-press", "incline-press", "decline-press", "chest-fly", "dips", "pec-deck"],
+      "weight": 0.35
+    },
+    "back": {
+      "types": ["lat-pulldown", "rowing", "t-bar-row", "pull-up", "cable-row", "hyperextension"],
+      "weight": 0.30
+    }
+  },
+  "usage_patterns": {
+    "peak_hours": {
+      "morning": {
+        "start": 6,
+        "end": 9,
+        "occupancy_rate": 0.75
+      },
+      "lunch": {
+        "start": 12,
+        "end": 13,
+        "occupancy_rate": 0.65
+      },
+      "evening": {
+        "start": 18,
+        "end": 21,
+        "occupancy_rate": 0.85
+      },
+      "off_peak": {
+        "occupancy_rate": 0.35
+      },
+      "night": {
+        "occupancy_rate": 0.15
+      }
+    },
+    "timing": {
+      "occupied_duration": {
+        "min": 25,
+        "max": 95
+      },
+      "rest_duration": {
+        "min": 45,
+        "max": 200
+      },
+      "session_length": {
+        "min": 600,
+        "max": 3600
+      },
+      "transition_time": {
+        "min": 20,
+        "max": 150
+      }
+    },
+    "noise": {
+      "false_positive_rate": 0.08,
+      "missed_detection_rate": 0.05,
+      "network_delay_max": 45,
+      "offline_frequency": 0.03,
+      "connection_drops": 0.02
+    }
+  },
+  "performance_targets": {
+    "message_success_rate": 0.98,
+    "connection_success_rate": 0.95,
+    "max_connection_time_ms": 5000,
+    "max_publish_latency_ms": 1000,
+    "target_messages_per_minute": 100
+  }
+}
