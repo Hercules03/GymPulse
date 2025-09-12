@@ -41,3 +41,4 @@
 - **ALWAYS** update progress checkboxes as you complete steps
 - **ALWAYS** capture evidence of AI-assisted development
 - For each phase, mark it as in_progress when starting, completed when finished
+- For some functions if you think it can done by manually configure in the AWS console by me. Please guide me to do it. Seems like this will be more effective in order to make the project done

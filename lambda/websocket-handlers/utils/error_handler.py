@@ -229,9 +229,9 @@ def websocket_handler(func):
                          function=function_name,
                          connection_id=connection_id,
                          error=str(e))
+            # For WebSocket APIs, return statusCode only for errors
             return {
-                'statusCode': 500,
-                'body': json.dumps({'error': 'Internal server error'})
+                'statusCode': 500
             }
     
     return wrapper

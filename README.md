@@ -345,7 +345,6 @@ Co-Authored-By: Amazon Q Developer <noreply@aws.amazon.com>
 🔗 **[View Complete AI Evidence Documentation →](docs/ai-evidence/)**
 
 ## CDK Commands
-
 * `npm run build`   compile typescript to js
 * `npm run watch`   watch for changes and compile  
 * `npm run test`    perform the jest unit tests

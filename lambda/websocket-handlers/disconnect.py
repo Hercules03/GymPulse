@@ -41,16 +41,10 @@ def lambda_handler(event, context):
             print(f"Error removing connection {connection_id}: {str(e)}")
             # Don't fail the disconnect if we can't clean up - connection might already be expired
         
-        return {
-            'statusCode': 200,
-            'body': json.dumps({
-                'message': 'Disconnected successfully',
-                'connectionId': connection_id
-            })
-        }
+        # For WebSocket $disconnect, return empty response for success
+        return {}
         
     except Exception as e:
         print(f"WebSocket disconnect error: {str(e)}")
-        return {
-            'statusCode': 200  # Return 200 even on error to avoid connection state issues
-        }
+        # For WebSocket $disconnect, return empty response even on error
+        return {}

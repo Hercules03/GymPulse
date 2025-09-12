@@ -4,7 +4,7 @@
  */
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://b12llscygg.execute-api.ap-east-1.amazonaws.com/prod';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
 
 // HTTP Client with error handling
 class ApiClient {

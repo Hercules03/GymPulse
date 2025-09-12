@@ -30,87 +30,29 @@ class GymPulseStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # ========================================
-        # DynamoDB Tables
+        # DynamoDB Tables (Import existing tables)
         # ========================================
         
-        # Current state table for real-time machine status
-        current_state_table = dynamodb.Table(
-            self, "CurrentStateTable",
-            table_name="gym-pulse-current-state",
-            partition_key=dynamodb.Attribute(
-                name="machineId", 
-                type=dynamodb.AttributeType.STRING
-            ),
-            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            stream=dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
-        )
-
-        # Time-series events table for historical tracking
-        events_table = dynamodb.Table(
-            self, "EventsTable",
-            table_name="gym-pulse-events",
-            partition_key=dynamodb.Attribute(
-                name="machineId", 
-                type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name="timestamp", 
-                type=dynamodb.AttributeType.NUMBER
-            ),
-            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            time_to_live_attribute="ttl",
-        )
-
-        # Aggregates table for analytics and heatmaps
-        aggregates_table = dynamodb.Table(
-            self, "AggregatesTable",
-            table_name="gym-pulse-aggregates",
-            partition_key=dynamodb.Attribute(
-                name="gymId_category", 
-                type=dynamodb.AttributeType.STRING
-            ),  # format: "hk-central#legs"
-            sort_key=dynamodb.Attribute(
-                name="timestamp15min", 
-                type=dynamodb.AttributeType.NUMBER
-            ),
-            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            time_to_live_attribute="ttl",
-        )
-
-        # Alerts table for user notifications
-        alerts_table = dynamodb.Table(
-            self, "AlertsTable",
-            table_name="gym-pulse-alerts",
-            partition_key=dynamodb.Attribute(
-                name="userId", 
-                type=dynamodb.AttributeType.STRING
-            ),
-            sort_key=dynamodb.Attribute(
-                name="machineId", 
-                type=dynamodb.AttributeType.STRING
-            ),
-            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+        # Import existing tables instead of creating new ones
+        current_state_table = dynamodb.Table.from_table_name(
+            self, "CurrentStateTable", "gym-pulse-current-state"
         )
         
-        # Add GSI to alerts table
-        alerts_table.add_global_secondary_index(
-            index_name="machineId-index",
-            partition_key=dynamodb.Attribute(
-                name="machineId",
-                type=dynamodb.AttributeType.STRING
-            ),
+        events_table = dynamodb.Table.from_table_name(
+            self, "EventsTable", "gym-pulse-events"
         )
-
-        # WebSocket connections table for connection management
-        connections_table = dynamodb.Table(
-            self, "ConnectionsTable",
-            table_name="gym-pulse-connections",
-            partition_key=dynamodb.Attribute(
-                name="connectionId", 
-                type=dynamodb.AttributeType.STRING
-            ),
-            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
-            time_to_live_attribute="ttl",
+        
+        aggregates_table = dynamodb.Table.from_table_name(
+            self, "AggregatesTable", "gym-pulse-aggregates"
+        )
+        
+        alerts_table = dynamodb.Table.from_table_name(
+            self, "AlertsTable", "gym-pulse-alerts"
+        )
+        
+        # Import existing connections table
+        connections_table = dynamodb.Table.from_table_name(
+            self, "ConnectionsTable", "gym-pulse-connections"
         )
 
         # ========================================
@@ -190,7 +132,7 @@ class GymPulseStack(Stack):
             self, "WebSocketConnectLambda",
             function_name="gym-pulse-websocket-connect",
             runtime=_lambda.Runtime.PYTHON_3_10,
-            handler="connect.lambda_handler",
+            handler="connect_simple.lambda_handler",
             code=_lambda.Code.from_asset("lambda/websocket-handlers"),
             environment={
                 "CONNECTIONS_TABLE": connections_table.table_name,

@@ -49,27 +49,21 @@ def log_structured(level: str, message: str, **kwargs):
     else:
         logger.info(json.dumps(log_entry))
 
-def send_metric(metric_name: str, value: float, unit: str = 'Count', namespace: str = 'GymPulse', dimensions: Dict[str, str] = None):
+def send_metric(metric_name: str, value: float, unit: str = 'Count', namespace: str = 'GymPulse'):
     """
-    Send custom metric to CloudWatch with optional dimensions
+    Send custom metric to CloudWatch
     """
     try:
-        metric_data = {
-            'MetricName': metric_name,
-            'Value': value,
-            'Unit': unit,
-            'Timestamp': datetime.utcnow()
-        }
-        
-        # Add dimensions if provided
-        if dimensions:
-            metric_data['Dimensions'] = [
-                {'Name': key, 'Value': value} for key, value in dimensions.items()
-            ]
-        
         cloudwatch.put_metric_data(
             Namespace=namespace,
-            MetricData=[metric_data]
+            MetricData=[
+                {
+                    'MetricName': metric_name,
+                    'Value': value,
+                    'Unit': unit,
+                    'Timestamp': datetime.utcnow()
+                }
+            ]
         )
     except Exception as e:
         logger.error(f"Failed to send metric {metric_name}: {e}")

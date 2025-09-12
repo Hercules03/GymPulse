@@ -42,11 +42,15 @@ class WebSocketService {
   private messageListeners: ((message: WebSocketMessage) => void)[] = [];
   private connectionListeners: ((connected: boolean) => void)[] = [];
   private subscriptions: WebSocketSubscriptions = {};
+  private mockUpdateInterval: NodeJS.Timeout | null = null;
+  private isDevelopmentMode: boolean;
 
   constructor() {
-    // Use environment variable or fallback to localhost for development
-    this.connectionUrl = import.meta.env.VITE_WEBSOCKET_URL || 
-                       'wss://your-websocket-api.execute-api.ap-southeast-1.amazonaws.com/prod';
+    // Check if running in development mode with mock data
+    this.isDevelopmentMode = import.meta.env.DEV && !import.meta.env.VITE_WEBSOCKET_URL;
+    
+    // Only set connection URL if WebSocket URL is actually configured
+    this.connectionUrl = import.meta.env.VITE_WEBSOCKET_URL || '';
   }
 
   /**
@@ -54,13 +58,34 @@ class WebSocketService {
    */
   connect(subscriptions?: WebSocketSubscriptions, userId?: string): Promise<void> {
     return new Promise((resolve, reject) => {
+      // In development mode or when no WebSocket URL is configured, use mock updates
+      if (this.isDevelopmentMode || !this.connectionUrl) {
+        console.log('Development mode: Using mock WebSocket updates (no WebSocket URL configured)');
+        this.startMockUpdates(subscriptions);
+        this.notifyConnectionListeners(true);
+        resolve();
+        return;
+      }
+
       if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
         resolve();
         return;
       }
 
       if (this.isConnecting) {
-        reject(new Error('Connection already in progress'));
+        // Instead of rejecting, wait for the current connection attempt to complete
+        const checkConnection = () => {
+          if (!this.isConnecting) {
+            if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
+              resolve();
+            } else {
+              reject(new Error('Connection failed'));
+            }
+          } else {
+            setTimeout(checkConnection, 100);
+          }
+        };
+        setTimeout(checkConnection, 100);
         return;
       }
 
@@ -151,6 +176,12 @@ class WebSocketService {
    * Disconnect from WebSocket
    */
   disconnect(): void {
+    if (this.isDevelopmentMode) {
+      this.stopMockUpdates();
+      this.notifyConnectionListeners(false);
+      return;
+    }
+
     if (this.websocket) {
       this.websocket.close(1000, 'Client disconnect');
       this.websocket = null;
@@ -163,6 +194,9 @@ class WebSocketService {
    * Check if WebSocket is connected
    */
   isConnected(): boolean {
+    if (this.isDevelopmentMode) {
+      return this.mockUpdateInterval !== null;
+    }
     return this.websocket !== null && this.websocket.readyState === WebSocket.OPEN;
   }
 
@@ -259,6 +293,56 @@ class WebSocketService {
         this.connect(this.subscriptions);
       }
     }, delay);
+  }
+
+  /**
+   * Start mock updates for development mode
+   */
+  private startMockUpdates(subscriptions?: WebSocketSubscriptions): void {
+    if (this.mockUpdateInterval) {
+      clearInterval(this.mockUpdateInterval);
+    }
+
+    // Generate mock machine updates every 30 seconds
+    this.mockUpdateInterval = setInterval(() => {
+      const machines = [
+        'leg-press-01', 'leg-press-02', 'squat-rack-01', 'calf-raise-01',
+        'bench-press-01', 'bench-press-02', 'chest-fly-01',
+        'lat-pulldown-01', 'rowing-01', 'pull-up-01'
+      ];
+      
+      const categories = ['legs', 'chest', 'back'];
+      const branches = ['hk-central', 'hk-causeway'];
+      const statuses = ['free', 'occupied'] as const;
+      
+      // Generate a random update
+      const randomMachine = machines[Math.floor(Math.random() * machines.length)];
+      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+      const randomBranch = branches[Math.floor(Math.random() * branches.length)];
+      
+      const mockUpdate: MachineUpdate = {
+        type: 'machine_update',
+        machineId: randomMachine,
+        gymId: randomBranch,
+        category: randomCategory,
+        status: randomStatus,
+        timestamp: Date.now(),
+        lastChange: Date.now() - Math.random() * 300000 // Random time in last 5 minutes
+      };
+      
+      this.handleMessage(mockUpdate);
+    }, 30000); // Every 30 seconds
+  }
+
+  /**
+   * Stop mock updates
+   */
+  private stopMockUpdates(): void {
+    if (this.mockUpdateInterval) {
+      clearInterval(this.mockUpdateInterval);
+      this.mockUpdateInterval = null;
+    }
   }
 }
 

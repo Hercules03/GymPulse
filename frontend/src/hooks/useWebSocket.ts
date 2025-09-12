@@ -122,15 +122,18 @@ export function useWebSocket(): UseWebSocketResult {
 export function useMachineUpdates(subscriptions?: WebSocketSubscriptions, userId?: string) {
   const webSocket = useWebSocket();
   const [latestMachineStatus, setLatestMachineStatus] = useState<Record<string, MachineUpdate>>({});
+  const connectAttemptedRef = useRef(false);
 
   // Auto-connect on mount if subscriptions provided (disabled in development)
   useEffect(() => {
-    if (subscriptions && !webSocket.isConnected && !webSocket.isConnecting) {
+    if (subscriptions && !webSocket.isConnected && !webSocket.isConnecting && !connectAttemptedRef.current) {
       // Skip WebSocket connection in development environment
       if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_WEBSOCKET !== 'true') {
         console.log('WebSocket disabled in development mode');
         return;
       }
+      
+      connectAttemptedRef.current = true;
       webSocket.connect(subscriptions, userId).catch(console.error);
     }
   }, [subscriptions, userId, webSocket]);
@@ -161,15 +164,18 @@ export function useMachineUpdates(subscriptions?: WebSocketSubscriptions, userId
 export function useUserAlerts(userId?: string) {
   const webSocket = useWebSocket();
   const [unreadAlerts, setUnreadAlerts] = useState<UserAlert[]>([]);
+  const alertConnectAttemptedRef = useRef(false);
 
   // Auto-connect for user alerts (disabled in development)
   useEffect(() => {
-    if (userId && !webSocket.isConnected && !webSocket.isConnecting) {
+    if (userId && !webSocket.isConnected && !webSocket.isConnecting && !alertConnectAttemptedRef.current) {
       // Skip WebSocket connection in development environment
       if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_WEBSOCKET !== 'true') {
         console.log('WebSocket disabled in development mode');
         return;
       }
+      
+      alertConnectAttemptedRef.current = true;
       // Subscribe to all branches/categories for user alerts
       const alertSubscriptions: WebSocketSubscriptions = {
         branches: ['hk-central', 'hk-causeway'],

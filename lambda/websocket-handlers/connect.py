@@ -23,10 +23,10 @@ try:
     dynamodb = boto3.resource('dynamodb')
     connections_table = dynamodb.Table(os.environ['CONNECTIONS_TABLE'])
 except Exception as e:
-    log_structured('ERROR', 'websocket_init_error', {
-        'error': str(e),
-        'missing_env_vars': [var for var in ['CONNECTIONS_TABLE'] if var not in os.environ]
-    })
+    log_structured('ERROR', 'websocket_init_error', 
+        error=str(e),
+        missing_env_vars=[var for var in ['CONNECTIONS_TABLE'] if var not in os.environ]
+    )
     raise
 
 
@@ -44,10 +44,10 @@ def lambda_handler(event, context):
     if not connection_id:
         raise ValidationError("Missing connection ID in request context")
     
-    log_structured('INFO', 'websocket_connect_attempt', {
-        'connection_id': connection_id[:8] + '...',  # Partial ID for privacy
-        'route_key': route_key
-    })
+    log_structured('INFO', 'websocket_connect_attempt',
+        connection_id=connection_id[:8] + '...',  # Partial ID for privacy
+        route_key=route_key
+    )
     
     # Extract query parameters for subscription preferences
     query_params = event.get('queryStringParameters', {}) or {}
@@ -75,10 +75,10 @@ def lambda_handler(event, context):
             'categories': valid_categories,
             'machines': []
         }
-        log_structured('WARNING', 'empty_subscriptions_default', {
-            'connection_id': connection_id[:8] + '...',
-            'default_applied': True
-        })
+        log_structured('WARNING', 'empty_subscriptions_default',
+            connection_id=connection_id[:8] + '...',
+            default_applied=True
+        )
     
     # Store connection in DynamoDB with circuit breaker
     current_time = int(time.time())
@@ -98,11 +98,11 @@ def lambda_handler(event, context):
         
         dynamodb_circuit_breaker.call(store_connection)
         
-        log_structured('INFO', 'websocket_connect_success', {
-            'connection_id': connection_id[:8] + '...',
-            'subscriptions': {k: len(v) for k, v in subscriptions.items()},
-            'user_id': connection_item['userId']
-        })
+        log_structured('INFO', 'websocket_connect_success',
+            connection_id=connection_id[:8] + '...',
+            subscriptions={k: len(v) for k, v in subscriptions.items()},
+            user_id=connection_item['userId']
+        )
         
         # Send connection metrics
         send_metric('WebSocketConnection', 1, dimensions={
@@ -110,23 +110,16 @@ def lambda_handler(event, context):
             'UserType': 'Anonymous' if connection_item['userId'] == 'anonymous' else 'Identified'
         })
         
-        return {
-            'statusCode': 200,
-            'body': json.dumps({
-                'message': 'Connected successfully',
-                'connectionId': connection_id,
-                'subscriptions': subscriptions,
-                'ttl': connection_item['ttl']
-            })
-        }
+        # For WebSocket $connect, return empty response for success
+        return {}
         
     except ClientError as e:
         error_code = e.response.get('Error', {}).get('Code', 'Unknown')
-        log_structured('ERROR', 'websocket_connect_db_error', {
-            'connection_id': connection_id[:8] + '...',
-            'error_code': error_code,
-            'error_message': str(e)
-        })
+        log_structured('ERROR', 'websocket_connect_db_error',
+            connection_id=connection_id[:8] + '...',
+            error_code=error_code,
+            error_message=str(e)
+        )
         
         send_metric('WebSocketConnectionError', 1, dimensions={
             'ErrorType': 'Database',
@@ -136,10 +129,10 @@ def lambda_handler(event, context):
         raise DatabaseError(f"Failed to store connection: {error_code}")
         
     except Exception as e:
-        log_structured('ERROR', 'websocket_connect_error', {
-            'connection_id': connection_id[:8] + '...',
-            'error_message': str(e)
-        })
+        log_structured('ERROR', 'websocket_connect_error',
+            connection_id=connection_id[:8] + '...',
+            error_message=str(e)
+        )
         
         send_metric('WebSocketConnectionError', 1, dimensions={
             'ErrorType': 'Unknown'

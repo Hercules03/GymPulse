@@ -32,10 +32,10 @@ export default defineConfig({
         },
       },
       '/api': {
-        target: 'https://b12llscygg.execute-api.ap-east-1.amazonaws.com/prod',
+        target: 'http://localhost:5001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
-        secure: true,
+        secure: false,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('Proxy error', err);
