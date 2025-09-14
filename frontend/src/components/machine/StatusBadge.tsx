@@ -1,13 +1,14 @@
 import React from 'react';
 
 interface StatusBadgeProps {
-  status: 'available' | 'occupied' | 'offline';
+  status: 'available' | 'free' | 'occupied' | 'offline' | 'category_view';
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'available':
+      case 'free':  // Handle 'free' status from API
         return {
           bg: 'bg-green-50',
           text: 'text-green-700',
@@ -30,6 +31,14 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
           border: 'border-gray-200',
           label: 'Offline',
           icon: '●'
+        };
+      case 'category_view':
+        return {
+          bg: 'bg-blue-50',
+          text: 'text-blue-700',
+          border: 'border-blue-200',
+          label: 'Category View',
+          icon: '📊'
         };
       default:
         return {

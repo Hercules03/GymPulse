@@ -3,9 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface UsageData {
   hour: number;
-  day_of_week: number;
-  average_usage: number;
-  predicted_free_time?: string;
+  usage_percentage: number;
+  timestamp: string;
+  predicted_free_time?: number | null;
 }
 
 interface AvailabilityHeatmapProps {
@@ -17,7 +17,7 @@ export default function AvailabilityHeatmap({ usageData }: AvailabilityHeatmapPr
   const currentHour = new Date().getHours();
 
   const getIntensityColor = (usage: number) => {
-    const intensity = Math.round(usage * 100);
+    const intensity = Math.round(usage); // usage is already percentage 0-100
     if (intensity >= 80) return 'bg-red-500';
     if (intensity >= 60) return 'bg-orange-500';
     if (intensity >= 40) return 'bg-yellow-500';
@@ -27,7 +27,7 @@ export default function AvailabilityHeatmap({ usageData }: AvailabilityHeatmapPr
 
   const getUsageForHour = (hour: number) => {
     const data = usageData.find(d => d.hour === hour);
-    return data ? data.average_usage : 0;
+    return data ? data.usage_percentage : 0;
   };
 
   return (
@@ -59,7 +59,7 @@ export default function AvailabilityHeatmap({ usageData }: AvailabilityHeatmapPr
           {hours.map(hour => {
             const usage = getUsageForHour(hour);
             const isCurrentHour = hour === currentHour;
-            const intensity = Math.round(usage * 100);
+            const intensity = Math.round(usage); // usage is already percentage 0-100
             
             return (
               <div key={hour} className="text-center">

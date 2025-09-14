@@ -1,0 +1,289 @@
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowLeft, MapPin, Clock, Activity, Dumbbell, Heart, ArrowUp } from 'lucide-react';
+import { gymService } from '@/services/gymService';
+import { useMachineUpdates } from '@/hooks/useWebSocket';
+
+import StatusBadge from '@/components/machine/StatusBadge';
+import NotificationButton from '@/components/machine/NotificationButton';
+import PredictionChip from '@/components/machine/PredictionChip';
+import AvailabilityHeatmap from '@/components/machine/AvailabilityHeatmap';
+
+interface Machine {
+  machineId: string;
+  name: string;
+  status: 'free' | 'occupied' | 'unknown';
+  lastUpdate: number | null;
+  category: string;
+  gymId: string;
+  type: string;
+  alertEligible: boolean;
+}
+
+const CategoryIcons = {
+  legs: Dumbbell,
+  chest: Heart,
+  back: ArrowUp
+} as const;
+
+export default function MachinesPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const branchId = searchParams.get('branch') || 'hk-central';
+  const category = searchParams.get('category') || 'legs';
+  
+  const [machines, setMachines] = useState<Machine[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [usageData, setUsageData] = useState([]);
+
+  // WebSocket integration for real-time updates
+  const webSocket = useMachineUpdates({
+    branches: [branchId],
+    categories: [category]
+  });
+
+  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+  const branchName = branchId === 'hk-central' ? 'Central Branch' : 'Causeway Bay Branch';
+  const CategoryIcon = CategoryIcons[category as keyof typeof CategoryIcons] || Dumbbell;
+
+  useEffect(() => {
+    const loadMachines = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Load machines for this branch and category
+        console.log('Loading machines for:', { branchId, category });
+        const response = await gymService.getMachines(branchId, category);
+        console.log('Machines response:', response);
+        setMachines(response.machines || []);
+        
+        // Load usage data for the first machine (for heatmap example)
+        if (response.machines && response.machines.length > 0) {
+          const firstMachine = response.machines[0];
+          try {
+            const historyResponse = await gymService.getMachineHistory(firstMachine.machineId);
+            
+            // Transform history data to heatmap format
+            const transformedData = (historyResponse.history || []).map((bin, index) => ({
+              hour: new Date(bin.timestamp * 1000).getHours(),
+              usage_percentage: Math.round(bin.occupancyRatio * 100),
+              timestamp: new Date(bin.timestamp * 1000).toISOString(),
+              predicted_free_time: null
+            }));
+            
+            setUsageData(transformedData);
+          } catch (historyError) {
+            console.warn('Could not load machine history:', historyError);
+            setUsageData([]);
+          }
+        }
+        
+      } catch (error) {
+        console.error('Error loading machines:', error);
+        console.error('Error details:', { branchId, category, error });
+        setError(`Failed to load machine data: ${error.message}`);
+        setMachines([]);
+      }
+      
+      setIsLoading(false);
+    };
+
+    loadMachines();
+  }, [branchId, category]);
+
+  // Update machines with real-time WebSocket data
+  useEffect(() => {
+    if (webSocket.lastUpdate && webSocket.lastUpdate.type === 'machine_update') {
+      const update = webSocket.lastUpdate;
+      
+      setMachines(prevMachines => 
+        prevMachines.map(machine => 
+          machine.machineId === update.machineId
+            ? { ...machine, status: update.status, lastUpdate: update.timestamp }
+            : machine
+        )
+      );
+    }
+  }, [webSocket.lastUpdate]);
+
+  const getStatusCounts = () => {
+    const free = machines.filter(m => m.status === 'free').length;
+    const occupied = machines.filter(m => m.status === 'occupied').length;
+    const unknown = machines.filter(m => m.status === 'unknown').length;
+    return { free, occupied, unknown, total: machines.length };
+  };
+
+  const statusCounts = getStatusCounts();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="bg-white rounded-lg p-6 shadow-sm h-48">
+                  <div className="space-y-3">
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-2 bg-gray-200 rounded w-full"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-lg font-medium mb-2">{error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="text-blue-600 hover:text-blue-700 underline"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-100 px-6 py-6 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate(-1)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-3">
+                <CategoryIcon className="w-8 h-8 text-blue-600" />
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">{categoryName} Equipment</h1>
+                  <div className="flex items-center gap-2 text-gray-500 text-sm">
+                    <MapPin className="w-4 h-4" />
+                    <span>{branchName}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* WebSocket Status & Stats */}
+            <div className="flex items-center gap-6">
+              <div className="text-right">
+                <div className="text-lg font-bold text-gray-900">
+                  {statusCounts.free}/{statusCounts.total} Available
+                </div>
+                <div className="text-sm text-gray-500">
+                  {statusCounts.occupied} occupied • {statusCounts.unknown} unknown
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${
+                  webSocket.isConnected ? 'bg-green-500' : 
+                  webSocket.isConnecting ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+                }`}></div>
+                <span className="text-xs text-gray-500">
+                  {webSocket.isConnected ? 'Live' : webSocket.isConnecting ? 'Connecting...' : 'Offline'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Machine Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          {machines.map((machine, index) => (
+            <motion.div
+              key={machine.machineId}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-lg mb-1">{machine.name}</h3>
+                  <p className="text-sm text-gray-500">{machine.type.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
+                </div>
+                <StatusBadge status={machine.status} />
+              </div>
+
+              <div className="space-y-3 mb-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Activity className="w-4 h-4" />
+                  <span>ID: {machine.machineId}</span>
+                </div>
+                
+                {machine.lastUpdate && (
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Clock className="w-4 h-4" />
+                    <span>Updated: {new Date(machine.lastUpdate * 1000).toLocaleTimeString()}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <PredictionChip 
+                  machineId={machine.machineId}
+                  currentStatus={machine.status}
+                />
+                
+                <div className="flex items-center gap-2">
+                  <NotificationButton 
+                    machineId={machine.machineId}
+                    isEligible={machine.alertEligible}
+                  />
+                  <Link
+                    to={`/machine-detail?id=${machine.machineId}`}
+                    className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors"
+                  >
+                    Details
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Usage Heatmap for Category */}
+        {usageData.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <AvailabilityHeatmap usageData={usageData} />
+          </motion.div>
+        )}
+
+        {machines.length === 0 && !isLoading && (
+          <div className="text-center py-12">
+            <CategoryIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No machines found</h3>
+            <p className="text-gray-500">
+              No {category} equipment available at {branchName}.
+            </p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}

@@ -232,9 +232,10 @@ class GymPulseStack(Stack):
             rest_api_name="gym-pulse-api",
             description="GymPulse Real-time Gym Availability API",
             default_cors_preflight_options=apigateway.CorsOptions(
-                allow_origins=apigateway.Cors.ALL_ORIGINS,
-                allow_methods=apigateway.Cors.ALL_METHODS,
-                allow_headers=["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],
+                allow_origins=apigateway.Cors.ALL_ORIGINS,  # Allow all origins to fix CORS
+                allow_methods=apigateway.Cors.ALL_METHODS,   # Allow all methods
+                allow_headers=["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token", "Accept", "X-Requested-With"],
+                allow_credentials=False,  # Don't allow credentials with wildcard origin
             ),
             # Enable API key for rate limiting (optional)
             api_key_source_type=apigateway.ApiKeySourceType.HEADER,

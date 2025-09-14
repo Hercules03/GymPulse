@@ -24,6 +24,7 @@ class MachineSimulator:
         self.gym_id = gym_config['id']
         self.category = machine_config['category']
         self.machine_name = machine_config['name']
+        self.equipment_type = machine_config.get('type', 'unknown')
         self.coordinates = gym_config['coordinates']
         
         # MQTT configuration
@@ -49,7 +50,7 @@ class MachineSimulator:
     
     def _setup_mqtt_client(self) -> mqtt5.Client:
         """Setup MQTT5 client with certificates"""
-        client_bootstrap = mqtt5_client_builder.mtls_from_path(
+        return mqtt5_client_builder.mtls_from_path(
             endpoint=self.endpoint,
             port=8883,
             cert_filepath=self.cert_path,
@@ -57,16 +58,6 @@ class MachineSimulator:
             ca_filepath=self.ca_path,
             client_id=self.machine_id
         )
-        
-        # Configure client options
-        client_options = mqtt5_crt.ClientOptions(
-            host_name=self.endpoint,
-            port=8883,
-            client_id=self.machine_id,
-            keep_alive_interval_seconds=30,
-        )
-        
-        return mqtt5.Client(client_bootstrap, client_options)
     
     def _on_connection_success(self, connection, callback_data):
         """Called when MQTT connection succeeds"""
@@ -92,7 +83,12 @@ class MachineSimulator:
             
             # Connect
             connection_future = self.mqtt_client.start()
-            connection_future.result(timeout=30)  # Wait up to 30 seconds
+            if connection_future:
+                connection_future.result(timeout=30)  # Wait up to 30 seconds
+            
+            # Give a moment for connection to establish
+            import asyncio
+            await asyncio.sleep(2)
             
             self.logger.info(f"Machine {self.machine_id} connected successfully")
             return True
@@ -146,13 +142,16 @@ class MachineSimulator:
                     'occupied' if new_state == 'free' else 'free'
                 )
                 
-                publish_future = self.mqtt_client.publish(
+                false_publish_request = mqtt5_crt.PublishPacket(
                     topic=self.topic,
-                    payload=json.dumps(false_payload),
+                    payload=json.dumps(false_payload).encode('utf-8'),
                     qos=mqtt5_crt.QoS.AT_LEAST_ONCE,
                     retain=retain
                 )
-                publish_future.result(timeout=10)
+                
+                publish_future = self.mqtt_client.publish(false_publish_request)
+                if publish_future:
+                    publish_future.result(timeout=10)
                 
                 self.logger.debug(f"Injected false positive for {self.machine_id}")
                 
@@ -160,14 +159,17 @@ class MachineSimulator:
                 time.sleep(random.randint(2, 5))
             
             # Publish actual state
-            publish_future = self.mqtt_client.publish(
+            publish_request = mqtt5_crt.PublishPacket(
                 topic=self.topic,
-                payload=json.dumps(payload),
+                payload=json.dumps(payload).encode('utf-8'),
                 qos=mqtt5_crt.QoS.AT_LEAST_ONCE,
                 retain=retain
             )
             
-            publish_future.result(timeout=10)
+            publish_future = self.mqtt_client.publish(publish_request)
+            
+            if publish_future:
+                publish_future.result(timeout=10)
             
             self.logger.info(f"Published: {self.machine_id} -> {new_state}")
             
@@ -204,9 +206,9 @@ class MachineSimulator:
                     time.sleep(offline_duration)
                     continue
                 
-                # Get next state transition
+                # Get next state transition with Hong Kong 247 Fitness patterns
                 next_state, duration = self.usage_patterns.get_realistic_state_transition(
-                    self.current_state, current_hour, self.category
+                    self.current_state, current_hour, self.category, self.gym_id, self.equipment_type
                 )
                 
                 # Update state if changed
@@ -250,12 +252,13 @@ class MachineSimulator:
             try:
                 # Publish final state
                 final_payload = self._create_message_payload('offline')
-                self.mqtt_client.publish(
+                final_publish_request = mqtt5_crt.PublishPacket(
                     topic=self.topic,
-                    payload=json.dumps(final_payload),
+                    payload=json.dumps(final_payload).encode('utf-8'),
                     qos=mqtt5_crt.QoS.AT_LEAST_ONCE,
                     retain=True
                 )
+                self.mqtt_client.publish(final_publish_request)
                 
                 # Disconnect
                 self.mqtt_client.stop()

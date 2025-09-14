@@ -74,7 +74,7 @@ class GymSimulator:
         asyncio.create_task(self.stop_all_simulations())
     
     def _get_machine_certificates(self, machine_id: str) -> Dict[str, str]:
-        """Get certificate paths for a machine"""
+        """Get certificate paths for a specific machine - using individual certificates"""
         return {
             'cert_path': str(self.cert_dir / f"{machine_id}.cert.pem"),
             'key_path': str(self.cert_dir / f"{machine_id}.private.key"),
@@ -133,10 +133,15 @@ class GymSimulator:
         
         self.running = True
         
-        # Start all machine simulations concurrently
+        # Start machine simulations with staggered connections to respect AWS IoT rate limits
         tasks = []
-        for machine_id in machines_to_start:
+        for i, machine_id in enumerate(machines_to_start):
             if machine_id in self.machines:
+                # Stagger connections by 2-second intervals to avoid rate limiting
+                if i > 0:
+                    self.logger.info(f"Waiting 2s before connecting {machine_id} (connection {i+1}/{len(machines_to_start)})")
+                    await asyncio.sleep(2)
+                
                 task = asyncio.create_task(
                     self.machines[machine_id].start_simulation()
                 )

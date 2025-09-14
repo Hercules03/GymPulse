@@ -19,8 +19,8 @@ export default function Header({ selectedLocation, onLocationChange, locations }
             </SelectTrigger>
             <SelectContent>
               {locations.map((location) => (
-                <SelectItem key={location} value={location}>
-                  {location}
+                <SelectItem key={location.id} value={location.id}>
+                  {location.name}
                 </SelectItem>
               ))}
             </SelectContent>

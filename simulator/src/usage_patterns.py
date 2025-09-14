@@ -19,34 +19,53 @@ class UsagePatterns:
         self.timing = self.patterns['timing']
         self.noise = self.patterns['noise']
     
-    def get_current_occupancy_rate(self, current_hour: int) -> float:
-        """Get occupancy rate based on current hour"""
-        # Morning peak: 6-9 AM
+    def get_current_occupancy_rate(self, current_hour: int, branch_id: str = None, equipment_type: str = None) -> float:
+        """Get occupancy rate based on current hour with Hong Kong 247 Fitness patterns"""
+        base_rate = 0.1  # Default night rate
+        
+        # Morning peak: 6-8 AM - moderate usage, cardio popular
         if self.peak_hours['morning']['start'] <= current_hour < self.peak_hours['morning']['end']:
-            return self.peak_hours['morning']['occupancy_rate']
+            base_rate = self.peak_hours['morning']['occupancy_rate']
         
-        # Lunch peak: 12-1 PM
+        # Lunch peak: 12-2 PM - business district boost
         elif self.peak_hours['lunch']['start'] <= current_hour < self.peak_hours['lunch']['end']:
-            return self.peak_hours['lunch']['occupancy_rate']
+            base_rate = self.peak_hours['lunch']['occupancy_rate']
+            # Central business district has higher lunch traffic
+            if branch_id == 'hk-central' and 'branch_differences' in self.patterns:
+                base_rate *= self.patterns['branch_differences']['hk-central'].get('lunch_boost', 1.0)
         
-        # Evening peak: 6-9 PM
+        # Evening peak: 6-10 PM - highest demand, queues for popular equipment
         elif self.peak_hours['evening']['start'] <= current_hour < self.peak_hours['evening']['end']:
-            return self.peak_hours['evening']['occupancy_rate']
+            base_rate = self.peak_hours['evening']['occupancy_rate']
         
-        # Night hours: 10 PM - 6 AM
+        # Midday: 10 AM - 4 PM - mostly retirees and shift workers
+        elif 'midday' in self.peak_hours and self.peak_hours['midday']['start'] <= current_hour < self.peak_hours['midday']['end']:
+            base_rate = self.peak_hours['midday']['occupancy_rate']
+        
+        # Night hours: 10 PM - 6 AM - sparse usage, ideal for avoiding crowds
         elif current_hour >= 22 or current_hour < 6:
-            return self.peak_hours['night']['occupancy_rate']
+            base_rate = self.peak_hours['night']['occupancy_rate']
         
-        # Off-peak hours
-        else:
-            return self.peak_hours['off_peak']['occupancy_rate']
+        # Apply equipment-specific multipliers based on Hong Kong preferences
+        if equipment_type and 'equipment_preferences' in self.patterns:
+            for category, equipment_map in self.patterns['equipment_preferences'].items():
+                if equipment_type in equipment_map:
+                    equipment_data = equipment_map[equipment_type]
+                    # Apply base demand
+                    base_rate *= equipment_data.get('base_demand', 1.0)
+                    # Apply peak multiplier during evening hours
+                    if self.peak_hours['evening']['start'] <= current_hour < self.peak_hours['evening']['end']:
+                        base_rate *= equipment_data.get('peak_multiplier', 1.0)
+                    break
+        
+        return min(0.95, max(0.05, base_rate))  # Cap between 5% and 95%
     
-    def should_machine_be_occupied(self, current_hour: int) -> bool:
+    def should_machine_be_occupied(self, current_hour: int, branch_id: str = None, equipment_type: str = None) -> bool:
         """Determine if machine should be occupied based on current time"""
-        base_rate = self.get_current_occupancy_rate(current_hour)
+        base_rate = self.get_current_occupancy_rate(current_hour, branch_id, equipment_type)
         
-        # Add some randomization (±20%)
-        variation = random.uniform(-0.2, 0.2)
+        # Add some randomization (±15% for more stability)
+        variation = random.uniform(-0.15, 0.15)
         actual_rate = max(0, min(1, base_rate + variation))
         
         return random.random() < actual_rate
@@ -127,37 +146,36 @@ class UsagePatterns:
         })
     
     def get_realistic_state_transition(self, current_state: str, current_hour: int, 
-                                     category: str = 'legs') -> Tuple[str, int]:
+                                     category: str = 'legs', branch_id: str = None, 
+                                     equipment_type: str = None) -> Tuple[str, int]:
         """
-        Get next state and duration based on current state and realistic patterns
+        Get next state and duration based on current state and realistic Hong Kong patterns
         Returns: (next_state, duration_seconds)
         """
         category_patterns = self.get_category_specific_patterns(category)
-        should_be_occupied = self.should_machine_be_occupied(current_hour)
-        
-        # Apply category-specific popularity modifier
-        should_be_occupied = (random.random() < 
-                            (self.get_current_occupancy_rate(current_hour) * 
-                             category_patterns['popularity_multiplier']))
+        should_be_occupied = self.should_machine_be_occupied(current_hour, branch_id, equipment_type)
         
         if current_state == 'free':
             if should_be_occupied:
-                # Transition to occupied
-                duration = int(self.get_occupied_duration() * 
-                             category_patterns['session_multiplier'])
+                # Transition to occupied - Hong Kong gym sessions are typically focused and efficient
+                base_duration = self.get_occupied_duration()
+                duration = int(base_duration * category_patterns['session_multiplier'])
                 return 'occupied', duration
             else:
-                # Stay free, check again in 1-5 minutes
-                return 'free', random.randint(60, 300)
+                # Stay free, check again in 2-8 minutes (typical gym flow)
+                return 'free', random.randint(120, 480)
         
         elif current_state == 'occupied':
+            # Hong Kong gym users tend to be efficient - shorter rest periods during peak hours
+            peak_multiplier = 0.7 if self.peak_hours['evening']['start'] <= current_hour < self.peak_hours['evening']['end'] else 1.0
+            
             # Decide if user is done or just resting between sets
-            if random.random() < 0.3:  # 30% chance user is done
-                transition_time = self.get_transition_time()
+            if random.random() < 0.35:  # 35% chance user is done (slightly higher turnover)
+                transition_time = int(self.get_transition_time() * peak_multiplier)
                 return 'free', transition_time
             else:
-                # Rest between sets
-                rest_time = self.get_rest_duration()
+                # Rest between sets - shorter during peak hours due to social pressure
+                rest_time = int(self.get_rest_duration() * peak_multiplier)
                 return 'occupied', rest_time
         
         else:

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Equipment } from '@/entities/Equipment';
+import { gymService } from '@/services/gymService';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -9,32 +9,47 @@ import CategoryCard from '@/components/dashboard/CategoryCard';
 import QuickStats from '@/components/dashboard/QuickStats';
 
 export default function Dashboard() {
-  const [equipment, setEquipment] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState('Downtown');
+  const [branches, setBranches] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('hk-central');
   const [isLoading, setIsLoading] = useState(true);
 
-  const locations = ['Downtown', 'Westside', 'North Campus', 'Eastside'];
+  const locations = [
+    { id: 'hk-central', name: 'Central Branch' },
+    { id: 'hk-causeway', name: 'Causeway Bay Branch' }
+  ];
 
-  const loadEquipment = useCallback(async () => {
+  const loadBranches = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await Equipment.filter({ location: selectedLocation });
-      setEquipment(data);
+      const response = await gymService.getBranches();
+      setBranches(response.branches || []);
+      console.log('Loaded branches from AWS API:', response.branches);
     } catch (error) {
-      console.error('Error loading equipment:', error);
+      console.error('Error loading branches from AWS:', error);
+      // Keep empty array, don't fall back to mock data
+      setBranches([]);
     }
     setIsLoading(false);
-  }, [selectedLocation]);
+  }, []);
 
   useEffect(() => {
-    loadEquipment();
-  }, [loadEquipment]);
+    loadBranches();
+  }, [loadBranches]);
 
   const getStats = () => {
-    const totalEquipment = equipment.length;
-    const totalAvailable = equipment.filter(eq => eq.status === 'available').length;
+    // Calculate totals from real AWS branch data
+    let totalEquipment = 0;
+    let totalAvailable = 0;
+    
+    branches.forEach(branch => {
+      Object.values(branch.categories || {}).forEach(category => {
+        totalEquipment += category.total || 0;
+        totalAvailable += category.free || 0;
+      });
+    });
+    
     const peakHours = '6-8 PM';
-    const maintenanceNeeded = equipment.filter(eq => eq.status === 'offline').length;
+    const maintenanceNeeded = totalEquipment > 0 ? Math.floor(totalEquipment * 0.05) : 1; // Estimate 5% in maintenance
 
     return { totalEquipment, totalAvailable, peakHours, maintenanceNeeded };
   };
@@ -42,11 +57,21 @@ export default function Dashboard() {
   const getCategoryStats = () => {
     const categories = ['legs', 'chest', 'back'];
     return categories.map(category => {
-      const categoryEquipment = equipment.filter(eq => eq.category === category);
-      const totalMachines = categoryEquipment.length;
-      const availableCount = categoryEquipment.filter(eq => eq.status === 'available').length;
-      const occupiedCount = categoryEquipment.filter(eq => eq.status === 'occupied').length;
-      const offlineCount = categoryEquipment.filter(eq => eq.status === 'offline').length;
+      // Calculate totals for SELECTED branch only
+      let totalMachines = 0;
+      let availableCount = 0;
+      
+      const selectedBranch = branches.find(branch => branch.id === selectedLocation);
+      if (selectedBranch) {
+        const categoryData = selectedBranch.categories?.[category];
+        if (categoryData) {
+          totalMachines = categoryData.total || 0;
+          availableCount = categoryData.free || 0;
+        }
+      }
+      
+      const occupiedCount = totalMachines - availableCount;
+      const offlineCount = 0; // Will be calculated when we have machine-level data
 
       return {
         category,
@@ -54,13 +79,19 @@ export default function Dashboard() {
         availableCount,
         occupiedCount,
         offlineCount,
-        machines: categoryEquipment.map(m => ({ 
-            name: m.name, 
-            status: m.status, 
-            machine_id: m.machine_id 
-        }))
+        machines: [] // Will be populated when we have machine-level data
       };
     });
+  };
+
+  const getSampleMachineId = (category) => {
+    // Map categories to actual machine IDs based on simulator configuration
+    const machineMapping = {
+      'legs': selectedLocation === 'hk-central' ? 'leg-press-01' : 'leg-press-03',
+      'chest': selectedLocation === 'hk-central' ? 'bench-press-01' : 'bench-press-03', 
+      'back': selectedLocation === 'hk-central' ? 'lat-pulldown-01' : 'lat-pulldown-02'
+    };
+    return machineMapping[category] || 'leg-press-01';
   };
 
   const stats = getStats();
@@ -125,7 +156,7 @@ export default function Dashboard() {
               {categoryStats.map((categoryData, index) => (
                  <Link 
                   key={categoryData.category}
-                  to={createPageUrl(`MachineDetail?id=${categoryData.machines.find(m => m.status === 'available')?.machine_id || categoryData.machines[0]?.machine_id || ''}`)}
+                  to={createPageUrl(`machines?branch=${selectedLocation}&category=${categoryData.category}`)}
                  >
                     <motion.div
                       className="h-full"

@@ -1,27 +1,40 @@
-2025-09-06 23:00:38,137 - GymSimulator - INFO - Creating machine simulators...
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-press-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-press-02 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for squat-rack-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for calf-raise-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for bench-press-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for bench-press-02 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for chest-fly-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for lat-pulldown-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for rowing-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for pull-up-01 at hk-central
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-press-03 at hk-causeway
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for squat-rack-02 at hk-causeway
-2025-09-06 23:00:38,138 - GymSimulator - INFO - Created simulator for leg-curl-01 at hk-causeway
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for bench-press-03 at hk-causeway
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for incline-press-01 at hk-causeway
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for dips-01 at hk-causeway
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for lat-pulldown-02 at hk-causeway
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for rowing-02 at hk-causeway
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Created simulator for t-bar-row-01 at hk-causeway
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Created 19 machine simulators
-2025-09-06 23:00:38,139 - GymSimulator - INFO - Starting simulation for 1 machines...
-2025-09-07 01:00:38,118 - GymSimulator - INFO - Stopping all simulations...
-2025-09-07 01:00:38,119 - GymSimulator - INFO - All simulations stopped
-🏋️ Starting GymPulse simulator for 120 minutes...
-📍 Machines: 1
-✅ Simulation completed successfully
+2025-09-14 21:48:55,340 - GymSimulator - WARNING - Creating test certificates - NOT for production use!
+2025-09-14 21:48:55,340 - GymSimulator - INFO - Starting demo scenario for 5 minutes...
+2025-09-14 21:48:55,340 - GymSimulator - INFO - Creating machine simulators...
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-press-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-press-02 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for squat-rack-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for calf-raise-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for bench-press-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for bench-press-02 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for chest-fly-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for lat-pulldown-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for rowing-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for pull-up-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-press-03 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for squat-rack-02 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-curl-01 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for bench-press-03 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for incline-press-01 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for dips-01 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created simulator for lat-pulldown-02 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created simulator for rowing-02 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created simulator for t-bar-row-01 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created 19 machine simulators
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Starting simulation for 19 machines...
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Started simulation for leg-press-01
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Waiting 2s before connecting leg-press-02 (connection 2/19)
+2025-09-14 21:48:57,343 - GymSimulator - INFO - Started simulation for leg-press-02
+2025-09-14 21:48:57,343 - GymSimulator - INFO - Waiting 2s before connecting squat-rack-01 (connection 3/19)
+2025-09-14 21:48:57,359 - Machine-leg-press-01 - INFO - Machine leg-press-01 connected successfully
+2025-09-14 21:48:57,606 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:48:57,606 - Machine-leg-press-01 - INFO - Starting simulation loop for leg-press-01
+2025-09-14 21:49:00,739 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:49:49,007 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:53:40,237 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:55:01,491 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:56:30,828 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:57:35,101 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:58:46,383 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:59:35,635 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 22:12:43,930 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free

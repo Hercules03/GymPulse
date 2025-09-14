@@ -1,0 +1,207 @@
+2025-09-14 19:50:28,502 - GymSimulator - WARNING - Creating test certificates - NOT for production use!
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Starting demo scenario for 5 minutes...
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Creating machine simulators...
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for leg-press-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for leg-press-02 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for squat-rack-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for calf-raise-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for bench-press-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for bench-press-02 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for chest-fly-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for lat-pulldown-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for rowing-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for pull-up-01 at hk-central
+2025-09-14 19:50:28,503 - GymSimulator - INFO - Created simulator for leg-press-03 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for squat-rack-02 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for leg-curl-01 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for bench-press-03 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for incline-press-01 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for dips-01 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for lat-pulldown-02 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for rowing-02 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created simulator for t-bar-row-01 at hk-causeway
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Created 19 machine simulators
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Starting simulation for 19 machines...
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Started simulation for leg-press-01
+2025-09-14 19:50:28,504 - GymSimulator - INFO - Waiting 2s before connecting leg-press-02 (connection 2/19)
+2025-09-14 19:50:30,505 - GymSimulator - INFO - Started simulation for leg-press-02
+2025-09-14 19:50:30,505 - GymSimulator - INFO - Waiting 2s before connecting squat-rack-01 (connection 3/19)
+2025-09-14 19:50:30,520 - Machine-leg-press-01 - INFO - Machine leg-press-01 connected successfully
+2025-09-14 19:50:38,631 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 19:50:38,631 - Machine-leg-press-01 - INFO - Starting simulation loop for leg-press-01
+2025-09-14 19:50:38,736 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 19:52:15,858 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 19:57:53,714 - GymSimulator - WARNING - Creating test certificates - NOT for production use!
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Starting demo scenario for 5 minutes...
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Creating machine simulators...
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Created simulator for leg-press-01 at hk-central
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Created simulator for leg-press-02 at hk-central
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Created simulator for squat-rack-01 at hk-central
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Created simulator for calf-raise-01 at hk-central
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Created simulator for bench-press-01 at hk-central
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Created simulator for bench-press-02 at hk-central
+2025-09-14 19:57:53,715 - GymSimulator - INFO - Created simulator for chest-fly-01 at hk-central
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for lat-pulldown-01 at hk-central
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for rowing-01 at hk-central
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for pull-up-01 at hk-central
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for leg-press-03 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for squat-rack-02 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for leg-curl-01 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for bench-press-03 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for incline-press-01 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for dips-01 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for lat-pulldown-02 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for rowing-02 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created simulator for t-bar-row-01 at hk-causeway
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Created 19 machine simulators
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Starting simulation for 19 machines...
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Started simulation for leg-press-01
+2025-09-14 19:57:53,716 - GymSimulator - INFO - Waiting 2s before connecting leg-press-02 (connection 2/19)
+2025-09-14 19:57:55,718 - GymSimulator - INFO - Started simulation for leg-press-02
+2025-09-14 19:57:55,718 - GymSimulator - INFO - Waiting 2s before connecting squat-rack-01 (connection 3/19)
+2025-09-14 19:57:55,731 - Machine-leg-press-01 - INFO - Machine leg-press-01 connected successfully
+2025-09-14 19:57:56,270 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 19:57:56,270 - Machine-leg-press-01 - INFO - Starting simulation loop for leg-press-01
+2025-09-14 19:57:56,356 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 20:00:40,352 - Machine-leg-press-01 - INFO - leg-press-01 going offline for 165s
+2025-09-14 20:15:04,342 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 20:20:31,454 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 20:21:11,550 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 20:21:57,643 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 20:22:32,751 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 20:23:18,848 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 20:26:31,957 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 20:26:43,152 - GymSimulator - WARNING - Creating test certificates - NOT for production use!
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Starting demo scenario for 5 minutes...
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Creating machine simulators...
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for leg-press-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for leg-press-02 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for squat-rack-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for calf-raise-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for bench-press-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for bench-press-02 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for chest-fly-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for lat-pulldown-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for rowing-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for pull-up-01 at hk-central
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for leg-press-03 at hk-causeway
+2025-09-14 20:26:43,153 - GymSimulator - INFO - Created simulator for squat-rack-02 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created simulator for leg-curl-01 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created simulator for bench-press-03 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created simulator for incline-press-01 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created simulator for dips-01 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created simulator for lat-pulldown-02 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created simulator for rowing-02 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created simulator for t-bar-row-01 at hk-causeway
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Created 19 machine simulators
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Starting simulation for 19 machines...
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Started simulation for leg-press-01
+2025-09-14 20:26:43,154 - GymSimulator - INFO - Waiting 2s before connecting leg-press-02 (connection 2/19)
+2025-09-14 20:26:45,156 - GymSimulator - INFO - Started simulation for leg-press-02
+2025-09-14 20:26:45,156 - GymSimulator - INFO - Waiting 2s before connecting squat-rack-01 (connection 3/19)
+2025-09-14 20:26:45,176 - Machine-leg-press-01 - INFO - Machine leg-press-01 connected successfully
+2025-09-14 20:26:46,904 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 20:26:46,904 - Machine-leg-press-01 - INFO - Starting simulation loop for leg-press-01
+2025-09-14 20:26:47,731 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 20:38:27,120 - Machine-leg-press-01 - INFO - leg-press-01 going offline for 246s
+2025-09-14 20:38:36,539 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:42:43,130 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:44:00,134 - Machine-leg-press-01 - INFO - leg-press-01 going offline for 285s
+2025-09-14 20:45:54,567 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:46:50,571 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:48:55,141 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:49:34,580 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:50:20,589 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:51:49,152 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:52:38,602 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:53:13,160 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:53:18,609 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:57:21,296 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 20:58:14,307 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:01:08,758 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:02:20,770 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:03:56,782 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:04:34,790 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:05:43,802 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:05:46,342 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:06:59,813 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:08:31,825 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:09:39,832 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:10:27,374 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:11:15,389 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:16:35,874 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:16:49,419 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:17:35,885 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:18:06,425 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:20:29,443 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:20:45,904 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:21:40,458 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:24:15,925 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:25:44,938 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:25:59,484 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:26:39,494 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:26:56,943 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:29:36,513 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:30:31,524 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:31:45,535 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:32:31,969 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:32:39,364 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:33:37,239 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:34:24,377 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:34:53,251 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:36:24,263 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:39:42,286 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:41:59,405 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:43:15,416 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:44:09,428 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:48:43,311 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:48:51,773 - GymSimulator - INFO - Received signal 15, shutting down...
+2025-09-14 21:48:51,773 - GymSimulator - INFO - Received signal 15, shutting down...
+2025-09-14 21:48:55,340 - GymSimulator - WARNING - Creating test certificates - NOT for production use!
+2025-09-14 21:48:55,340 - GymSimulator - INFO - Starting demo scenario for 5 minutes...
+2025-09-14 21:48:55,340 - GymSimulator - INFO - Creating machine simulators...
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-press-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-press-02 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for squat-rack-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for calf-raise-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for bench-press-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for bench-press-02 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for chest-fly-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for lat-pulldown-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for rowing-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for pull-up-01 at hk-central
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-press-03 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for squat-rack-02 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for leg-curl-01 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for bench-press-03 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for incline-press-01 at hk-causeway
+2025-09-14 21:48:55,341 - GymSimulator - INFO - Created simulator for dips-01 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created simulator for lat-pulldown-02 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created simulator for rowing-02 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created simulator for t-bar-row-01 at hk-causeway
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Created 19 machine simulators
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Starting simulation for 19 machines...
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Started simulation for leg-press-01
+2025-09-14 21:48:55,342 - GymSimulator - INFO - Waiting 2s before connecting leg-press-02 (connection 2/19)
+2025-09-14 21:48:57,343 - GymSimulator - INFO - Started simulation for leg-press-02
+2025-09-14 21:48:57,343 - GymSimulator - INFO - Waiting 2s before connecting squat-rack-01 (connection 3/19)
+2025-09-14 21:48:57,359 - Machine-leg-press-01 - INFO - Machine leg-press-01 connected successfully
+2025-09-14 21:48:57,606 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:48:57,606 - Machine-leg-press-01 - INFO - Starting simulation loop for leg-press-01
+2025-09-14 21:49:00,739 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:49:49,007 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:52:40,432 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:53:40,237 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:55:01,491 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:56:30,828 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:57:35,101 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 21:58:34,461 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:58:46,383 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 21:59:00,316 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:59:07,468 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 21:59:35,635 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> occupied
+2025-09-14 22:00:12,325 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 22:12:43,930 - Machine-leg-press-01 - INFO - Published: leg-press-01 -> free
+2025-09-14 22:13:18,512 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 22:40:49,668 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 
+2025-09-14 22:41:41,674 - Machine-leg-press-01 - ERROR - Failed to publish leg-press-01: 

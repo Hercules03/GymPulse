@@ -21,29 +21,72 @@ export default function MachineDetail() {
   const [isLoading, setIsLoading] = useState(true);
 
   const machineId = searchParams.get('id');
+  const category = searchParams.get('category');
+  const branch = searchParams.get('branch');
 
   const loadMachineData = useCallback(async () => {
-    if (!machineId) return;
+    console.log('=== MachineDetail Debug ===');
+    console.log('machineId:', machineId);
+    console.log('category:', category);
+    console.log('branch:', branch);
+    
+    if (!machineId && !category) {
+      console.log('No machineId or category found, returning early');
+      return;
+    }
     
     setIsLoading(true);
     try {
-      // Load machine details
-      const machines = await Equipment.filter({ machine_id: machineId });
-      if (machines.length > 0) {
-        setMachine(machines[0]);
-      } else {
-        setMachine(null); // Explicitly set to null if not found
+      if (machineId) {
+        // Load machine details and usage data from AWS API in single call
+        try {
+          const response = await fetch(`https://cp58oqed6g.execute-api.ap-east-1.amazonaws.com/prod/machines/${machineId}/history?range=24h`);
+          if (response.ok) {
+            const historyData = await response.json();
+            if (historyData.machineId) {
+              // Create machine object from API response
+              setMachine({
+                machine_id: historyData.machineId,
+                name: `${historyData.category.charAt(0).toUpperCase() + historyData.category.slice(1)} Machine - ${historyData.machineId}`,
+                category: historyData.category,
+                location: historyData.gymId,
+                status: historyData.status || 'unknown', // Use actual status from API
+                last_updated: new Date().toISOString()
+              });
+              // Set usage data from same response
+              setUsageData(historyData.usageData || []);
+            } else {
+              setMachine(null);
+              setUsageData([]);
+            }
+          } else {
+            console.error('Failed to load machine details:', response.status);
+            setMachine(null);
+            setUsageData([]);
+          }
+        } catch (error) {
+          console.error('Error loading machine details:', error);
+          setMachine(null);
+          setUsageData([]);
+        }
+      } else if (category && branch) {
+        // Create a temporary machine object for category view
+        setMachine({
+          machine_id: `${category}-category`,
+          name: `${category.charAt(0).toUpperCase() + category.slice(1)} Equipment`,
+          category: category,
+          location: branch,
+          status: 'category_view',
+          last_updated: new Date().toISOString()
+        });
+        setUsageData([]);
       }
-
-      // Load usage data
-      const usage = await MachineUsage.filter({ machine_id: machineId });
-      setUsageData(usage);
     } catch (error) {
       console.error('Error loading machine data:', error);
       setMachine(null); // Ensure machine is null on error to show not found
     }
     setIsLoading(false);
-  }, [machineId]);
+  }, [machineId, category, branch]);
 
   useEffect(() => {
     loadMachineData();
@@ -109,6 +152,11 @@ export default function MachineDetail() {
                 <div>
                   <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
                     {machine.name}
+                    {machine.status === 'category_view' && (
+                      <span className="text-base font-normal text-gray-600 ml-2">
+                        at {machine.location === 'hk-central' ? 'Central Branch' : 'Causeway Bay Branch'}
+                      </span>
+                    )}
                   </CardTitle>
                   <div className="flex items-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center gap-1">
@@ -131,28 +179,48 @@ export default function MachineDetail() {
               </div>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center md:justify-between">
-                <PredictionChip 
-                  predictedFreeTime={usageData.find(d => d.hour === new Date().getHours())?.predicted_free_time}
-                  status={machine.status}
-                />
-                <NotificationButton 
-                  machineId={machine.machine_id} 
-                  status={machine.status} 
-                />
-              </div>
+              {machine.status === 'category_view' ? (
+                <div className="text-center py-6">
+                  <p className="text-gray-600 mb-4">
+                    This is a category overview for <strong>{machine.category}</strong> equipment at this branch.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Individual machine details and real-time status will be available soon. 
+                    In the meantime, check the dashboard for category-level availability.
+                  </p>
+                  <Link 
+                    to={createPageUrl('Dashboard')} 
+                    className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Return to Dashboard
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center md:justify-between">
+                  <PredictionChip 
+                    predictedFreeTime={usageData.find(d => d.hour === new Date().getHours())?.predicted_free_time}
+                    status={machine.status}
+                  />
+                  <NotificationButton 
+                    machineId={machine.machine_id} 
+                    status={machine.status} 
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Availability Heatmap */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-        >
-          <AvailabilityHeatmap usageData={usageData} />
-        </motion.div>
+        {/* Availability Heatmap - Only show for specific machines, not category view */}
+        {machine.status !== 'category_view' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            <AvailabilityHeatmap usageData={usageData} />
+          </motion.div>
+        )}
 
         {/* Additional Info */}
         <motion.div
