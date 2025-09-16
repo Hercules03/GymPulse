@@ -149,10 +149,8 @@ def get_subscribed_connections(machine_update):
         relevant_connections = []
         
         for connection in connections:
-            subscriptions = connection.get('subscriptions', {})
-            
             # Check if connection is interested in this update
-            if is_connection_interested(subscriptions, machine_update):
+            if is_connection_interested(connection, machine_update):
                 relevant_connections.append(connection)
         
         return relevant_connections
@@ -162,32 +160,64 @@ def get_subscribed_connections(machine_update):
         return []
 
 
-def is_connection_interested(subscriptions, machine_update):
+def is_connection_interested(connection, machine_update):
     """
     Determine if a connection should receive this machine update
+    Works with both nested 'subscriptions' format and flat format
+    Also handles DynamoDB native data types (L, S, etc.)
     """
     try:
         machine_id = machine_update.get('machineId')
         gym_id = machine_update.get('gymId')
         category = machine_update.get('category')
-        
+
+        print(f"Checking connection interest for machine {machine_id}, gym {gym_id}, category {category}")
+        print(f"Connection data: {json.dumps(connection, default=str)}")
+
+        # Helper function to extract values from DynamoDB format
+        def extract_dynamo_list(dynamo_list):
+            """Extract simple list from DynamoDB L format"""
+            if isinstance(dynamo_list, list):
+                # Already a simple list
+                return dynamo_list
+            elif isinstance(dynamo_list, dict) and 'L' in dynamo_list:
+                # DynamoDB format: {"L": [{"S": "value1"}, {"S": "value2"}]}
+                return [item.get('S', '') for item in dynamo_list['L']]
+            else:
+                return []
+
+        # Check if connection uses nested subscriptions format
+        if 'subscriptions' in connection:
+            subscriptions = connection['subscriptions']
+            machines = extract_dynamo_list(subscriptions.get('machines', []))
+            branches = extract_dynamo_list(subscriptions.get('branches', []))
+            categories = extract_dynamo_list(subscriptions.get('categories', []))
+        else:
+            # Use flat format from connect_simple.py - also handle DynamoDB format
+            machines = extract_dynamo_list(connection.get('machines', []))
+            branches = extract_dynamo_list(connection.get('branches', []))
+            categories = extract_dynamo_list(connection.get('categories', []))
+
+        print(f"Extracted subscription data - machines: {machines}, branches: {branches}, categories: {categories}")
+
         # Check specific machine subscription
-        if machine_id in subscriptions.get('machines', []):
+        if machine_id in machines:
+            print(f"✅ Machine {machine_id} found in subscribed machines")
             return True
-        
+
         # Check gym and category subscription
-        if (gym_id in subscriptions.get('branches', []) and 
-            category in subscriptions.get('categories', [])):
+        if (gym_id in branches and category in categories):
+            print(f"✅ Gym {gym_id} and category {category} match subscription")
             return True
-        
+
         # If no specific subscriptions, default to interested
-        if (not subscriptions.get('machines') and
-            not subscriptions.get('branches') and 
-            not subscriptions.get('categories')):
+        if (not machines and not branches and not categories):
+            print("✅ No specific subscriptions, defaulting to interested")
             return True
-            
+
+        print(f"❌ No match found for this connection")
         return False
-        
+
     except Exception as e:
         print(f"Error checking connection interest: {str(e)}")
         return False

@@ -63,15 +63,24 @@ class UsagePatterns:
     def should_machine_be_occupied(self, current_hour: int, branch_id: str = None, equipment_type: str = None) -> bool:
         """Determine if machine should be occupied based on current time"""
         base_rate = self.get_current_occupancy_rate(current_hour, branch_id, equipment_type)
-        
-        # Add some randomization (±15% for more stability)
-        variation = random.uniform(-0.15, 0.15)
-        actual_rate = max(0, min(1, base_rate + variation))
-        
+
+        # Add some natural randomization (±10% for realistic variation)
+        variation = random.uniform(-0.10, 0.10)
+        actual_rate = max(0.05, min(0.95, base_rate + variation))
+
         return random.random() < actual_rate
     
-    def get_occupied_duration(self) -> int:
-        """Get realistic occupied duration in seconds (exercise sets)"""
+    def get_occupied_duration(self, equipment_type: str = None) -> int:
+        """Get realistic occupied duration in seconds based on equipment type"""
+        # Cardio machines have longer sessions (15-40 minutes)
+        if equipment_type in ['rowing', 'treadmill', 'bike', 'elliptical']:
+            if 'cardio_duration' in self.timing:
+                return random.randint(
+                    self.timing['cardio_duration']['min'],
+                    self.timing['cardio_duration']['max']
+                )
+        
+        # Strength machines have shorter sessions (8-15 minutes)
         return random.randint(
             self.timing['occupied_duration']['min'],
             self.timing['occupied_duration']['max']
@@ -91,8 +100,37 @@ class UsagePatterns:
             self.timing['session_length']['max']
         )
     
-    def get_transition_time(self) -> int:
-        """Get machine changeover time in seconds"""
+    def get_transition_time(self, current_hour: int = None) -> int:
+        """Get machine changeover time in seconds based on peak hours"""
+        if current_hour is None:
+            current_hour = datetime.now().hour
+        
+        # During peak hours (6-10pm): 1-10 minutes between uses
+        if self.peak_hours['evening']['start'] <= current_hour < self.peak_hours['evening']['end']:
+            if 'peak_transition_time' in self.timing:
+                return random.randint(
+                    self.timing['peak_transition_time']['min'],
+                    self.timing['peak_transition_time']['max']
+                )
+        
+        # During lunch peak: moderate transition times
+        elif self.peak_hours['lunch']['start'] <= current_hour < self.peak_hours['lunch']['end']:
+            if 'peak_transition_time' in self.timing:
+                return random.randint(
+                    self.timing['peak_transition_time']['min'],
+                    self.timing['peak_transition_time']['max']
+                )
+        
+        # During off-peak hours: 15-60 minutes between uses
+        elif (current_hour >= 22 or current_hour < 6 or 
+              (10 <= current_hour < 18 and not (12 <= current_hour < 14))):
+            if 'off_peak_transition_time' in self.timing:
+                return random.randint(
+                    self.timing['off_peak_transition_time']['min'],
+                    self.timing['off_peak_transition_time']['max']
+                )
+        
+        # Default to standard transition time
         return random.randint(
             self.timing['transition_time']['min'],
             self.timing['transition_time']['max']
@@ -116,7 +154,11 @@ class UsagePatterns:
     def get_network_delay(self) -> int:
         """Get simulated network delay in seconds"""
         if random.random() < 0.1:  # 10% chance of delay
-            return random.randint(5, self.noise['network_delay_max'])
+            max_delay = self.noise.get('network_delay_max', 30)
+            if max_delay > 5:  # Only add delay if max is greater than minimum
+                return random.randint(5, max_delay)
+            else:
+                return 0  # Skip delay if max is too small
         return 0
     
     def get_category_specific_patterns(self, category: str) -> Dict[str, Any]:
@@ -158,12 +200,13 @@ class UsagePatterns:
         if current_state == 'free':
             if should_be_occupied:
                 # Transition to occupied - Hong Kong gym sessions are typically focused and efficient
-                base_duration = self.get_occupied_duration()
+                base_duration = self.get_occupied_duration(equipment_type)
                 duration = int(base_duration * category_patterns['session_multiplier'])
                 return 'occupied', duration
             else:
-                # Stay free, check again in 2-8 minutes (typical gym flow)
-                return 'free', random.randint(120, 480)
+                # Stay free, check again using transition_time based on current hour
+                transition_time = self.get_transition_time(current_hour)
+                return 'free', transition_time
         
         elif current_state == 'occupied':
             # Hong Kong gym users tend to be efficient - shorter rest periods during peak hours
@@ -171,7 +214,7 @@ class UsagePatterns:
             
             # Decide if user is done or just resting between sets
             if random.random() < 0.35:  # 35% chance user is done (slightly higher turnover)
-                transition_time = int(self.get_transition_time() * peak_multiplier)
+                transition_time = int(self.get_transition_time(current_hour) * peak_multiplier)
                 return 'free', transition_time
             else:
                 # Rest between sets - shorter during peak hours due to social pressure

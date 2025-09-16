@@ -3,7 +3,7 @@ import { Bell, BellRing } from 'lucide-react';
 
 interface NotificationButtonProps {
   machineId: string;
-  status: 'available' | 'occupied' | 'offline';
+  status: 'available' | 'free' | 'occupied' | 'offline' | 'unknown';
 }
 
 export default function NotificationButton({ machineId, status }: NotificationButtonProps) {
@@ -21,7 +21,7 @@ export default function NotificationButton({ machineId, status }: NotificationBu
     }
   };
 
-  if (status === 'available') {
+  if (status === 'available' || status === 'free') {
     return null; // Don't show notification button for available machines
   }
 

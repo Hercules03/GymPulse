@@ -46,11 +46,25 @@ class WebSocketService {
   private isDevelopmentMode: boolean;
 
   constructor() {
+    // Debug environment variables
+    console.log('WebSocket Environment Check:', {
+      DEV: import.meta.env.DEV,
+      VITE_WEBSOCKET_URL: import.meta.env.VITE_WEBSOCKET_URL,
+      VITE_ENABLE_WEBSOCKET: import.meta.env.VITE_ENABLE_WEBSOCKET,
+      isDev: import.meta.env.DEV,
+      hasWebSocketUrl: !!import.meta.env.VITE_WEBSOCKET_URL
+    });
+
     // Check if running in development mode with mock data
     this.isDevelopmentMode = import.meta.env.DEV && !import.meta.env.VITE_WEBSOCKET_URL;
-    
+
     // Only set connection URL if WebSocket URL is actually configured
     this.connectionUrl = import.meta.env.VITE_WEBSOCKET_URL || '';
+
+    console.log('WebSocket Service initialized:', {
+      isDevelopmentMode: this.isDevelopmentMode,
+      connectionUrl: this.connectionUrl
+    });
   }
 
   /**
@@ -112,12 +126,18 @@ class WebSocketService {
       }
 
       const wsUrl = `${this.connectionUrl}?${queryParams.toString()}`;
-      
+
+      console.log('🔗 WebSocket connecting to URL:', wsUrl);
+      console.log('📋 Query parameters:', queryParams.toString());
+      console.log('🎯 Subscriptions object:', subscriptions);
+
       try {
         this.websocket = new WebSocket(wsUrl);
 
         this.websocket.onopen = () => {
-          console.log('WebSocket connected successfully');
+          console.log('🟢 WebSocket connected successfully');
+          console.log('🔗 WebSocket readyState:', this.websocket?.readyState);
+          console.log('🆔 WebSocket URL:', wsUrl);
           this.isConnecting = false;
           this.reconnectAttempts = 0;
           this.reconnectDelay = 1000; // Reset delay
@@ -126,11 +146,17 @@ class WebSocketService {
         };
 
         this.websocket.onmessage = (event) => {
+          console.log('🔥 WebSocket onmessage triggered!', {
+            data: event.data,
+            type: typeof event.data,
+            length: event.data?.length
+          });
           try {
             const message: WebSocketMessage = JSON.parse(event.data);
+            console.log('✅ Parsed WebSocket message successfully:', message);
             this.handleMessage(message);
           } catch (error) {
-            console.error('Error parsing WebSocket message:', error, event.data);
+            console.error('❌ Error parsing WebSocket message:', error, event.data);
           }
         };
 
@@ -197,7 +223,19 @@ class WebSocketService {
     if (this.isDevelopmentMode) {
       return this.mockUpdateInterval !== null;
     }
-    return this.websocket !== null && this.websocket.readyState === WebSocket.OPEN;
+    const connected = this.websocket !== null && this.websocket.readyState === WebSocket.OPEN;
+    console.log('🔄 WebSocket isConnected check:', {
+      websocketExists: this.websocket !== null,
+      readyState: this.websocket?.readyState,
+      isConnected: connected,
+      readyStateNames: {
+        0: 'CONNECTING',
+        1: 'OPEN',
+        2: 'CLOSING',
+        3: 'CLOSED'
+      }
+    });
+    return connected;
   }
 
   /**
@@ -249,22 +287,26 @@ class WebSocketService {
   }
 
   private handleMessage(message: WebSocketMessage): void {
-    console.log('Received WebSocket message:', message);
-    
+    console.log('🎯 handleMessage called with:', message);
+    console.log('📡 Message listeners count:', this.messageListeners.length);
+
     // Validate message format
     if (!message.type) {
-      console.warn('Received message without type:', message);
+      console.warn('⚠️ Received message without type:', message);
       return;
     }
 
     // Notify all listeners
-    this.messageListeners.forEach(listener => {
+    this.messageListeners.forEach((listener, index) => {
       try {
+        console.log(`🔔 Calling listener ${index} with message:`, message);
         listener(message);
+        console.log(`✅ Listener ${index} completed successfully`);
       } catch (error) {
-        console.error('Error in message listener:', error);
+        console.error(`❌ Error in message listener ${index}:`, error);
       }
     });
+    console.log('🏁 handleMessage completed');
   }
 
   private notifyConnectionListeners(connected: boolean): void {

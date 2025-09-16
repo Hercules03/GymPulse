@@ -158,14 +158,14 @@
       "midday": {
         "start": 10,
         "end": 18,
-        "occupancy_rate": 0.25,
-        "description": "Off-peak daytime (10 AM-6 PM) - 25% busy, mostly retirees and shift workers"
+        "occupancy_rate": 0.60,
+        "description": "Off-peak daytime (10 AM-6 PM) - 60% busy for testing, mostly retirees and shift workers"
       },
       "night": {
         "start": 22,
         "end": 6,
-        "occupancy_rate": 0.12,
-        "description": "Late night/early morning (10 PM-6 AM) - 12% busy, sparse usage, ideal for avoiding crowds"
+        "occupancy_rate": 0.10,
+        "description": "Late night/early morning (10 PM-6 AM) - 10% busy, sparse usage, ideal for avoiding crowds"
       }
     },
     "equipment_preferences": {
@@ -204,27 +204,46 @@
     },
     "timing": {
       "occupied_duration": {
-        "min": 30,
-        "max": 90
+        "min": 480,
+        "max": 900,
+        "description": "Strength machines: 8-15 minutes per session (480-900 seconds)"
+      },
+      "cardio_duration": {
+        "min": 900,
+        "max": 2400,
+        "description": "Cardio machines: 15-40 minutes per session (900-2400 seconds)"
       },
       "rest_duration": {
         "min": 60,
-        "max": 180
+        "max": 600,
+        "description": "Rest between sets: 1-10 minutes (60-600 seconds)"
       },
       "session_length": {
         "min": 900,
-        "max": 2700
+        "max": 2700,
+        "description": "Total session length: 15-45 minutes (900-2700 seconds)"
       },
       "transition_time": {
-        "min": 30,
-        "max": 120
+        "min": 120,
+        "max": 1800,
+        "description": "Machine changeover: 2-30 minutes depending on peak hours"
+      },
+      "peak_transition_time": {
+        "min": 60,
+        "max": 600,
+        "description": "Peak hours transition: 1-10 minutes during busy periods"
+      },
+      "off_peak_transition_time": {
+        "min": 900,
+        "max": 3600,
+        "description": "Off-peak transition: 15-60 minutes during quiet hours"
       }
     },
     "noise": {
-      "false_positive_rate": 0.05,
-      "missed_detection_rate": 0.03,
+      "false_positive_rate": 0.0,
+      "missed_detection_rate": 0.0,
       "network_delay_max": 30,
-      "offline_frequency": 0.02
+      "offline_frequency": 0.0
     }
   }
 }

@@ -3,6 +3,7 @@ import { gymService } from '@/services/gymService';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { useMachineUpdates } from '@/hooks/useWebSocket';
 
 import Header from '@/components/dashboard/Header';
 import CategoryCard from '@/components/dashboard/CategoryCard';
@@ -12,11 +13,18 @@ export default function Dashboard() {
   const [branches, setBranches] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState('hk-central');
   const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
 
   const locations = [
     { id: 'hk-central', name: 'Central Branch' },
     { id: 'hk-causeway', name: 'Causeway Bay Branch' }
   ];
+
+  // WebSocket integration for real-time updates
+  const webSocket = useMachineUpdates({
+    branches: ['hk-central', 'hk-causeway'], // Subscribe to both branches
+    categories: ['legs', 'chest', 'back']
+  });
 
   const loadBranches = useCallback(async () => {
     setIsLoading(true);
@@ -36,6 +44,24 @@ export default function Dashboard() {
     loadBranches();
   }, [loadBranches]);
 
+  // Update last update time when WebSocket receives new data
+  useEffect(() => {
+    if (webSocket.lastUpdate) {
+      setLastUpdateTime(new Date());
+      console.log('🔄 Dashboard received WebSocket update:', webSocket.lastUpdate);
+    }
+  }, [webSocket.lastUpdate]);
+
+  // Update WebSocket subscriptions when location changes
+  useEffect(() => {
+    if (webSocket.updateSubscriptions) {
+      webSocket.updateSubscriptions({
+        branches: ['hk-central', 'hk-causeway'], // Always subscribe to both branches for dashboard
+        categories: ['legs', 'chest', 'back']
+      });
+    }
+  }, [selectedLocation, webSocket.updateSubscriptions]);
+
   const getStats = () => {
     // Calculate totals from real AWS branch data
     let totalEquipment = 0;
@@ -47,6 +73,16 @@ export default function Dashboard() {
         totalAvailable += category.free || 0;
       });
     });
+
+    // Only update availability with real-time WebSocket data if available
+    // Keep totalEquipment constant (from static branch configuration)
+    if (webSocket.latestMachineStatus && Object.keys(webSocket.latestMachineStatus).length > 0) {
+      const allMachines = Object.values(webSocket.latestMachineStatus);
+      // Only update available count if we have meaningful real-time data
+      if (allMachines.length > 0) {
+        totalAvailable = allMachines.filter(m => m.status === 'free').length;
+      }
+    }
     
     const peakHours = '6-8 PM';
     const maintenanceNeeded = totalEquipment > 0 ? Math.floor(totalEquipment * 0.05) : 1; // Estimate 5% in maintenance
@@ -57,21 +93,41 @@ export default function Dashboard() {
   const getCategoryStats = () => {
     const categories = ['legs', 'chest', 'back'];
     return categories.map(category => {
-      // Calculate totals for SELECTED branch only
+      // Start with base counts from static branch data
       let totalMachines = 0;
-      let availableCount = 0;
+      let baseAvailableCount = 0;
       
       const selectedBranch = branches.find(branch => branch.id === selectedLocation);
       if (selectedBranch) {
         const categoryData = selectedBranch.categories?.[category];
         if (categoryData) {
           totalMachines = categoryData.total || 0;
-          availableCount = categoryData.free || 0;
+          baseAvailableCount = categoryData.free || 0;
         }
       }
-      
-      const occupiedCount = totalMachines - availableCount;
-      const offlineCount = 0; // Will be calculated when we have machine-level data
+
+      // Override with real-time WebSocket data if available
+      let availableCount = baseAvailableCount;
+      let occupiedCount = totalMachines - baseAvailableCount;
+      let offlineCount = 0;
+
+      if (webSocket.latestMachineStatus && Object.keys(webSocket.latestMachineStatus).length > 0) {
+        // Count real-time status for machines in this category and location
+        const categoryMachines = Object.values(webSocket.latestMachineStatus).filter(
+          machine => machine.category === category && machine.gymId === selectedLocation
+        );
+
+        if (categoryMachines.length > 0) {
+          // Update only availability counts based on real-time data
+          // Keep totalMachines constant (from static branch configuration)
+          availableCount = categoryMachines.filter(m => m.status === 'free').length;
+          occupiedCount = categoryMachines.filter(m => m.status === 'occupied').length;
+          offlineCount = categoryMachines.filter(m => m.status === 'offline').length;
+          
+          // Note: totalMachines should remain constant from branch configuration
+          // Real-time data only tells us about machines that recently updated
+        }
+      }
 
       return {
         category,
@@ -179,9 +235,26 @@ export default function Dashboard() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
         >
-          <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-            Last updated: {new Date().toLocaleTimeString()}
+          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm ${
+            webSocket.isConnected 
+              ? 'bg-green-50 text-green-700' 
+              : webSocket.isConnecting 
+                ? 'bg-yellow-50 text-yellow-700' 
+                : 'bg-red-50 text-red-700'
+          }`}>
+            <div className={`w-2 h-2 rounded-full ${
+              webSocket.isConnected 
+                ? 'bg-green-500 animate-pulse' 
+                : webSocket.isConnecting 
+                  ? 'bg-yellow-500 animate-pulse' 
+                  : 'bg-red-500'
+            }`}></div>
+            {webSocket.isConnected 
+              ? `Live updates • Last: ${lastUpdateTime.toLocaleTimeString()}`
+              : webSocket.isConnecting 
+                ? 'Connecting to live updates...'
+                : 'Offline - Manual refresh needed'
+            }
           </div>
         </motion.div>
       </main>

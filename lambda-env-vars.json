@@ -1,0 +1,8 @@
+{
+  "CURRENT_STATE_TABLE": "gym-pulse-current-state",
+  "EVENTS_TABLE": "gym-pulse-events",
+  "AGGREGATES_TABLE": "gym-pulse-aggregates",
+  "ALERTS_TABLE": "gym-pulse-alerts",
+  "IOT_ENDPOINT": "a2udl08tinypzz-ats.iot.ap-east-1.amazonaws.com",
+  "GEMINI_API_KEY": "AIzaSyB8CWv2_j6etfdxBlQsW66YtLdF1j9NI-o"
+}

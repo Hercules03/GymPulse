@@ -17,14 +17,17 @@ interface ForecastData {
 }
 
 interface PredictionChipProps {
+  machineId?: string;
   predictedFreeTime?: string;
-  status: 'available' | 'occupied' | 'offline';
+  status: 'available' | 'free' | 'occupied' | 'offline' | 'unknown';
   forecast?: ForecastData;
 }
 
 export default function PredictionChip({ predictedFreeTime, status, forecast }: PredictionChipProps) {
-  // Handle machine currently available
-  if (status === 'available') {
+  console.log('PredictionChip received status:', status, typeof status, 'forecast:', forecast);
+  
+  // Handle machine currently available (free or available)
+  if (status === 'available' || status === 'free') {
     if (forecast?.show_to_user && forecast?.classification) {
       // Show forecast for how long it might stay free
       const bgColor = forecast.color === 'green' ? 'bg-green-50 text-green-700' : 

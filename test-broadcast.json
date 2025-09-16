@@ -1,0 +1,11 @@
+{
+  "machineUpdate": {
+    "type": "machine_update",
+    "machineId": "test-machine-01",
+    "gymId": "hk-central",
+    "category": "legs",
+    "status": "free",
+    "timestamp": 1757922919,
+    "lastChange": 1757922919
+  }
+}

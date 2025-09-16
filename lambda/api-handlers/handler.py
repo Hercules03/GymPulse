@@ -353,6 +353,32 @@ def get_machine_history(machine_id):
         # Sort by timestamp
         history_bins.sort(key=lambda x: x['timestamp'])
         
+        # Query current state for real-time status
+        current_status = None
+        try:
+            response = current_state_table.get_item(Key={'machineId': machine_id})
+            if 'Item' in response:
+                current_item = response['Item']
+                current_status = {
+                    'status': current_item.get('status', 'unknown'),
+                    'lastUpdate': current_item.get('lastUpdate', 0),
+                    'gymId': current_item.get('gymId', ''),
+                    'category': current_item.get('category', ''),
+                    'name': current_item.get('name', machine_id),
+                    'alertEligible': current_item.get('status') == 'occupied'
+                }
+        except Exception as e:
+            print(f"Error querying current state for machine {machine_id}: {str(e)}")
+            # Provide fallback current status
+            current_status = {
+                'status': 'unknown',
+                'lastUpdate': 0,
+                'gymId': '',
+                'category': '',
+                'name': machine_id,
+                'alertEligible': False
+            }
+        
         # Calculate simple forecast for "likely free in 30m"
         forecast = calculate_simple_forecast(history_bins, machine_id)
         
@@ -365,6 +391,7 @@ def get_machine_history(machine_id):
             },
             'body': json.dumps({
                 'machineId': machine_id,
+                'currentStatus': current_status,  # Add current status information
                 'history': history_bins,
                 'timeRange': {
                     'start': start_time,

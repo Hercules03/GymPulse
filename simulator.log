@@ -1,0 +1,11 @@
+2025-09-15 16:31:54,016 - GymSimulator - WARNING - Creating test certificates - NOT for production use!
+2025-09-15 16:31:54,016 - GymSimulator - INFO - Created placeholder cert: certs/leg-press-01.cert.pem
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Created placeholder key: certs/leg-press-01.private.key
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Created placeholder cert: certs/leg-press-02.cert.pem
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Created placeholder key: certs/leg-press-02.private.key
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Created placeholder cert: certs/leg-press-03.cert.pem
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Created placeholder key: certs/leg-press-03.private.key
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Created placeholder CA: certs/root-CA.crt
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Starting demo scenario for 5 minutes...
+2025-09-15 16:31:54,017 - GymSimulator - INFO - Creating machine simulators...
+2025-09-15 16:31:54,017 - root - ERROR - Simulation failed: [Errno 2] No such file or directory: 'config/machines.json'

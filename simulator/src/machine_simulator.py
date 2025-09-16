@@ -7,6 +7,7 @@ import time
 import random
 import threading
 import logging
+import asyncio
 from datetime import datetime, timezone
 from typing import Dict, Any, Callable, Optional
 from awsiot import mqtt5_client_builder, mqtt5
@@ -40,6 +41,16 @@ class MachineSimulator:
         self.running = False
         self.mqtt_client = None
         self.usage_patterns = UsagePatterns()
+
+        # Connection health tracking
+        self.publish_failures = 0
+        self.max_failures = 5
+        self.circuit_open = False
+        self.last_success = time.time()
+
+        # Rate limiting
+        self.last_publish = 0
+        self.min_publish_interval = 2  # Minimum 2 seconds between publishes
         
         # Callbacks
         self.on_state_change: Optional[Callable] = None
@@ -113,74 +124,116 @@ class MachineSimulator:
         }
     
     async def _publish_state_change(self, new_state: str, retain: bool = True):
-        """Publish state change to MQTT topic"""
-        if not self.mqtt_client:
-            self.logger.error("MQTT client not connected")
-            return False
-        
+        """Publish state change via AWS CLI (more reliable than MQTT SDK)"""
         try:
+            # Circuit breaker check
+            if self.circuit_open:
+                if time.time() - self.last_success < 60:  # 60 second cooldown
+                    self.logger.debug(f"Circuit breaker open for {self.machine_id}, skipping publish")
+                    return False
+                else:
+                    self.logger.info(f"Circuit breaker reset for {self.machine_id}, attempting publish")
+                    self.circuit_open = False
+                    self.publish_failures = 0
+
+            # Rate limiting check
+            current_time = time.time()
+            if current_time - self.last_publish < self.min_publish_interval:
+                wait_time = self.min_publish_interval - (current_time - self.last_publish)
+                self.logger.debug(f"Rate limiting {self.machine_id}, waiting {wait_time:.1f}s")
+                await asyncio.sleep(wait_time)
+
             # Check for noise injection
             should_inject, noise_type = self.usage_patterns.should_inject_noise()
-            
+
             if should_inject and noise_type == 'missed_detection':
                 self.logger.debug(f"Simulating missed detection for {self.machine_id}")
                 return True  # Skip publishing to simulate missed detection
-            
+
             # Get network delay
             delay = self.usage_patterns.get_network_delay()
             if delay > 0:
                 self.logger.debug(f"Simulating {delay}s network delay for {self.machine_id}")
-                time.sleep(delay)
-            
+                await asyncio.sleep(delay)
+
             # Create payload
             payload = self._create_message_payload(new_state)
-            
+
             # Inject false positive
             if should_inject and noise_type == 'false_positive':
-                # Send opposite state briefly then correct state
                 false_payload = self._create_message_payload(
                     'occupied' if new_state == 'free' else 'free'
                 )
-                
-                false_publish_request = mqtt5_crt.PublishPacket(
-                    topic=self.topic,
-                    payload=json.dumps(false_payload).encode('utf-8'),
-                    qos=mqtt5_crt.QoS.AT_LEAST_ONCE,
-                    retain=retain
-                )
-                
-                publish_future = self.mqtt_client.publish(false_publish_request)
-                if publish_future:
-                    publish_future.result(timeout=10)
-                
+                await self._publish_via_aws_cli(false_payload)
                 self.logger.debug(f"Injected false positive for {self.machine_id}")
-                
-                # Brief delay then send correct state
-                time.sleep(random.randint(2, 5))
-            
-            # Publish actual state
-            publish_request = mqtt5_crt.PublishPacket(
-                topic=self.topic,
-                payload=json.dumps(payload).encode('utf-8'),
-                qos=mqtt5_crt.QoS.AT_LEAST_ONCE,
-                retain=retain
-            )
-            
-            publish_future = self.mqtt_client.publish(publish_request)
-            
-            if publish_future:
-                publish_future.result(timeout=10)
-            
-            self.logger.info(f"Published: {self.machine_id} -> {new_state}")
-            
-            # Call callback if set
-            if self.on_state_change:
-                self.on_state_change(self.machine_id, new_state, payload)
-            
-            return True
-            
+                await asyncio.sleep(random.randint(2, 5))
+
+            # Publish actual state via AWS CLI
+            success = await self._publish_via_aws_cli(payload)
+
+            if success:
+                self.logger.info(f"Published: {self.machine_id} -> {new_state}")
+
+                # Reset circuit breaker on success
+                self.publish_failures = 0
+                self.circuit_open = False
+                self.last_success = time.time()
+                self.last_publish = time.time()
+
+                # Call callback if set
+                if self.on_state_change:
+                    self.on_state_change(self.machine_id, new_state, payload)
+
+                return True
+            else:
+                raise Exception("AWS CLI publish failed")
+
         except Exception as e:
-            self.logger.error(f"Failed to publish {self.machine_id}: {str(e)}")
+            error_msg = str(e) if str(e) else f"Unknown error: {type(e).__name__}"
+            self.logger.error(f"Failed to publish {self.machine_id}: {error_msg}")
+
+            # Circuit breaker logic
+            self.publish_failures += 1
+            if self.publish_failures >= self.max_failures:
+                self.circuit_open = True
+                self.logger.warning(f"Circuit breaker opened for {self.machine_id} after {self.publish_failures} failures")
+
+            return False
+
+    async def _publish_via_aws_cli(self, payload: Dict[str, Any]) -> bool:
+        """Publish message via AWS CLI"""
+        import subprocess
+        import base64
+
+        try:
+            # Convert payload to base64
+            json_payload = json.dumps(payload)
+            b64_payload = base64.b64encode(json_payload.encode()).decode()
+
+            # Use AWS CLI to publish
+            cmd = [
+                "aws", "iot-data", "publish",
+                "--topic", self.topic,
+                "--payload", b64_payload
+            ]
+
+            # Run in thread pool to avoid blocking
+            result = await asyncio.to_thread(
+                subprocess.run,
+                cmd,
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=10
+            )
+
+            return True
+
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+            self.logger.error(f"AWS CLI publish failed for {self.machine_id}: {e}")
+            return False
+        except Exception as e:
+            self.logger.error(f"Unexpected error in AWS CLI publish for {self.machine_id}: {e}")
             return False
     
     def _update_state(self, new_state: str):
@@ -203,7 +256,7 @@ class MachineSimulator:
                 if self.usage_patterns.should_go_offline():
                     offline_duration = random.randint(120, 300)  # 2-5 minutes
                     self.logger.info(f"{self.machine_id} going offline for {offline_duration}s")
-                    time.sleep(offline_duration)
+                    await asyncio.sleep(offline_duration)
                     continue
                 
                 # Get next state transition with Hong Kong 247 Fitness patterns
@@ -218,28 +271,24 @@ class MachineSimulator:
                 
                 # Wait for duration
                 self.logger.debug(f"{self.machine_id} waiting {duration}s in {next_state} state")
-                time.sleep(duration)
+                await asyncio.sleep(duration)
                 
             except Exception as e:
                 self.logger.error(f"Error in simulation loop for {self.machine_id}: {str(e)}")
-                time.sleep(60)  # Wait 1 minute before retrying
+                await asyncio.sleep(60)  # Wait 1 minute before retrying
     
     async def start_simulation(self):
         """Start the machine simulation"""
         if self.running:
             self.logger.warning(f"Simulation already running for {self.machine_id}")
             return
-        
-        # Connect to MQTT
-        if not await self.connect():
-            self.logger.error(f"Failed to connect {self.machine_id}")
-            return
-        
+
+        self.logger.info(f"Starting {self.machine_id} simulation (AWS CLI mode)")
         self.running = True
-        
+
         # Publish initial state
         await self._publish_state_change(self.current_state)
-        
+
         # Start simulation loop
         await self._simulation_loop()
     

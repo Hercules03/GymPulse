@@ -121,6 +121,7 @@ class GymPulseStack(Stack):
                 "AGGREGATES_TABLE": aggregates_table.table_name,
                 "ALERTS_TABLE": alerts_table.table_name,
                 "AWS_LAMBDA_EXEC_WRAPPER": "/opt/otel-instrument",  # Enable X-Ray tracing
+                "GEMINI_API_KEY": "PLACEHOLDER_SET_IN_CONSOLE",  # Set real key in Lambda console after deployment
             },
             timeout=Duration.seconds(15),  # Reduced timeout for faster fails
             memory_size=1024,  # Increased for caching and better performance

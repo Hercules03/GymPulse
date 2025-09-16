@@ -1,10 +1,12 @@
 import React from 'react';
 
 interface StatusBadgeProps {
-  status: 'available' | 'free' | 'occupied' | 'offline' | 'category_view';
+  status: 'available' | 'free' | 'occupied' | 'offline' | 'unknown' | 'category_view';
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
+  console.log('StatusBadge received status:', status, typeof status);
+  
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'available':

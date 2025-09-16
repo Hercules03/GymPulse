@@ -7,6 +7,7 @@ import asyncio
 import logging
 import signal
 import sys
+import os
 from typing import Dict, List, Any
 from pathlib import Path
 
@@ -115,7 +116,8 @@ class GymSimulator:
         """Callback for when machine state changes"""
         self.logger.debug(f"State change: {machine_id} -> {new_state}")
         
-        # Could add additional logging, metrics, or notifications here
+        # Calculate and display current availability counts
+        self._display_availability_summary(machine_id, new_state, payload)
         
     async def start_simulation(self, machine_ids: List[str] = None):
         """Start simulation for specified machines (or all machines)"""
@@ -135,19 +137,31 @@ class GymSimulator:
         
         # Start machine simulations with staggered connections to respect AWS IoT rate limits
         tasks = []
+
+        async def start_machine_with_delay(machine_id: str, delay: float):
+            """Start a machine with an initial delay"""
+            try:
+                if delay > 0:
+                    self.logger.info(f"Waiting {delay}s before connecting {machine_id}")
+                    await asyncio.sleep(delay)
+
+                self.logger.info(f"Starting connection attempt for {machine_id}")
+                await self.machines[machine_id].start_simulation()
+                self.logger.info(f"Successfully started simulation for {machine_id}")
+            except Exception as e:
+                self.logger.error(f"Failed to start simulation for {machine_id}: {e}")
+                raise
+
+        # Create all tasks with staggered delays
         for i, machine_id in enumerate(machines_to_start):
             if machine_id in self.machines:
-                # Stagger connections by 2-second intervals to avoid rate limiting
-                if i > 0:
-                    self.logger.info(f"Waiting 2s before connecting {machine_id} (connection {i+1}/{len(machines_to_start)})")
-                    await asyncio.sleep(2)
-                
+                delay = i * 5  # 5-second intervals to reduce AWS IoT load
                 task = asyncio.create_task(
-                    self.machines[machine_id].start_simulation()
+                    start_machine_with_delay(machine_id, delay)
                 )
                 tasks.append(task)
-                self.logger.info(f"Started simulation for {machine_id}")
-        
+                self.logger.info(f"Scheduled simulation for {machine_id} (starts in {delay}s)")
+
         # Wait for all tasks
         try:
             await asyncio.gather(*tasks)
@@ -176,6 +190,38 @@ class GymSimulator:
             await asyncio.gather(*stop_tasks, return_exceptions=True)
         
         self.logger.info("All simulations stopped")
+    
+    def _display_availability_summary(self, changed_machine_id: str, new_state: str, payload: Dict[str, Any]):
+        """Display current availability counts for easy dashboard verification"""
+        try:
+            gym_id = payload.get('gymId', 'unknown')
+            category = payload.get('category', 'unknown')
+            
+            # Count current states for this gym and category
+            total_machines = 0
+            free_machines = 0
+            occupied_machines = 0
+            
+            for machine_id, simulator in self.machines.items():
+                if (simulator.gym_id == gym_id and 
+                    simulator.category == category and 
+                    hasattr(simulator, 'current_state')):
+                    total_machines += 1
+                    if simulator.current_state == 'free':
+                        free_machines += 1
+                    elif simulator.current_state == 'occupied':
+                        occupied_machines += 1
+            
+            # Display summary
+            print(f"\n📊 AVAILABILITY UPDATE - {gym_id.upper()} | {category.upper()}")
+            print(f"   Machine: {changed_machine_id} -> {new_state.upper()}")
+            print(f"   Category Status: {free_machines}/{total_machines} Available ({occupied_machines} occupied)")
+            print(f"   Dashboard should show: {free_machines} available {category} machines at {gym_id}")
+            print(f"   Timestamp: {payload.get('timestamp', 'unknown')}")
+            print("-" * 70)
+            
+        except Exception as e:
+            self.logger.error(f"Error displaying availability summary: {e}")
     
     def get_simulation_status(self) -> Dict[str, Any]:
         """Get status of all simulations"""
@@ -238,19 +284,24 @@ class GymSimulator:
 
 async def main():
     """Main entry point"""
-    simulator = GymSimulator()
-    
+    import sys
+    config_path = sys.argv[1] if len(sys.argv) > 1 else "config/machines.json"
+
+    simulator = GymSimulator(config_path=config_path)
+
     try:
         # Create test certificates for development
         simulator.create_test_certificates()
-        
+
         # Run demo scenario
-        await simulator.run_demo_scenario(duration_minutes=5)
-        
+        await simulator.start_simulation()
+        await asyncio.sleep(5 * 60)
+        await simulator.stop_all_simulations()
+
     except Exception as e:
         logging.error(f"Simulation failed: {e}")
         return 1
-    
+
     return 0
 
 

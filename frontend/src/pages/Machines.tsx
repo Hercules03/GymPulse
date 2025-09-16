@@ -13,7 +13,7 @@ import AvailabilityHeatmap from '@/components/machine/AvailabilityHeatmap';
 interface Machine {
   machineId: string;
   name: string;
-  status: 'free' | 'occupied' | 'unknown';
+  status: 'free' | 'occupied' | 'unknown' | 'offline';
   lastUpdate: number | null;
   category: string;
   gymId: string;
@@ -59,6 +59,13 @@ export default function MachinesPage() {
         console.log('Loading machines for:', { branchId, category });
         const response = await gymService.getMachines(branchId, category);
         console.log('Machines response:', response);
+        console.log('Machines array:', response.machines);
+        if (response.machines && response.machines.length > 0) {
+          console.log('First machine data:', response.machines[0]);
+          response.machines.forEach((machine, index) => {
+            console.log(`Machine ${index}:`, machine.machineId, 'status:', machine.status);
+          });
+        }
         setMachines(response.machines || []);
         
         // Load usage data for the first machine (for heatmap example)
@@ -97,16 +104,29 @@ export default function MachinesPage() {
 
   // Update machines with real-time WebSocket data
   useEffect(() => {
+    console.log('🔄 WebSocket update received:', webSocket.lastUpdate);
     if (webSocket.lastUpdate && webSocket.lastUpdate.type === 'machine_update') {
       const update = webSocket.lastUpdate;
-      
-      setMachines(prevMachines => 
-        prevMachines.map(machine => 
+      console.log('📡 Processing machine update:', update);
+      console.log('🎯 Looking for machine:', update.machineId);
+      console.log('🔍 Current machines:', machines.map(m => m.machineId));
+
+      setMachines(prevMachines => {
+        const updatedMachines = prevMachines.map(machine =>
           machine.machineId === update.machineId
             ? { ...machine, status: update.status, lastUpdate: update.timestamp }
             : machine
-        )
-      );
+        );
+        console.log('✅ Updated machines:', updatedMachines);
+        console.log('🔄 Machine state change:', {
+          machineId: update.machineId,
+          oldStatus: prevMachines.find(m => m.machineId === update.machineId)?.status,
+          newStatus: update.status,
+          oldTimestamp: prevMachines.find(m => m.machineId === update.machineId)?.lastUpdate,
+          newTimestamp: update.timestamp
+        });
+        return [...updatedMachines]; // Force new array reference
+      });
     }
   }, [webSocket.lastUpdate]);
 
@@ -243,13 +263,13 @@ export default function MachinesPage() {
               <div className="flex items-center justify-between">
                 <PredictionChip 
                   machineId={machine.machineId}
-                  currentStatus={machine.status}
+                  status={machine.status}
                 />
                 
                 <div className="flex items-center gap-2">
-                  <NotificationButton 
+                  <NotificationButton
                     machineId={machine.machineId}
-                    isEligible={machine.alertEligible}
+                    status={machine.status}
                   />
                   <Link
                     to={`/machine-detail?id=${machine.machineId}`}

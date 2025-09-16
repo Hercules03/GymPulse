@@ -126,13 +126,25 @@ export function useMachineUpdates(subscriptions?: WebSocketSubscriptions, userId
 
   // Auto-connect on mount if subscriptions provided (disabled in development)
   useEffect(() => {
+    console.log('useMachineUpdates effect:', {
+      subscriptions,
+      isConnected: webSocket.isConnected,
+      isConnecting: webSocket.isConnecting,
+      connectAttempted: connectAttemptedRef.current,
+      DEV: import.meta.env.DEV,
+      VITE_ENABLE_WEBSOCKET: import.meta.env.VITE_ENABLE_WEBSOCKET,
+      enableCheck: import.meta.env.VITE_ENABLE_WEBSOCKET !== 'true'
+    });
+
     if (subscriptions && !webSocket.isConnected && !webSocket.isConnecting && !connectAttemptedRef.current) {
-      // Skip WebSocket connection in development environment
-      if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_WEBSOCKET !== 'true') {
-        console.log('WebSocket disabled in development mode');
-        return;
-      }
-      
+      // FORCE ENABLE WebSocket for debugging - always connect in development
+      console.log('🚀 FORCE CONNECTING WebSocket with subscriptions:', subscriptions);
+      console.log('🔧 Environment debug:', {
+        DEV: import.meta.env.DEV,
+        VITE_WEBSOCKET_URL: import.meta.env.VITE_WEBSOCKET_URL,
+        VITE_ENABLE_WEBSOCKET: import.meta.env.VITE_ENABLE_WEBSOCKET
+      });
+
       connectAttemptedRef.current = true;
       webSocket.connect(subscriptions, userId).catch(console.error);
     }
@@ -169,12 +181,9 @@ export function useUserAlerts(userId?: string) {
   // Auto-connect for user alerts (disabled in development)
   useEffect(() => {
     if (userId && !webSocket.isConnected && !webSocket.isConnecting && !alertConnectAttemptedRef.current) {
-      // Skip WebSocket connection in development environment
-      if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_WEBSOCKET !== 'true') {
-        console.log('WebSocket disabled in development mode');
-        return;
-      }
-      
+      // FORCE ENABLE WebSocket for user alerts
+      console.log('🚀 FORCE CONNECTING WebSocket for user alerts:', userId);
+
       alertConnectAttemptedRef.current = true;
       // Subscribe to all branches/categories for user alerts
       const alertSubscriptions: WebSocketSubscriptions = {

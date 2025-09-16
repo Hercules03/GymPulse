@@ -18,6 +18,7 @@ export default function MachineDetail() {
   const [searchParams] = useSearchParams();
   const [machine, setMachine] = useState(null);
   const [usageData, setUsageData] = useState([]);
+  const [forecast, setForecast] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const machineId = searchParams.get('id');
@@ -40,34 +41,49 @@ export default function MachineDetail() {
       if (machineId) {
         // Load machine details and usage data from AWS API in single call
         try {
-          const response = await fetch(`https://cp58oqed6g.execute-api.ap-east-1.amazonaws.com/prod/machines/${machineId}/history?range=24h`);
+          const apiUrl = `https://cp58oqed6g.execute-api.ap-east-1.amazonaws.com/prod/machines/${machineId}/history?range=24h`;
+          console.log('Fetching from API URL:', apiUrl);
+          const response = await fetch(apiUrl);
+          console.log('API Response status:', response.status);
           if (response.ok) {
             const historyData = await response.json();
+            console.log('API Response data:', historyData);
+            console.log('Current status from API:', historyData.currentStatus);
             if (historyData.machineId) {
               // Create machine object from API response
-              setMachine({
+              const extractedStatus = historyData.currentStatus?.status || 'unknown';
+              console.log('Extracted status:', extractedStatus);
+              const machineObject = {
                 machine_id: historyData.machineId,
                 name: `${historyData.category.charAt(0).toUpperCase() + historyData.category.slice(1)} Machine - ${historyData.machineId}`,
                 category: historyData.category,
                 location: historyData.gymId,
-                status: historyData.status || 'unknown', // Use actual status from API
+                status: extractedStatus, // Use actual status from API
                 last_updated: new Date().toISOString()
-              });
+              };
+              console.log('Setting machine object:', machineObject);
+              setMachine(machineObject);
               // Set usage data from same response
               setUsageData(historyData.usageData || []);
+              // Set forecast data from API response
+              setForecast(historyData.forecast || null);
+              console.log('Forecast data:', historyData.forecast);
             } else {
               setMachine(null);
               setUsageData([]);
+              setForecast(null);
             }
           } else {
             console.error('Failed to load machine details:', response.status);
             setMachine(null);
             setUsageData([]);
+            setForecast(null);
           }
         } catch (error) {
           console.error('Error loading machine details:', error);
           setMachine(null);
           setUsageData([]);
+          setForecast(null);
         }
       } else if (category && branch) {
         // Create a temporary machine object for category view
@@ -80,6 +96,7 @@ export default function MachineDetail() {
           last_updated: new Date().toISOString()
         });
         setUsageData([]);
+        setForecast(null);
       }
     } catch (error) {
       console.error('Error loading machine data:', error);
@@ -197,9 +214,10 @@ export default function MachineDetail() {
                 </div>
               ) : (
                 <div className="flex flex-col md:flex-row gap-4 items-start md:items-center md:justify-between">
-                  <PredictionChip 
+                  <PredictionChip
                     predictedFreeTime={usageData.find(d => d.hour === new Date().getHours())?.predicted_free_time}
                     status={machine.status}
+                    forecast={forecast}
                   />
                   <NotificationButton 
                     machineId={machine.machine_id} 
