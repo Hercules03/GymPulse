@@ -65,7 +65,7 @@ const MLValidationPage: React.FC = () => {
 
     // Test 2: ML Data (Machine History)
     try {
-      const response = await fetch(`${API_BASE}/machines/leg-press-01/history`);
+      const response = await fetch(`${API_BASE}/machines/leg-press-klmongko-05/history`);
       const data = await response.json();
 
       // Check for ML indicators
