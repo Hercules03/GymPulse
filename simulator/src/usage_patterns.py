@@ -13,39 +13,79 @@ class UsagePatterns:
         """Initialize usage patterns from configuration"""
         with open(config_path, 'r') as f:
             config = json.load(f)
-        
+
         self.patterns = config['usage_patterns']
         self.peak_hours = self.patterns['peak_hours']
         self.timing = self.patterns['timing']
         self.noise = self.patterns['noise']
+        self.location_patterns = self.patterns.get('location_patterns', {})
+        self.branch_differences = self.patterns.get('branch_differences', {})
     
     def get_current_occupancy_rate(self, current_hour: int, branch_id: str = None, equipment_type: str = None) -> float:
-        """Get occupancy rate based on current hour with Hong Kong 247 Fitness patterns"""
+        """Get occupancy rate based on current hour with location-specific Hong Kong 247 Fitness patterns"""
         base_rate = 0.1  # Default night rate
-        
-        # Morning peak: 6-8 AM - moderate usage, cardio popular
+
+        # Get branch-specific patterns and location type
+        branch_data = self.branch_differences.get(branch_id, {})
+        branch_type = branch_data.get('type', 'residential_urban')
+        location_behavior = self.location_patterns.get(branch_type, {})
+
+        # Determine time period and base rate
         if self.peak_hours['morning']['start'] <= current_hour < self.peak_hours['morning']['end']:
-            base_rate = self.peak_hours['morning']['occupancy_rate']
-        
-        # Lunch peak: 12-2 PM - business district boost
+            # Morning peak: Apply location-specific morning patterns
+            base_rate = self.peak_hours['morning']['base_occupancy_rate']
+            morning_boost = branch_data.get('morning_peak', location_behavior.get('morning_boost', 1.0))
+            base_rate *= morning_boost
+
         elif self.peak_hours['lunch']['start'] <= current_hour < self.peak_hours['lunch']['end']:
-            base_rate = self.peak_hours['lunch']['occupancy_rate']
-            # Central business district has higher lunch traffic
-            if branch_id == 'hk-central' and 'branch_differences' in self.patterns:
-                base_rate *= self.patterns['branch_differences']['hk-central'].get('lunch_boost', 1.0)
-        
-        # Evening peak: 6-10 PM - highest demand, queues for popular equipment
+            # Lunch peak: Business districts have much higher traffic
+            base_rate = self.peak_hours['lunch']['base_occupancy_rate']
+            lunch_boost = branch_data.get('lunch_boost', location_behavior.get('lunch_traffic_multiplier', 1.0))
+            base_rate *= lunch_boost
+
         elif self.peak_hours['evening']['start'] <= current_hour < self.peak_hours['evening']['end']:
-            base_rate = self.peak_hours['evening']['occupancy_rate']
-        
-        # Midday: 10 AM - 4 PM - mostly retirees and shift workers
-        elif 'midday' in self.peak_hours and self.peak_hours['midday']['start'] <= current_hour < self.peak_hours['midday']['end']:
-            base_rate = self.peak_hours['midday']['occupancy_rate']
-        
-        # Night hours: 10 PM - 6 AM - sparse usage, ideal for avoiding crowds
-        elif current_hour >= 22 or current_hour < 6:
-            base_rate = self.peak_hours['night']['occupancy_rate']
-        
+            # Evening peak: Apply branch-specific timing adjustments
+            base_rate = self.peak_hours['evening']['base_occupancy_rate']
+
+            # Some locations start peak later (business districts)
+            evening_start = branch_data.get('evening_peak_start', self.peak_hours['evening']['start'])
+            evening_delay = location_behavior.get('evening_delay', 0)
+            actual_evening_start = evening_start + evening_delay
+
+            # Adjust if we're before the actual peak for this location
+            if current_hour < actual_evening_start:
+                base_rate *= 0.7  # Reduced rate before location-specific peak
+
+        elif current_hour in [22, 23] or (current_hour == 0):
+            # Late evening: Some locations extend peak hours
+            if 'late_evening' in self.peak_hours:
+                base_rate = self.peak_hours['late_evening']['base_occupancy_rate']
+                if location_behavior.get('late_night_tolerance', 1.0) > 1.0:
+                    base_rate *= location_behavior['late_night_tolerance']
+            else:
+                base_rate = self.peak_hours['night']['base_occupancy_rate']
+
+        elif current_hour >= 1 and current_hour < 6:
+            # Deep night hours
+            base_rate = self.peak_hours['night']['base_occupancy_rate']
+
+        elif current_hour >= 9 and current_hour < 12:
+            # Mid-morning
+            if 'midday' in self.peak_hours:
+                base_rate = self.peak_hours['midday']['base_occupancy_rate']
+            else:
+                base_rate = 0.30
+
+        elif current_hour >= 14 and current_hour < 18:
+            # Afternoon
+            if 'afternoon' in self.peak_hours:
+                base_rate = self.peak_hours['afternoon']['base_occupancy_rate']
+            else:
+                base_rate = 0.35
+
+        # Apply weekend adjustments (simplified - assume it's a weekday for now)
+        # In a full implementation, you'd check datetime.now().weekday()
+
         # Apply equipment-specific multipliers based on Hong Kong preferences
         if equipment_type and 'equipment_preferences' in self.patterns:
             for category, equipment_map in self.patterns['equipment_preferences'].items():
@@ -57,7 +97,17 @@ class UsagePatterns:
                     if self.peak_hours['evening']['start'] <= current_hour < self.peak_hours['evening']['end']:
                         base_rate *= equipment_data.get('peak_multiplier', 1.0)
                     break
-        
+
+        # Apply location-specific equipment preferences
+        if equipment_type:
+            cardio_types = ['treadmill', 'exercise-bike', 'elliptical', 'rowing-cardio']
+            if equipment_type in cardio_types:
+                cardio_preference = location_behavior.get('cardio_preference', 1.0)
+                base_rate *= cardio_preference
+            else:
+                strength_preference = location_behavior.get('strength_preference', 1.0)
+                base_rate *= strength_preference
+
         return min(0.95, max(0.05, base_rate))  # Cap between 5% and 95%
     
     def should_machine_be_occupied(self, current_hour: int, branch_id: str = None, equipment_type: str = None) -> bool:

@@ -31,22 +31,22 @@ export default function MachinesPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
-  const branchId = searchParams.get('branch') || 'hk-central';
+  const branchId = searchParams.get('branch') || '';
   const category = searchParams.get('category') || 'legs';
-  
+
   const [machines, setMachines] = useState<Machine[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [usageData, setUsageData] = useState([]);
+  const [branchName, setBranchName] = useState<string>('');
 
   // WebSocket integration for real-time updates
   const webSocket = useMachineUpdates({
-    branches: [branchId],
+    branches: branchId ? [branchId] : [],
     categories: [category]
   });
 
   const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
-  const branchName = branchId === 'hk-central' ? 'Central Branch' : 'Causeway Bay Branch';
   const CategoryIcon = CategoryIcons[category as keyof typeof CategoryIcons] || Dumbbell;
 
   useEffect(() => {

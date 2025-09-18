@@ -1,0 +1,645 @@
+{
+  "branches": [
+    {
+      "id": "hk-central-caine",
+      "name": "Central Caine Road (Flagship)",
+      "district": "Central",
+      "region": "HK",
+      "type": "flagship_business",
+      "size": "large",
+      "total_machines": 80,
+      "coordinates": {
+        "lat": 22.2819,
+        "lon": 114.1577
+      },
+      "peak_patterns": {
+        "lunch_boost": 2.0,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "morning_peak": 0.5,
+        "weekend_factor": 0.6
+      },
+      "machine_distribution": {
+        "cardio": 24,
+        "legs": 14,
+        "chest": 14,
+        "back": 10,
+        "arms": 10,
+        "other": 8
+      }
+    },
+    {
+      "id": "hk-causeway-hennessy",
+      "name": "Causeway Bay Hennessy Road",
+      "district": "Causeway Bay",
+      "type": "urban_mixed",
+      "size": "large",
+      "total_machines": 70,
+      "coordinates": {
+        "lat": 22.2783,
+        "lon": 114.1747
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.3,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "morning_peak": 1.2,
+        "weekend_factor": 1.4
+      },
+      "machine_distribution": {
+        "cardio": 21,
+        "legs": 12,
+        "chest": 12,
+        "back": 9,
+        "arms": 9,
+        "other": 7
+      },
+      "region": "HK"
+    },
+    {
+      "id": "kl-mongkok-nathan",
+      "name": "Mongkok Nathan Road",
+      "district": "Mongkok",
+      "type": "urban_dense",
+      "size": "large",
+      "total_machines": 75,
+      "coordinates": {
+        "lat": 22.3193,
+        "lon": 114.1694
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.2,
+        "evening_peak_start": 18,
+        "evening_peak_end": 23,
+        "morning_peak": 0.8,
+        "weekend_factor": 1.5
+      },
+      "machine_distribution": {
+        "cardio": 23,
+        "legs": 13,
+        "chest": 13,
+        "back": 10,
+        "arms": 10,
+        "other": 6
+      },
+      "region": "KL"
+    },
+    {
+      "id": "kl-tsimshatsui-ashley",
+      "name": "Tsim Sha Tsui Ashley Road",
+      "district": "Tsim Sha Tsui",
+      "type": "tourist_business",
+      "size": "medium",
+      "total_machines": 65,
+      "coordinates": {
+        "lat": 22.2976,
+        "lon": 114.1722
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.4,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "morning_peak": 0.7,
+        "weekend_factor": 1.6
+      },
+      "machine_distribution": {
+        "cardio": 20,
+        "legs": 11,
+        "chest": 11,
+        "back": 8,
+        "arms": 8,
+        "other": 7
+      },
+      "region": "KL"
+    },
+    {
+      "id": "kl-jordan-nathan",
+      "name": "Jordan Nathan Road",
+      "district": "Jordan",
+      "type": "residential_urban",
+      "size": "medium",
+      "total_machines": 50,
+      "coordinates": {
+        "lat": 22.3057,
+        "lon": 114.1712
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.0,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "morning_peak": 1.3,
+        "weekend_factor": 1.3
+      },
+      "machine_distribution": {
+        "cardio": 15,
+        "legs": 9,
+        "chest": 9,
+        "back": 6,
+        "arms": 6,
+        "other": 5
+      },
+      "region": "KL"
+    },
+    {
+      "id": "nt-shatin-fun",
+      "name": "Shatin Fun City",
+      "district": "Shatin",
+      "type": "residential_nt",
+      "size": "medium",
+      "total_machines": 55,
+      "coordinates": {
+        "lat": 22.3818,
+        "lon": 114.1877
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.8,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.4,
+        "weekend_factor": 1.8
+      },
+      "machine_distribution": {
+        "cardio": 17,
+        "legs": 9,
+        "chest": 9,
+        "back": 7,
+        "arms": 7,
+        "other": 6
+      },
+      "region": "NT"
+    },
+    {
+      "id": "kl-taikok-ivy",
+      "name": "Tai Kok Tsui Ivy Street",
+      "district": "Tai Kok Tsui",
+      "type": "residential_urban",
+      "size": "medium",
+      "total_machines": 45,
+      "coordinates": {
+        "lat": 22.3163,
+        "lon": 114.1581
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.9,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "morning_peak": 1.3,
+        "weekend_factor": 1.4
+      },
+      "machine_distribution": {
+        "cardio": 14,
+        "legs": 8,
+        "chest": 8,
+        "back": 5,
+        "arms": 5,
+        "other": 5
+      },
+      "region": "KL"
+    },
+    {
+      "id": "hk-quarrybay-westlands",
+      "name": "Quarry Bay Westlands Centre",
+      "district": "Quarry Bay",
+      "type": "business_residential",
+      "size": "medium",
+      "total_machines": 60,
+      "coordinates": {
+        "lat": 22.2855,
+        "lon": 114.2097
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.8,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "morning_peak": 1.1,
+        "weekend_factor": 0.8
+      },
+      "machine_distribution": {
+        "cardio": 18,
+        "legs": 10,
+        "chest": 10,
+        "back": 8,
+        "arms": 8,
+        "other": 6
+      },
+      "region": "HK"
+    },
+    {
+      "id": "nt-maonshan-lee",
+      "name": "Ma On Shan Lee On",
+      "district": "Ma On Shan",
+      "type": "suburban_residential",
+      "size": "medium",
+      "total_machines": 40,
+      "coordinates": {
+        "lat": 22.4257,
+        "lon": 114.2325
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.7,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.5,
+        "weekend_factor": 2.0
+      },
+      "machine_distribution": {
+        "cardio": 12,
+        "legs": 7,
+        "chest": 7,
+        "back": 5,
+        "arms": 5,
+        "other": 4
+      },
+      "region": "NT"
+    },
+    {
+      "id": "nt-tsuenwan-lik",
+      "name": "Tsuen Wan Lik Sang Plaza",
+      "district": "Tsuen Wan",
+      "type": "suburban_mixed",
+      "size": "medium",
+      "total_machines": 50,
+      "coordinates": {
+        "lat": 22.3701,
+        "lon": 114.1182
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.0,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.3,
+        "weekend_factor": 1.6
+      },
+      "machine_distribution": {
+        "cardio": 15,
+        "legs": 9,
+        "chest": 9,
+        "back": 6,
+        "arms": 6,
+        "other": 5
+      },
+      "region": "NT"
+    },
+    {
+      "id": "nt-tinshui-tin",
+      "name": "Tin Shui Wai Tin Yiu Plaza",
+      "district": "Tin Shui Wai",
+      "type": "suburban_residential",
+      "size": "small",
+      "total_machines": 35,
+      "coordinates": {
+        "lat": 22.4489,
+        "lon": 114.0022
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.6,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.6,
+        "weekend_factor": 2.2
+      },
+      "machine_distribution": {
+        "cardio": 11,
+        "legs": 6,
+        "chest": 6,
+        "back": 4,
+        "arms": 4,
+        "other": 4
+      },
+      "region": "NT"
+    },
+    {
+      "id": "nt-fanling-green",
+      "name": "Fanling Green Code Plaza",
+      "district": "Fanling",
+      "type": "suburban_residential",
+      "size": "small",
+      "total_machines": 30,
+      "coordinates": {
+        "lat": 22.4928,
+        "lon": 114.1374
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.5,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.7,
+        "weekend_factor": 2.5
+      },
+      "machine_distribution": {
+        "cardio": 9,
+        "legs": 5,
+        "chest": 5,
+        "back": 4,
+        "arms": 4,
+        "other": 3
+      },
+      "region": "NT"
+    }
+  ],
+  "machine_types": {
+    "cardio": [
+      {
+        "type": "treadmill",
+        "weight": 0.4,
+        "demand_multiplier": 1.3
+      },
+      {
+        "type": "exercise-bike",
+        "weight": 0.25,
+        "demand_multiplier": 1.1
+      },
+      {
+        "type": "elliptical",
+        "weight": 0.2,
+        "demand_multiplier": 1.0
+      },
+      {
+        "type": "rowing-cardio",
+        "weight": 0.15,
+        "demand_multiplier": 0.9
+      }
+    ],
+    "legs": [
+      {
+        "type": "squat-rack",
+        "weight": 0.3,
+        "demand_multiplier": 1.4
+      },
+      {
+        "type": "leg-press",
+        "weight": 0.25,
+        "demand_multiplier": 1.3
+      },
+      {
+        "type": "leg-curl",
+        "weight": 0.2,
+        "demand_multiplier": 1.0
+      },
+      {
+        "type": "leg-extension",
+        "weight": 0.15,
+        "demand_multiplier": 0.9
+      },
+      {
+        "type": "calf-raise",
+        "weight": 0.1,
+        "demand_multiplier": 0.7
+      }
+    ],
+    "chest": [
+      {
+        "type": "bench-press",
+        "weight": 0.4,
+        "demand_multiplier": 1.5
+      },
+      {
+        "type": "incline-press",
+        "weight": 0.25,
+        "demand_multiplier": 1.2
+      },
+      {
+        "type": "chest-fly",
+        "weight": 0.2,
+        "demand_multiplier": 1.0
+      },
+      {
+        "type": "dips",
+        "weight": 0.15,
+        "demand_multiplier": 0.8
+      }
+    ],
+    "back": [
+      {
+        "type": "lat-pulldown",
+        "weight": 0.35,
+        "demand_multiplier": 1.3
+      },
+      {
+        "type": "rowing",
+        "weight": 0.25,
+        "demand_multiplier": 1.1
+      },
+      {
+        "type": "pull-up",
+        "weight": 0.2,
+        "demand_multiplier": 0.8
+      },
+      {
+        "type": "t-bar-row",
+        "weight": 0.2,
+        "demand_multiplier": 0.9
+      }
+    ],
+    "arms": [
+      {
+        "type": "bicep-curl",
+        "weight": 0.3,
+        "demand_multiplier": 1.1
+      },
+      {
+        "type": "tricep-extension",
+        "weight": 0.3,
+        "demand_multiplier": 1.0
+      },
+      {
+        "type": "preacher-curl",
+        "weight": 0.2,
+        "demand_multiplier": 0.9
+      },
+      {
+        "type": "cable-crossover",
+        "weight": 0.2,
+        "demand_multiplier": 0.8
+      }
+    ],
+    "other": [
+      {
+        "type": "abs-machine",
+        "weight": 0.3,
+        "demand_multiplier": 0.9
+      },
+      {
+        "type": "shoulder-press",
+        "weight": 0.25,
+        "demand_multiplier": 1.0
+      },
+      {
+        "type": "functional-trainer",
+        "weight": 0.25,
+        "demand_multiplier": 0.8
+      },
+      {
+        "type": "stretching-area",
+        "weight": 0.2,
+        "demand_multiplier": 0.6
+      }
+    ]
+  },
+  "location_behavioral_patterns": {
+    "flagship_business": {
+      "description": "Large flagship stores in prime business districts",
+      "lunch_traffic_multiplier": 2.0,
+      "evening_delay": 1,
+      "morning_reduction": 0.5,
+      "weekend_reduction": 0.6,
+      "cardio_preference": 1.2,
+      "quick_session_preference": 1.3
+    },
+    "urban_mixed": {
+      "description": "Mixed commercial and residential areas",
+      "lunch_traffic_multiplier": 1.3,
+      "evening_delay": 0,
+      "morning_boost": 1.2,
+      "weekend_boost": 1.4,
+      "cardio_preference": 1.1,
+      "strength_preference": 1.0
+    },
+    "urban_dense": {
+      "description": "Dense urban areas with young demographics",
+      "lunch_traffic_multiplier": 1.2,
+      "evening_extension": 1,
+      "morning_reduction": 0.8,
+      "weekend_boost": 1.5,
+      "strength_preference": 1.2,
+      "late_night_tolerance": 1.3
+    },
+    "tourist_business": {
+      "description": "Tourist and business mixed areas",
+      "lunch_traffic_multiplier": 1.4,
+      "evening_delay": 1,
+      "morning_reduction": 0.7,
+      "weekend_boost": 1.6,
+      "cardio_preference": 1.3,
+      "irregular_patterns": 1.2
+    },
+    "residential_urban": {
+      "description": "Urban residential neighborhoods",
+      "lunch_traffic_multiplier": 1.0,
+      "morning_boost": 1.3,
+      "weekend_boost": 1.3,
+      "strength_preference": 1.1,
+      "family_friendly_hours": 1.2
+    },
+    "residential_nt": {
+      "description": "New Territories residential areas",
+      "lunch_traffic_multiplier": 0.8,
+      "morning_boost": 1.4,
+      "weekend_boost": 1.8,
+      "evening_early_start": -1,
+      "family_oriented": 1.3
+    },
+    "business_residential": {
+      "description": "Mixed business and residential",
+      "lunch_traffic_multiplier": 1.8,
+      "morning_boost": 1.1,
+      "weekend_reduction": 0.8,
+      "cardio_preference": 1.2,
+      "office_worker_patterns": 1.4
+    },
+    "suburban_residential": {
+      "description": "Suburban family-oriented areas",
+      "lunch_traffic_multiplier": 0.7,
+      "morning_boost": 1.5,
+      "weekend_boost": 2.0,
+      "evening_early_start": -1,
+      "family_sessions": 1.5
+    },
+    "suburban_mixed": {
+      "description": "Suburban areas with some commercial",
+      "lunch_traffic_multiplier": 1.0,
+      "morning_boost": 1.3,
+      "weekend_boost": 1.6,
+      "strength_preference": 1.1,
+      "community_oriented": 1.2
+    }
+  },
+  "global_usage_patterns": {
+    "peak_hours": {
+      "morning": {
+        "start": 6,
+        "end": 9,
+        "base_occupancy_rate": 0.6,
+        "description": "Morning rush - cardio popular, office workers"
+      },
+      "lunch": {
+        "start": 12,
+        "end": 14,
+        "base_occupancy_rate": 0.45,
+        "description": "Lunch sessions - quick workouts, business areas"
+      },
+      "evening": {
+        "start": 18,
+        "end": 22,
+        "base_occupancy_rate": 0.85,
+        "description": "Prime time - highest demand, all equipment busy"
+      },
+      "late_evening": {
+        "start": 22,
+        "end": 24,
+        "base_occupancy_rate": 0.25,
+        "description": "Wind down - moderate usage, strength training"
+      },
+      "night": {
+        "start": 0,
+        "end": 6,
+        "base_occupancy_rate": 0.1,
+        "description": "Night shift - minimal usage, shift workers"
+      },
+      "midday": {
+        "start": 9,
+        "end": 12,
+        "base_occupancy_rate": 0.3,
+        "description": "Mid-morning - retirees, flexible schedules"
+      },
+      "afternoon": {
+        "start": 14,
+        "end": 18,
+        "base_occupancy_rate": 0.35,
+        "description": "Afternoon - students, part-time workers"
+      }
+    },
+    "weekend_patterns": {
+      "saturday": {
+        "morning_shift": -1,
+        "peak_extend": 2,
+        "overall_multiplier": 1.2
+      },
+      "sunday": {
+        "morning_shift": -2,
+        "peak_extend": 3,
+        "overall_multiplier": 1.1
+      }
+    },
+    "equipment_demand_hierarchy": {
+      "highest": [
+        "bench-press",
+        "squat-rack",
+        "treadmill"
+      ],
+      "high": [
+        "lat-pulldown",
+        "leg-press",
+        "exercise-bike",
+        "incline-press"
+      ],
+      "medium": [
+        "rowing",
+        "leg-curl",
+        "chest-fly",
+        "elliptical"
+      ],
+      "low": [
+        "calf-raise",
+        "pull-up",
+        "dips",
+        "tricep-extension"
+      ],
+      "utility": [
+        "stretching-area",
+        "functional-trainer",
+        "abs-machine"
+      ]
+    }
+  }
+}

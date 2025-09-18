@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { gymService, type Branch } from '@/services/gymService';
+import { extractCategoriesFromBranches } from '@/utils/categoryUtils';
 import BranchList from '@/components/branches/BranchList';
 import BranchSearch from '@/components/branches/BranchSearch';
 import MapPlaceholder from '@/components/branches/MapPlaceholder';
@@ -11,10 +12,10 @@ export default function BranchesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // WebSocket integration for real-time updates
+  // WebSocket integration for real-time updates - dynamically subscribe to loaded branches
   const webSocket = useMachineUpdates({
-    branches: ['hk-central', 'hk-causeway'],
-    categories: ['legs', 'chest', 'back']
+    branches: branches.map(branch => branch.id),
+    categories: extractCategoriesFromBranches(branches)
   });
 
   useEffect(() => {
@@ -30,34 +31,8 @@ export default function BranchesPage() {
         }
       } catch (error) {
         console.error('Error loading branches:', error);
-        console.log('Using mock data for development');
-        
-        // Provide mock data for development when API is not available
-        setBranches([
-          {
-            id: 'hk-central',
-            name: 'Central Branch',
-            coordinates: { lat: 22.2819, lon: 114.1577 },
-            categories: {
-              legs: { free: 3, total: 6 },
-              chest: { free: 2, total: 4 },
-              back: { free: 1, total: 3 }
-            }
-          },
-          {
-            id: 'hk-causeway',
-            name: 'Causeway Bay Branch', 
-            coordinates: { lat: 22.2783, lon: 114.1747 },
-            categories: {
-              legs: { free: 1, total: 4 },
-              chest: { free: 3, total: 5 },
-              back: { free: 2, total: 3 }
-            }
-          }
-        ]);
-        
-        // Don't show error if we can provide mock data
-        // setError('Using demo data - backend not connected');
+        setError('Failed to load branch data. Please check your connection.');
+        setBranches([]);
       }
       setIsLoading(false);
     };

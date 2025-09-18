@@ -3,6 +3,7 @@ GymPulse CDK Stack - Python Implementation
 Real-time gym equipment availability with IoT integration and AI chatbot
 """
 import json
+import os
 from aws_cdk import (
     Duration,
     Stack,
@@ -113,8 +114,14 @@ class GymPulseStack(Stack):
             self, "ApiLambda",
             function_name="gym-pulse-api-handler",
             runtime=_lambda.Runtime.PYTHON_3_10,
-            handler="handler.lambda_handler",
+            handler="lambda_function.lambda_handler",
             code=_lambda.Code.from_asset("lambda/api-handlers"),
+            layers=[
+                _lambda.LayerVersion.from_layer_version_arn(
+                    self, "NumpyLayer",
+                    layer_version_arn="arn:aws:lambda:ap-east-1:168860953292:layer:gym-pulse-numpy-layer-fixed:1"
+                )
+            ],
             environment={
                 "CURRENT_STATE_TABLE": current_state_table.table_name,
                 "EVENTS_TABLE": events_table.table_name,
@@ -197,15 +204,15 @@ class GymPulseStack(Stack):
             timeout=Duration.seconds(30),
         )
 
-        # Bedrock Chat Handler: Orchestrates tool-use conversations
+        # Gemini Chat Handler: Orchestrates tool-use conversations
         chat_handler_lambda = _lambda.Function(
             self, "ChatHandlerLambda",
             function_name="gym-pulse-chat-handler",
             runtime=_lambda.Runtime.PYTHON_3_10,
-            handler="chat-handler.lambda_handler",
+            handler="lambda_function.lambda_handler",
             code=_lambda.Code.from_asset("lambda/bedrock-tools"),
             environment={
-                "BEDROCK_MODEL_ID": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+                "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY", ""),
                 "AVAILABILITY_FUNCTION_ARN": availability_tool_lambda.function_arn,
                 "ROUTE_MATRIX_FUNCTION_ARN": route_matrix_tool_lambda.function_arn,
             },
@@ -295,11 +302,20 @@ class GymPulseStack(Stack):
         )
         
         branch_resource = branches_resource.add_resource("{id}")
+
+        # Add peak-hours endpoint for branches
+        peak_hours_resource = branch_resource.add_resource("peak-hours")
+        peak_hours_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False
+        )
+
         categories_resource = branch_resource.add_resource("categories")
         category_resource = categories_resource.add_resource("{category}")
         machines_resource = category_resource.add_resource("machines")
         machines_resource.add_method(
-            "GET", 
+            "GET",
             apigateway.LambdaIntegration(api_lambda),
             api_key_required=False
         )
@@ -344,11 +360,11 @@ class GymPulseStack(Stack):
             api_key_required=False
         )
         
-        # Chat endpoint for Bedrock AI assistant
+        # Chat endpoint for Gemini AI assistant (now integrated in API handler)
         chat_resource = api.root.add_resource("chat")
         chat_resource.add_method(
             "POST",
-            apigateway.LambdaIntegration(chat_handler_lambda),
+            apigateway.LambdaIntegration(api_lambda),
             api_key_required=False  # Allow free access to chat
         )
         

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { LayoutDashboard, Map, BarChart } from 'lucide-react';
+import { LayoutDashboard, Map, BarChart, FlaskConical } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import ChatInterface from '@/components/chat/ChatInterface';
 import FloatingChatButton from '@/components/chat/FloatingChatButton';
@@ -9,6 +9,7 @@ import FloatingChatButton from '@/components/chat/FloatingChatButton';
 const navItems = [
   { name: 'Dashboard', href: createPageUrl('Dashboard'), icon: LayoutDashboard },
   { name: 'Branches', href: createPageUrl('Branches'), icon: Map },
+  { name: 'ML Testing', href: createPageUrl('ml-validation'), icon: FlaskConical },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {

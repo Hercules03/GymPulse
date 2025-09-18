@@ -4,94 +4,187 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
+import { extractCategoriesFromBranches } from '@/utils/categoryUtils';
 
 import Header from '@/components/dashboard/Header';
 import CategoryCard from '@/components/dashboard/CategoryCard';
 import QuickStats from '@/components/dashboard/QuickStats';
 
+interface BranchCategory {
+  free: number;
+  total: number;
+}
+
+interface Branch {
+  id: string;
+  name: string;
+  coordinates?: {
+    lat: number;
+    lon: number;
+  };
+  categories: {
+    [category: string]: BranchCategory;
+  };
+}
+
 export default function Dashboard() {
-  const [branches, setBranches] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState('hk-central');
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
+  const [peakHoursData, setPeakHoursData] = useState<{
+    peakHours: string;
+    confidence: string;
+    currentOccupancy: number;
+    occupancyForecast: { [hour: string]: number };
+  } | null>(null);
 
-  const locations = [
-    { id: 'hk-central', name: 'Central Branch' },
-    { id: 'hk-causeway', name: 'Causeway Bay Branch' }
-  ];
-
-  // WebSocket integration for real-time updates
+  // WebSocket integration for real-time updates - dynamically subscribe to all branches
   const webSocket = useMachineUpdates({
-    branches: ['hk-central', 'hk-causeway'], // Subscribe to both branches
-    categories: ['legs', 'chest', 'back']
+    branches: branches.map(branch => branch.id), // Subscribe to all loaded branches
+    categories: extractCategoriesFromBranches(branches) // Dynamic categories from API
   });
 
   const loadBranches = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await gymService.getBranches();
-      setBranches(response.branches || []);
-      console.log('Loaded branches from AWS API:', response.branches);
+      const loadedBranches = response.branches || [];
+      setBranches(loadedBranches);
+
+      // Set first branch as default selected location
+      if (loadedBranches.length > 0 && !selectedLocation) {
+        setSelectedLocation(loadedBranches[0].id);
+      }
+
+      console.log('Loaded branches from AWS API:', loadedBranches);
     } catch (error) {
       console.error('Error loading branches from AWS:', error);
       // Keep empty array, don't fall back to mock data
       setBranches([]);
     }
     setIsLoading(false);
+  }, [selectedLocation]);
+
+  const loadPeakHoursData = useCallback(async (branchId: string) => {
+    try {
+      console.log(`🔄 Loading peak hours forecast for ${branchId}...`);
+      const peakData = await gymService.getBranchPeakHours(branchId);
+
+      setPeakHoursData({
+        peakHours: peakData.peakHours,
+        confidence: peakData.confidence,
+        currentOccupancy: peakData.currentOccupancy,
+        occupancyForecast: peakData.occupancyForecast
+      });
+
+      console.log('📊 Peak hours data loaded:', peakData);
+    } catch (error) {
+      console.error('Error loading peak hours data:', error);
+      // Fallback to simple calculation
+      setPeakHoursData({
+        peakHours: calculatePeakHours(),
+        confidence: 'low',
+        currentOccupancy: 0,
+        occupancyForecast: {}
+      });
+    }
   }, []);
 
   useEffect(() => {
     loadBranches();
   }, [loadBranches]);
 
+  // Load peak hours data when selected location changes
+  useEffect(() => {
+    loadPeakHoursData(selectedLocation);
+  }, [selectedLocation, loadPeakHoursData]);
+
   // Update last update time when WebSocket receives new data
   useEffect(() => {
     if (webSocket.lastUpdate) {
       setLastUpdateTime(new Date());
       console.log('🔄 Dashboard received WebSocket update:', webSocket.lastUpdate);
+
+      // Refresh peak hours data periodically when receiving updates
+      // (debounced to avoid too many API calls)
+      const shouldRefreshPeakHours = Math.random() < 0.1; // 10% chance per update
+      if (shouldRefreshPeakHours) {
+        console.log('🔄 Refreshing peak hours forecast due to real-time data changes...');
+        loadPeakHoursData(selectedLocation);
+      }
     }
-  }, [webSocket.lastUpdate]);
+  }, [webSocket.lastUpdate, selectedLocation, loadPeakHoursData]);
 
   // Update WebSocket subscriptions when location changes
   useEffect(() => {
     if (webSocket.updateSubscriptions) {
       webSocket.updateSubscriptions({
-        branches: ['hk-central', 'hk-causeway'], // Always subscribe to both branches for dashboard
-        categories: ['legs', 'chest', 'back']
+        branches: branches.map(branch => branch.id), // Subscribe to all available branches for dashboard
+        categories: extractCategoriesFromBranches(branches)
       });
     }
   }, [selectedLocation, webSocket.updateSubscriptions]);
 
+  const calculatePeakHours = () => {
+    // Minimal fallback when API is unavailable - no hardcoded peak hours
+    return 'Loading...';
+  };
+
   const getStats = () => {
-    // Calculate totals from real AWS branch data
+    // Calculate totals from selected branch only
     let totalEquipment = 0;
     let totalAvailable = 0;
-    
-    branches.forEach(branch => {
-      Object.values(branch.categories || {}).forEach(category => {
+    let totalOffline = 0;
+
+    // Only count equipment from the selected branch
+    const selectedBranch = branches.find(branch => branch.id === selectedLocation);
+    if (selectedBranch) {
+      Object.values(selectedBranch.categories || {}).forEach(category => {
         totalEquipment += category.total || 0;
         totalAvailable += category.free || 0;
       });
-    });
+    }
 
-    // Only update availability with real-time WebSocket data if available
-    // Keep totalEquipment constant (from static branch configuration)
+    // Update with real-time WebSocket data if available (filtered by selected branch)
     if (webSocket.latestMachineStatus && Object.keys(webSocket.latestMachineStatus).length > 0) {
-      const allMachines = Object.values(webSocket.latestMachineStatus);
-      // Only update available count if we have meaningful real-time data
-      if (allMachines.length > 0) {
-        totalAvailable = allMachines.filter(m => m.status === 'free').length;
+      // Filter machines to only include the selected branch
+      const branchMachines = Object.values(webSocket.latestMachineStatus).filter(
+        machine => machine.gymId === selectedLocation
+      );
+
+      if (branchMachines.length > 0) {
+        totalAvailable = branchMachines.filter(m => m.status === 'free').length;
+        totalOffline = branchMachines.filter(m => m.status === 'offline').length;
+
+        // If we have real-time data, use that for total count too (for selected branch only)
+        totalEquipment = branchMachines.length;
       }
     }
-    
-    const peakHours = '6-8 PM';
-    const maintenanceNeeded = totalEquipment > 0 ? Math.floor(totalEquipment * 0.05) : 1; // Estimate 5% in maintenance
+
+    // Use forecast-based peak hours if available, otherwise fallback to calculation
+    const peakHours = peakHoursData?.peakHours || calculatePeakHours();
+
+    // Use actual offline machines for maintenance count
+    const maintenanceNeeded = totalOffline;
+
+    console.log('📊 Dashboard Stats:', {
+      totalEquipment,
+      totalAvailable,
+      totalOffline,
+      peakHours,
+      maintenanceNeeded,
+      forecastConfidence: peakHoursData?.confidence || 'fallback',
+      backendOccupancy: peakHoursData?.currentOccupancy,
+      selectedLocation,
+      dataSource: peakHoursData ? 'backend-forecast' : 'frontend-fallback'
+    });
 
     return { totalEquipment, totalAvailable, peakHours, maintenanceNeeded };
   };
 
   const getCategoryStats = () => {
-    const categories = ['legs', 'chest', 'back'];
+    const categories = extractCategoriesFromBranches(branches);
     return categories.map(category => {
       // Start with base counts from static branch data
       let totalMachines = 0;
@@ -140,25 +233,16 @@ export default function Dashboard() {
     });
   };
 
-  const getSampleMachineId = (category) => {
-    // Map categories to actual machine IDs based on simulator configuration
-    const machineMapping = {
-      'legs': selectedLocation === 'hk-central' ? 'leg-press-01' : 'leg-press-03',
-      'chest': selectedLocation === 'hk-central' ? 'bench-press-01' : 'bench-press-03', 
-      'back': selectedLocation === 'hk-central' ? 'lat-pulldown-01' : 'lat-pulldown-02'
-    };
-    return machineMapping[category] || 'leg-press-01';
-  };
 
   const stats = getStats();
   const categoryStats = getCategoryStats();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
+      <Header
         selectedLocation={selectedLocation}
         onLocationChange={setSelectedLocation}
-        locations={locations}
+        locations={branches.map(branch => ({ id: branch.id, name: branch.name }))}
       />
 
       <main className="max-w-7xl mx-auto px-6 py-8">

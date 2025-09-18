@@ -16,14 +16,40 @@ import NotificationButton from '@/components/machine/NotificationButton';
 
 export default function MachineDetail() {
   const [searchParams] = useSearchParams();
-  const [machine, setMachine] = useState(null);
-  const [usageData, setUsageData] = useState([]);
-  const [forecast, setForecast] = useState(null);
+  const [machine, setMachine] = useState<any>(null);
+  const [usageData, setUsageData] = useState<any[]>([]);
+  const [forecast, setForecast] = useState<any>(null);
+  const [mlAnalytics, setMlAnalytics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const machineId = searchParams.get('id');
   const category = searchParams.get('category');
   const branch = searchParams.get('branch');
+
+  const calculatePeakHoursFromUsage = (usageData: any[]) => {
+    if (!usageData || usageData.length === 0) return 'No data available';
+
+    const peakThreshold = 60; // 60% or higher considered peak
+    const peakHours = usageData
+      .filter(d => d.usage_percentage >= peakThreshold)
+      .map(d => d.hour)
+      .sort((a, b) => a - b);
+
+    if (peakHours.length === 0) return 'Low usage periods';
+    if (peakHours.length <= 3) return peakHours.map(h => `${h}:00`).join(', ');
+
+    // Return range if many peak hours
+    const start = Math.min(...peakHours);
+    const end = Math.max(...peakHours);
+    return `${start}:00-${end}:00`;
+  };
+
+  const calculateAvgOccupancy = (usageData: any[]) => {
+    if (!usageData || usageData.length === 0) return null;
+
+    const totalUsage = usageData.reduce((sum, d) => sum + (d.usage_percentage || 0), 0);
+    return Math.round((totalUsage / usageData.length) * 10) / 10; // Round to 1 decimal
+  };
 
   const loadMachineData = useCallback(async () => {
     console.log('=== MachineDetail Debug ===');
@@ -67,23 +93,38 @@ export default function MachineDetail() {
               setUsageData(historyData.usageData || []);
               // Set forecast data from API response
               setForecast(historyData.forecast || null);
+              // Set ML analytics data from API response
+              const mlData = {
+                total_data_points: historyData.dataPoints || (historyData.usageData || []).length,
+                peak_hours: calculatePeakHoursFromUsage(historyData.usageData || []),
+                avg_occupancy: calculateAvgOccupancy(historyData.usageData || []),
+                date_range: historyData.timeRange || '24 hours',
+                anomalies_count: (historyData.anomalies || []).length,
+                ml_insights: historyData.ml_insights
+              };
+              setMlAnalytics(mlData);
               console.log('Forecast data:', historyData.forecast);
+              console.log('ML Analytics data:', mlData);
+              console.log('Raw API response:', historyData);
             } else {
               setMachine(null);
               setUsageData([]);
               setForecast(null);
+              setMlAnalytics(null);
             }
           } else {
             console.error('Failed to load machine details:', response.status);
             setMachine(null);
             setUsageData([]);
             setForecast(null);
+            setMlAnalytics(null);
           }
         } catch (error) {
           console.error('Error loading machine details:', error);
           setMachine(null);
           setUsageData([]);
           setForecast(null);
+          setMlAnalytics(null);
         }
       } else if (category && branch) {
         // Create a temporary machine object for category view
@@ -97,6 +138,7 @@ export default function MachineDetail() {
         });
         setUsageData([]);
         setForecast(null);
+        setMlAnalytics(null);
       }
     } catch (error) {
       console.error('Error loading machine data:', error);
@@ -236,7 +278,7 @@ export default function MachineDetail() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <AvailabilityHeatmap usageData={usageData} />
+            <AvailabilityHeatmap usageData={usageData} mlAnalytics={mlAnalytics} />
           </motion.div>
         )}
 

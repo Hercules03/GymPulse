@@ -1,12 +1,9 @@
 import json
 import boto3
 import numpy as np
-import pandas as pd
 from datetime import datetime, timedelta
 import time
 from decimal import Decimal
-from sklearn.ensemble import IsolationForest
-from sklearn.preprocessing import StandardScaler
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -40,9 +37,8 @@ class MLForecastEngine:
         self.aggregates_table = self.dynamodb.Table('gym-pulse-aggregates')
         self.current_state_table = self.dynamodb.Table('gym-pulse-current-state')
 
-        # ML Models
-        self.anomaly_detector = IsolationForest(contamination=0.1, random_state=42)
-        self.scaler = StandardScaler()
+        # ML Models - numpy-based implementations
+        self.anomaly_threshold = 2.0  # Standard deviations for anomaly detection
 
     def generate_ai_forecast(self, machine_id, historical_data, current_context):
         """
@@ -52,30 +48,30 @@ class MLForecastEngine:
 
         try:
             # 1. Prepare time series data
-            df = self.prepare_time_series_data(historical_data)
+            data_array = self.prepare_time_series_data(historical_data)
 
-            if len(df) < 48:  # Need at least 2 days of data
+            if len(data_array) < 48:  # Need at least 2 days of data
                 return self.fallback_forecast(machine_id, current_context)
 
             # 2. Detect anomalies in historical data
-            anomalies = self.detect_anomalies(df)
+            anomalies = self.detect_anomalies(data_array)
 
             # 3. Generate multiple forecasting models
             forecasts = {
-                'seasonal_decomposition': self.seasonal_decomposition_forecast(df),
-                'pattern_recognition': self.pattern_recognition_forecast(df),
-                'trend_analysis': self.trend_analysis_forecast(df),
-                'context_aware': self.context_aware_forecast(df, current_context)
+                'seasonal_decomposition': self.seasonal_decomposition_forecast(data_array),
+                'pattern_recognition': self.pattern_recognition_forecast(data_array),
+                'trend_analysis': self.trend_analysis_forecast(data_array),
+                'context_aware': self.context_aware_forecast(data_array, current_context)
             }
 
             # 4. Ensemble prediction combining all models
             ensemble_forecast = self.ensemble_prediction(forecasts)
 
-            # 5. AI insights using Amazon Bedrock
-            ai_insights = self.generate_gemini_insights(machine_id, df, ensemble_forecast, anomalies)
+            # 5. AI insights using Google Gemini API
+            ai_insights = self.generate_gemini_insights(machine_id, data_array, ensemble_forecast, anomalies)
 
             # 6. Real-time confidence scoring
-            confidence_score = self.calculate_confidence_score(df, forecasts, anomalies)
+            confidence_score = self.calculate_confidence_score(data_array, forecasts, anomalies)
 
             result = {
                 'machine_id': machine_id,
@@ -96,60 +92,76 @@ class MLForecastEngine:
             return self.fallback_forecast(machine_id, current_context)
 
     def prepare_time_series_data(self, historical_data):
-        """Convert historical data to pandas DataFrame for ML processing"""
+        """Convert historical data to numpy structured array for ML processing"""
 
         data_points = []
         for record in historical_data:
-            data_points.append({
-                'timestamp': datetime.fromtimestamp(record['timestamp15min']),
-                'occupancy_ratio': float(record['occupancyRatio']),
-                'hour': datetime.fromtimestamp(record['timestamp15min']).hour,
-                'day_of_week': datetime.fromtimestamp(record['timestamp15min']).weekday(),
-                'is_weekend': datetime.fromtimestamp(record['timestamp15min']).weekday() >= 5,
-                'is_peak_hour': self.is_peak_hour(datetime.fromtimestamp(record['timestamp15min']).hour)
-            })
+            dt = datetime.fromtimestamp(record['timestamp15min'])
+            data_points.append((
+                record['timestamp15min'],
+                float(record['occupancyRatio']),
+                dt.hour,
+                dt.weekday(),
+                dt.weekday() >= 5,
+                self.is_peak_hour(dt.hour)
+            ))
 
-        df = pd.DataFrame(data_points)
-        df = df.sort_values('timestamp')
-        df.set_index('timestamp', inplace=True)
+        # Convert to structured numpy array
+        dtype = [
+            ('timestamp', 'i8'),
+            ('occupancy_ratio', 'f8'),
+            ('hour', 'i4'),
+            ('day_of_week', 'i4'),
+            ('is_weekend', 'bool'),
+            ('is_peak_hour', 'bool')
+        ]
 
-        return df
+        data_array = np.array(data_points, dtype=dtype)
+        # Sort by timestamp
+        data_array = np.sort(data_array, order='timestamp')
 
-    def detect_anomalies(self, df):
-        """Use Isolation Forest to detect unusual usage patterns"""
+        return data_array
 
-        # Feature engineering for anomaly detection
-        features = ['occupancy_ratio', 'hour', 'day_of_week', 'is_weekend', 'is_peak_hour']
-        X = df[features].values
+    def detect_anomalies(self, data_array):
+        """Use statistical methods to detect unusual usage patterns"""
 
-        # Normalize features
-        X_scaled = self.scaler.fit_transform(X)
+        anomalies = []
 
-        # Detect anomalies
-        anomaly_labels = self.anomaly_detector.fit_predict(X_scaled)
+        # Statistical anomaly detection using z-score method
+        occupancy_mean = np.mean(data_array['occupancy_ratio'])
+        occupancy_std = np.std(data_array['occupancy_ratio'])
 
-        # Extract anomalous points
-        anomalies = df[anomaly_labels == -1].copy()
-        anomalies['anomaly_score'] = self.anomaly_detector.decision_function(X_scaled)[anomaly_labels == -1]
+        if occupancy_std > 0:  # Avoid division by zero
+            z_scores = np.abs(data_array['occupancy_ratio'] - occupancy_mean) / occupancy_std
+            anomaly_mask = z_scores > self.anomaly_threshold
+
+            for i, is_anomaly in enumerate(anomaly_mask):
+                if is_anomaly:
+                    anomalies.append({
+                        'timestamp': data_array[i]['timestamp'],
+                        'occupancy_ratio': data_array[i]['occupancy_ratio'],
+                        'hour': data_array[i]['hour'],
+                        'anomaly_score': z_scores[i]
+                    })
 
         print(f"🔍 Detected {len(anomalies)} anomalies in historical data")
-
         return anomalies
 
-    def seasonal_decomposition_forecast(self, df):
+    def seasonal_decomposition_forecast(self, data_array):
         """Seasonal decomposition with trend analysis"""
 
         hourly_patterns = {}
 
         # Group by hour and calculate statistics
         for hour in range(24):
-            hour_data = df[df['hour'] == hour]['occupancy_ratio']
+            hour_mask = data_array['hour'] == hour
+            hour_data = data_array[hour_mask]['occupancy_ratio']
 
             if len(hour_data) > 0:
                 # Calculate seasonal patterns
-                mean_usage = hour_data.mean()
-                std_usage = hour_data.std()
-                trend = self.calculate_trend(hour_data.values)
+                mean_usage = np.mean(hour_data)
+                std_usage = np.std(hour_data)
+                trend = self.calculate_trend(hour_data)
 
                 # Apply trend to mean
                 forecast = max(5.0, min(95.0, mean_usage + trend))
@@ -164,80 +176,93 @@ class MLForecastEngine:
 
         return hourly_patterns
 
-    def pattern_recognition_forecast(self, df):
+    def pattern_recognition_forecast(self, data_array):
         """Advanced pattern recognition using statistical analysis"""
 
         hourly_patterns = {}
 
         for hour in range(24):
-            hour_data = df[df['hour'] == hour]
+            hour_mask = data_array['hour'] == hour
+            hour_data = data_array[hour_mask]
 
             if len(hour_data) >= 3:
                 # Pattern analysis
-                weekend_avg = hour_data[hour_data['is_weekend'] == True]['occupancy_ratio'].mean()
-                weekday_avg = hour_data[hour_data['is_weekend'] == False]['occupancy_ratio'].mean()
+                weekend_mask = hour_data['is_weekend'] == True
+                weekday_mask = hour_data['is_weekend'] == False
+
+                weekend_data = hour_data[weekend_mask]['occupancy_ratio']
+                weekday_data = hour_data[weekday_mask]['occupancy_ratio']
+
+                weekend_avg = np.mean(weekend_data) if len(weekend_data) > 0 else np.nan
+                weekday_avg = np.mean(weekday_data) if len(weekday_data) > 0 else np.nan
 
                 # Current day context
                 current_is_weekend = datetime.now().weekday() >= 5
 
-                if pd.notna(weekend_avg) and pd.notna(weekday_avg):
+                if not np.isnan(weekend_avg) and not np.isnan(weekday_avg):
                     if current_is_weekend:
                         forecast = weekend_avg
                     else:
                         forecast = weekday_avg
                 else:
-                    forecast = hour_data['occupancy_ratio'].mean()
+                    forecast = np.mean(hour_data['occupancy_ratio'])
 
                 # Apply smoothing
                 forecast = max(5.0, min(95.0, forecast))
 
                 hourly_patterns[hour] = {
                     'forecast': forecast,
-                    'weekend_pattern': weekend_avg if pd.notna(weekend_avg) else forecast,
-                    'weekday_pattern': weekday_avg if pd.notna(weekday_avg) else forecast
+                    'weekend_pattern': weekend_avg if not np.isnan(weekend_avg) else forecast,
+                    'weekday_pattern': weekday_avg if not np.isnan(weekday_avg) else forecast
                 }
             else:
                 hourly_patterns[hour] = {'forecast': 25.0, 'weekend_pattern': 25.0, 'weekday_pattern': 25.0}
 
         return hourly_patterns
 
-    def trend_analysis_forecast(self, df):
+    def trend_analysis_forecast(self, data_array):
         """Trend analysis with momentum indicators"""
 
         hourly_patterns = {}
 
         # Recent trend analysis (last 3 days)
-        recent_data = df[df.index >= (datetime.now() - timedelta(days=3))]
+        cutoff_time = int(time.time()) - (3 * 24 * 60 * 60)
+        recent_mask = data_array['timestamp'] >= cutoff_time
+        recent_data = data_array[recent_mask]
 
         for hour in range(24):
-            hour_data = df[df['hour'] == hour]['occupancy_ratio']
-            recent_hour_data = recent_data[recent_data['hour'] == hour]['occupancy_ratio']
+            hour_mask = data_array['hour'] == hour
+            hour_data = data_array[hour_mask]['occupancy_ratio']
+
+            recent_hour_mask = (recent_data['hour'] == hour)
+            recent_hour_data = recent_data[recent_hour_mask]['occupancy_ratio']
 
             if len(hour_data) >= 3:
                 # Calculate momentum
+                momentum = 0
                 if len(recent_hour_data) >= 2:
-                    recent_avg = recent_hour_data.mean()
-                    historical_avg = hour_data.mean()
+                    recent_avg = np.mean(recent_hour_data)
+                    historical_avg = np.mean(hour_data)
                     momentum = (recent_avg - historical_avg) / historical_avg if historical_avg > 0 else 0
 
                     # Apply momentum to forecast
                     forecast = historical_avg * (1 + momentum * 0.3)  # 30% momentum influence
                 else:
-                    forecast = hour_data.mean()
+                    forecast = np.mean(hour_data)
 
                 forecast = max(5.0, min(95.0, forecast))
 
                 hourly_patterns[hour] = {
                     'forecast': forecast,
-                    'momentum': momentum if 'momentum' in locals() else 0,
-                    'recent_avg': recent_hour_data.mean() if len(recent_hour_data) > 0 else forecast
+                    'momentum': momentum,
+                    'recent_avg': np.mean(recent_hour_data) if len(recent_hour_data) > 0 else forecast
                 }
             else:
                 hourly_patterns[hour] = {'forecast': 25.0, 'momentum': 0, 'recent_avg': 25.0}
 
         return hourly_patterns
 
-    def context_aware_forecast(self, df, current_context):
+    def context_aware_forecast(self, data_array, current_context):
         """Context-aware forecasting considering current machine state and external factors"""
 
         hourly_patterns = {}
@@ -245,10 +270,11 @@ class MLForecastEngine:
         current_status = current_context.get('status', 'unknown')
 
         for hour in range(24):
-            hour_data = df[df['hour'] == hour]['occupancy_ratio']
+            hour_mask = data_array['hour'] == hour
+            hour_data = data_array[hour_mask]['occupancy_ratio']
 
             if len(hour_data) > 0:
-                base_forecast = hour_data.mean()
+                base_forecast = np.mean(hour_data)
 
                 # Context adjustments
                 if hour == current_hour:
@@ -316,17 +342,21 @@ class MLForecastEngine:
 
         return ensemble_forecast
 
-    def generate_gemini_insights(self, machine_id, df, forecast, anomalies):
+    def generate_gemini_insights(self, machine_id, data_array, forecast, anomalies):
         """Generate AI insights using Google Gemini API"""
 
         try:
-            # Prepare data summary for Gemini
+            # Prepare data summary for Gemini using NumPy operations only
+            timestamps = data_array['timestamp']
+            start_time = datetime.fromtimestamp(timestamps.min()).strftime('%Y-%m-%d')
+            end_time = datetime.fromtimestamp(timestamps.max()).strftime('%Y-%m-%d')
+
             data_summary = {
                 'machine_id': machine_id,
-                'total_data_points': len(df),
-                'date_range': f"{df.index.min()} to {df.index.max()}",
-                'avg_occupancy': round(df['occupancy_ratio'].mean(), 1),
-                'peak_hours': self.get_peak_hours(df),
+                'total_data_points': len(data_array),
+                'date_range': f"{start_time} to {end_time}",
+                'avg_occupancy': round(np.mean(data_array['occupancy_ratio']), 1),
+                'peak_hours': self.get_peak_hours_numpy(data_array),
                 'anomalies_count': len(anomalies),
                 'forecast_summary': {hour: data['forecast'] for hour, data in forecast.items()}
             }
@@ -399,11 +429,11 @@ class MLForecastEngine:
 
         return f"{usage_desc} machine. Peak times: {peak_hours}. {recommendation}."
 
-    def calculate_confidence_score(self, df, forecasts, anomalies):
+    def calculate_confidence_score(self, data_array, forecasts, anomalies):
         """Calculate overall confidence score for the forecast"""
 
         # Base confidence from data quantity
-        data_confidence = min(100, len(df) * 2)  # 2% per data point, max 100%
+        data_confidence = min(100, len(data_array) * 2)  # 2% per data point, max 100%
 
         # Model agreement confidence
         model_forecasts = []
@@ -457,12 +487,27 @@ class MLForecastEngine:
         x = np.arange(len(values))
         return np.polyfit(x, values, 1)[0]  # Slope of linear fit
 
-    def get_peak_hours(self, df):
-        """Identify peak usage hours from data"""
-        hourly_avg = df.groupby('hour')['occupancy_ratio'].mean()
-        peak_threshold = hourly_avg.quantile(0.75)  # Top 25%
-        peak_hours = hourly_avg[hourly_avg >= peak_threshold].index.tolist()
-        return peak_hours
+    def get_peak_hours_numpy(self, data_array):
+        """Identify peak usage hours from data using NumPy only"""
+        hourly_avg = {}
+
+        # Calculate average occupancy per hour using NumPy
+        for hour in range(24):
+            hour_mask = data_array['hour'] == hour
+            hour_data = data_array[hour_mask]['occupancy_ratio']
+            if len(hour_data) > 0:
+                hourly_avg[hour] = np.mean(hour_data)
+
+        if hourly_avg:
+            # Calculate 75th percentile threshold
+            avg_values = list(hourly_avg.values())
+            peak_threshold = np.percentile(avg_values, 75)
+
+            # Find hours above threshold
+            peak_hours = [hour for hour, avg in hourly_avg.items() if avg >= peak_threshold]
+            return peak_hours
+        else:
+            return [7, 8, 18, 19, 20]  # Default peak hours
 
     def fallback_forecast(self, machine_id, current_context):
         """Simple fallback when ML models fail"""

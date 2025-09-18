@@ -192,12 +192,12 @@ class GymService {
    * Get all branches with current availability counts
    */
   async getBranches(): Promise<BranchesResponse> {
-    // The API returns a simple array, so we need to wrap it
-    const branches = await apiClient.get<Branch[]>('/branches');
+    // The API returns an object with branches array
+    const response = await apiClient.get<BranchesResponse>('/branches');
     return {
-      branches: branches.map(branch => ({
+      branches: response.branches.map(branch => ({
         ...branch,
-        coordinates: Array.isArray(branch.coordinates) 
+        coordinates: Array.isArray(branch.coordinates)
           ? { lat: branch.coordinates[0], lon: branch.coordinates[1] }
           : branch.coordinates
       }))
@@ -216,6 +216,41 @@ class GymService {
    */
   async getMachineHistory(machineId: string): Promise<MachineHistoryResponse> {
     return apiClient.get<MachineHistoryResponse>(`/machines/${machineId}/history`);
+  }
+
+  /**
+   * Get forecast for a specific machine
+   */
+  async getMachineForecast(machineId: string, minutes: number = 30): Promise<{
+    machineId: string;
+    forecast: {
+      likelyFreeIn30m: boolean;
+      classification: string;
+      display_text: string;
+      confidence: string;
+      probability: number;
+      peak_hours?: string;
+    };
+    success: boolean;
+  }> {
+    return apiClient.get<any>(`/forecast/machine/${machineId}?minutes=${minutes}`);
+  }
+
+  /**
+   * Get peak hours analysis for a branch (now using backend endpoint)
+   */
+  async getBranchPeakHours(branchId: string): Promise<{
+    branchId: string;
+    currentHour: number;
+    currentOccupancy: number;
+    peakHours: string;
+    confidence: string;
+    occupancyForecast: { [hour: string]: number };
+    nextPeakIn: number;
+    totalMachines: number;
+    generatedAt: string;
+  }> {
+    return apiClient.get<any>(`/branches/${branchId}/peak-hours`);
   }
 
   /**
@@ -288,13 +323,13 @@ class GymService {
 // Create and export service instance
 export const gymService = new GymService();
 
-// Export types for use in components
+// Export types for use in components (using type re-exports to avoid conflicts)
 export type {
-  Branch,
-  Machine,
-  Alert,
-  HistoryBin,
-  BranchAvailability,
-  ChatRequest,
-  ChatResponse,
+  Branch as BranchType,
+  Machine as MachineType,
+  Alert as AlertType,
+  HistoryBin as HistoryBinType,
+  BranchAvailability as BranchAvailabilityType,
+  ChatRequest as ChatRequestType,
+  ChatResponse as ChatResponseType,
 };

@@ -62,43 +62,23 @@ export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (message: string = inputMessage) => {
-    if (!message.trim()) return;
-
-    // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: message,
-      timestamp: new Date()
-    };
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage('');
+  const processMessageWithLocation = async (message: string, location: { lat: number; lon: number }) => {
+    console.log('🎯 processMessageWithLocation called:', { message, location });
     setIsLoading(true);
 
-    // Check if location is needed
-    const needsLocation = message.toLowerCase().includes('nearby') || 
-                         message.toLowerCase().includes('close') ||
-                         message.toLowerCase().includes('near me');
-
-    if (needsLocation && !hasLocation) {
-      setShowLocationRequest(true);
-      setIsLoading(false);
-      return;
-    }
-
-    // Use Bedrock-powered chat API with tool-use capabilities
     try {
       const chatRequest = {
         message: message,
-        userLocation: userLocation ? {
-          lat: userLocation.lat,
-          lon: userLocation.lon
-        } : undefined,
+        userLocation: {
+          lat: location.lat,
+          lon: location.lon
+        },
         sessionId: 'default'
       };
 
+      console.log('📤 Sending chat request:', chatRequest);
       const chatResponse = await gymService.sendChatMessage(chatRequest);
+      console.log('📥 Chat response received:', chatResponse);
 
       // Convert recommendations from chat response to our format
       const recommendations: BranchRecommendation[] | undefined = chatResponse.recommendations?.map(rec => ({
@@ -118,7 +98,7 @@ export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
         timestamp: new Date(),
         recommendations
       };
-      
+
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error with chat API:', error);
@@ -130,65 +110,172 @@ export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
       };
       setMessages(prev => [...prev, errorMessage]);
     }
-    
+
     setIsLoading(false);
   };
 
-  const handleLocationGranted = () => {
-    setHasLocation(true);
-    setShowLocationRequest(false);
-    
-    // Get user's actual location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude
-          });
-          
-          const systemMessage: Message = {
-            id: Date.now().toString(),
-            type: 'system',
-            content: "Location access granted! Now I can find the closest gyms for you. 📍",
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, systemMessage]);
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-          // Fallback to Hong Kong center
-          setUserLocation({ lat: 22.2819, lon: 114.1577 });
-          
-          const systemMessage: Message = {
-            id: Date.now().toString(),
-            type: 'system',
-            content: "Using default location in Hong Kong. I can still help you find nearby gyms! 📍",
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, systemMessage]);
-        }
-      );
-    } else {
-      // Fallback for browsers without geolocation
-      setUserLocation({ lat: 22.2819, lon: 114.1577 });
-      
-      const systemMessage: Message = {
+  const handleSendMessage = async (message: string = inputMessage, skipUserMessage = false) => {
+    if (!message.trim()) return;
+
+    // Add user message only if not skipping (to avoid duplicates)
+    if (!skipUserMessage) {
+      const userMessage: Message = {
         id: Date.now().toString(),
-        type: 'system',
-        content: "Using default location in Hong Kong. I can still help you find nearby gyms! 📍",
+        type: 'user',
+        content: message,
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, systemMessage]);
+      setMessages(prev => [...prev, userMessage]);
+      setInputMessage('');
     }
 
-    // Continue with the original query after location is set
-    setTimeout(() => {
-      const lastUserMessage = messages.filter(m => m.type === 'user').pop();
-      if (lastUserMessage) {
-        handleSendMessage(lastUserMessage.content);
+    // Check if location is needed
+    const needsLocation = message.toLowerCase().includes('nearby') ||
+                         message.toLowerCase().includes('close') ||
+                         message.toLowerCase().includes('near me');
+
+    console.log('🔍 Message processing debug:', {
+      message,
+      needsLocation,
+      hasLocation,
+      userLocation,
+      skipUserMessage
+    });
+
+    if (needsLocation && !hasLocation && !userLocation) {
+      console.log('🚨 Requesting location permission');
+      setShowLocationRequest(true);
+      return;
+    }
+
+    // Process message with location if we have it
+    if (userLocation) {
+      console.log('✅ Processing with user location:', userLocation);
+      await processMessageWithLocation(message, userLocation);
+    } else if (needsLocation) {
+      // If location is needed but we don't have it, ask user to share location
+      console.log('❌ Location needed but not available, asking user to grant location');
+      setShowLocationRequest(true);
+      return;
+    } else {
+      // Process without location
+      setIsLoading(true);
+
+      try {
+        const chatRequest = {
+          message: message,
+          sessionId: 'default'
+        };
+
+        const chatResponse = await gymService.sendChatMessage(chatRequest);
+
+        // Convert recommendations from chat response to our format
+        const recommendations: BranchRecommendation[] | undefined = chatResponse.recommendations?.map(rec => ({
+          branchId: rec.branchId,
+          name: rec.name,
+          eta: rec.eta,
+          distance: rec.distance,
+          availableCount: rec.availableCount,
+          totalCount: rec.totalCount,
+          category: rec.category
+        }));
+
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          type: 'assistant',
+          content: chatResponse.response,
+          timestamp: new Date(),
+          recommendations
+        };
+
+        setMessages(prev => [...prev, assistantMessage]);
+      } catch (error) {
+        console.error('Error with chat API:', error);
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          type: 'assistant',
+          content: "Sorry, I'm having trouble connecting to our chat system right now. Please try again in a moment!",
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, errorMessage]);
       }
-    }, 100); // Small delay to ensure location state is updated
+
+      setIsLoading(false);
+    }
+  };
+
+  const handleLocationGranted = async () => {
+    setShowLocationRequest(false);
+
+    try {
+      // Get user's actual location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const newLocation = {
+              lat: position.coords.latitude,
+              lon: position.coords.longitude
+            };
+
+            console.log('✅ Geolocation successful:', newLocation);
+
+            // Set location state atomically
+            setUserLocation(newLocation);
+            setHasLocation(true);
+
+            const systemMessage: Message = {
+              id: Date.now().toString(),
+              type: 'system',
+              content: `Location access granted! 📍\nUsing coordinates: ${newLocation.lat.toFixed(4)}, ${newLocation.lon.toFixed(4)}\nNow I can find the closest gyms for you.`,
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, systemMessage]);
+
+            // Continue with the original query
+            const lastUserMessage = messages.filter(m => m.type === 'user').pop();
+            if (lastUserMessage) {
+              // Process the message directly with the new location
+              processMessageWithLocation(lastUserMessage.content, newLocation);
+            }
+          },
+          (error) => {
+            console.error('❌ Geolocation error:', error.code, error.message);
+
+            // Don't use fallback - instead inform user that location is required
+            setShowLocationRequest(false);
+            setIsLoading(false);
+
+            const systemMessage: Message = {
+              id: Date.now().toString(),
+              type: 'assistant',
+              content: `Unable to get your location (Error: ${error.message}). For nearby recommendations, I need your location. Please try allowing location access again, or ask about specific gym branches instead.`,
+              timestamp: new Date()
+            };
+            setMessages(prev => [...prev, systemMessage]);
+          },
+          {
+            timeout: 10000, // 10 second timeout
+            enableHighAccuracy: false, // Don't require GPS, allow network location
+            maximumAge: 300000 // 5 minutes cache
+          }
+        );
+      } else {
+        // Browser doesn't support geolocation
+        setShowLocationRequest(false);
+        setIsLoading(false);
+
+        const systemMessage: Message = {
+          id: Date.now().toString(),
+          type: 'assistant',
+          content: "Your browser doesn't support location services. For nearby recommendations, please tell me which city or area you're in, or ask about specific gym branches.",
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, systemMessage]);
+      }
+    } catch (error) {
+      console.error('Error handling location grant:', error);
+      setIsLoading(false);
+    }
   };
 
   const handleLocationDenied = () => {

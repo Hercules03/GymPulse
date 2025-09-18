@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashbord';
 import Branches from './pages/Branches';
 import Machines from './pages/Machines';
 import MachineDetail from './pages/MachineDetail';
+import MLValidationPage from './components/test/MLValidationPage';
 import './globals.css';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
               <Route path="/branches" element={<Branches />} />
               <Route path="/machines" element={<Machines />} />
               <Route path="/machine-detail" element={<MachineDetail />} />
+              <Route path="/ml-validation" element={<MLValidationPage />} />
             </Routes>
           </Layout>
         } />

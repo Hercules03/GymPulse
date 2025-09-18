@@ -187,8 +187,8 @@ export function useUserAlerts(userId?: string) {
       alertConnectAttemptedRef.current = true;
       // Subscribe to all branches/categories for user alerts
       const alertSubscriptions: WebSocketSubscriptions = {
-        branches: ['hk-central', 'hk-causeway'],
-        categories: ['legs', 'chest', 'back']
+        branches: [], // Will be populated dynamically from API
+        categories: [] // Will be populated dynamically from API
       };
       webSocket.connect(alertSubscriptions, userId).catch(console.error);
     }

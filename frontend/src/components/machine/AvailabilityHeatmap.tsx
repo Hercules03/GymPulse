@@ -10,9 +10,18 @@ interface UsageData {
 
 interface AvailabilityHeatmapProps {
   usageData: UsageData[];
+  mlAnalytics?: {
+    peak_hours?: string;
+    avg_occupancy?: number;
+    total_data_points?: number;
+    date_range?: string;
+    anomalies_count?: number;
+    ml_insights?: string;
+    forecast_summary?: any;
+  };
 }
 
-export default function AvailabilityHeatmap({ usageData }: AvailabilityHeatmapProps) {
+export default function AvailabilityHeatmap({ usageData, mlAnalytics }: AvailabilityHeatmapProps) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const currentHour = new Date().getHours();
 
@@ -106,15 +115,63 @@ export default function AvailabilityHeatmap({ usageData }: AvailabilityHeatmapPr
             </div>
             <div className="text-right">
               <p className="text-sm font-medium text-blue-900">
-                {Math.round(getUsageForHour(currentHour) * 100)}% busy
+                {Math.round(getUsageForHour(currentHour))}% busy
               </p>
               <p className="text-xs text-blue-700">
-                {getUsageForHour(currentHour) < 0.3 ? 'Low usage' : 
-                 getUsageForHour(currentHour) < 0.7 ? 'Moderate usage' : 'High usage'}
+                {getUsageForHour(currentHour) < 30 ? 'Low usage' :
+                 getUsageForHour(currentHour) < 70 ? 'Moderate usage' : 'High usage'}
               </p>
             </div>
           </div>
         </div>
+
+        {/* AI Insights Section */}
+        {usageData.length > 0 && (
+          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 text-sm font-semibold">🧠</span>
+                </div>
+              </div>
+              <div className="flex-grow min-w-0">
+                <h4 className="text-sm font-medium text-blue-900 mb-2">🧠 ML Analytics</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="text-blue-800">
+                    🔮 <strong>Data Analysis:</strong> {mlAnalytics?.total_data_points || usageData.length} historical data points
+                    {mlAnalytics?.date_range && (
+                      <span className="text-blue-600 ml-1">({mlAnalytics.date_range})</span>
+                    )}
+                  </div>
+                  <div className="text-blue-700">
+                    📈 <strong>Peak Hours:</strong> {
+                      mlAnalytics?.peak_hours ||
+                      (() => {
+                        const peakHours = usageData
+                          .filter(d => d.usage_percentage > 70)
+                          .map(d => `${d.hour}:00`)
+                          .slice(0, 3);
+                        return peakHours.length > 0 ? peakHours.join(', ') : 'Low usage periods';
+                      })()
+                    }
+                  </div>
+                  <div className="text-blue-700">
+                    ⚡ <strong>Avg Occupancy:</strong> {
+                      mlAnalytics?.avg_occupancy ?
+                        `${mlAnalytics.avg_occupancy}% (Real analysis)` :
+                        'Calculating...'
+                    }
+                  </div>
+                  {mlAnalytics?.anomalies_count !== undefined && (
+                    <div className="text-blue-600 text-xs">
+                      🔍 <strong>Anomalies Detected:</strong> {mlAnalytics.anomalies_count} unusual patterns
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
