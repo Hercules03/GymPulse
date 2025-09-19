@@ -20,6 +20,7 @@ interface Machine {
   lastUpdate: number | null;
   category: string;
   gymId: string;
+  type: string;
   alertEligible: boolean;
 }
 
@@ -279,11 +280,14 @@ export default function MachinesPage() {
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{categoryName} Equipment</h1>
-                <div className="flex items-center gap-2 text-gray-500 text-sm">
-                  <MapPin className="w-4 h-4" />
-                  <span>{branchName}</span>
+              <div className="flex items-center gap-3">
+                {getCategoryIcon(category, { size: 32, className: "text-blue-600" })}
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">{categoryName} Equipment</h1>
+                  <div className="flex items-center gap-2 text-gray-500 text-sm">
+                    <MapPin className="w-4 h-4" />
+                    <span>{branchName}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -294,6 +298,18 @@ export default function MachinesPage() {
                 <div className="text-lg font-bold text-gray-900">
                   {statusCounts.free}/{statusCounts.total} Available
                 </div>
+                <div className="text-sm text-gray-500">
+                  {statusCounts.occupied} occupied • {statusCounts.unknown} unknown
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${
+                  webSocket.isConnected ? 'bg-green-500' : 
+                  webSocket.isConnecting ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+                }`}></div>
+                <span className="text-xs text-gray-500">
+                  {webSocket.isConnected ? 'Live' : webSocket.isConnecting ? 'Connecting...' : 'Offline'}
+                </span>
               </div>
             </div>
         </div>
@@ -317,6 +333,7 @@ export default function MachinesPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1 leading-tight">{machine.name}</h3>
+                    <p className="text-sm text-gray-500 leading-tight">{machine.type.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
                   </div>
                 </div>
                 <div className="flex-shrink-0">
@@ -325,22 +342,25 @@ export default function MachinesPage() {
               </div>
 
               <div className="space-y-3 mb-4">
-                {appMode === 'development' && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Activity className="w-4 h-4" />
-                    <span>ID: {machine.machineId}</span>
-                  </div>
-                )}
-
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Activity className="w-4 h-4" />
+                  <span>ID: {machine.machineId}</span>
+                </div>
+                
                 {machine.lastUpdate && (
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock className="w-4 h-4" />
-                    <span>Updated: {new Date(machine.lastUpdate * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <span>Updated: {new Date(machine.lastUpdate * 1000).toLocaleTimeString()}</span>
                   </div>
                 )}
               </div>
 
               <div className="mt-auto space-y-3">
+                <PredictionChip
+                  machineId={machine.machineId}
+                  status={machine.status}
+                />
+
                 <div className="flex flex-col gap-2 w-full">
                   <NotificationButton
                     machineId={machine.machineId}

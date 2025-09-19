@@ -108,7 +108,7 @@ GymPulse solves the problem of arriving at the gym only to find your planned equ
 - AI chatbot with Bedrock tool-use integration
 - Forecasting and analytics dashboard
 
-📊 **[View Detailed Progress →](docs/DEVELOPMENT_PROGRESS.md)**
+📊 **[View Detailed Progress →](docs/phases/ProjectProgress.md)**
 
 ## Quick Start
 
@@ -354,8 +354,13 @@ Co-Authored-By: Amazon Q Developer <noreply@aws.amazon.com>
 
 ## 📖 Documentation
 
-- **[Development Progress](docs/DEVELOPMENT_PROGRESS.md)**: Detailed phase-by-phase progress
-- **[Phase Documentation](Phase0.md)**: Step-by-step implementation guides (Phase0.md - Phase10.md)
-- **[Project Requirements](PRD.md)**: Complete product requirements document
+📁 **[Complete Documentation →](docs/README.md)** - Comprehensive documentation hub
+
+### Quick Access
+- **[Getting Started](docs/startup_guide.md)**: Initial setup and development environment
+- **[Project Requirements](docs/project/PRD.md)**: Complete product requirements document
+- **[Development Plan](docs/project/Plan.md)**: Implementation strategy and timeline
+- **[Phase-by-Phase Guides](docs/phases/)**: Step-by-step development phases (Phase0.md - Phase10.md)
+- **[Progress Tracking](docs/phases/ProjectProgress.md)**: Overall project status and milestones
 - **[Architecture Planning](docs/infrastructure-planning.md)**: Technical architecture decisions
-- **[Project Tracking](ProjectProgress.md)**: Overall project status and timeline
+- **[AI Evidence](docs/ai-evidence/)**: Comprehensive AI development documentation
