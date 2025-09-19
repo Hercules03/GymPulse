@@ -715,11 +715,24 @@ class GeminiChatEngine:
         try:
             print(f"🧠 Processing chat with Gemini: '{user_message}'")
 
-            # Step 1: Detect category from user message
+            # Step 1: Detect if asking about a specific branch
+            specific_branch = self.detect_branch_from_message(user_message.lower())
+
+            # Step 2: Detect category from user message
             category = self.detect_category_from_message(user_message.lower())
 
-            # Step 2: If location and category available, get availability data
-            if user_location and category:
+            # Step 3: Handle branch-specific queries (no location needed)
+            if specific_branch:
+                branch_data = self.get_branch_availability(specific_branch, category)
+                if branch_data:
+                    response_text = self.generate_branch_specific_response(user_message, branch_data, category)
+                    tools_used = ['getBranchAvailability']
+                else:
+                    response_text = f"Sorry, I couldn't find information about that branch. Please try asking about Central, Causeway Bay, or other available locations."
+                    tools_used = []
+
+            # Step 4: If location and category available, get availability data
+            elif user_location and category:
                 # Get availability data
                 availability_data = self.get_availability_by_category(
                     user_location['lat'], user_location['lon'], category, radius=10
@@ -789,6 +802,81 @@ class GeminiChatEngine:
             return 'back'
 
         return None
+
+    def detect_branch_from_message(self, message):
+        """Detect if user is asking about a specific branch"""
+        branch_keywords = {
+            'central': 'hk-central-caine',
+            'causeway': 'hk-causeway-hennessy',
+            'causeway bay': 'hk-causeway-hennessy',
+            'quarry bay': 'hk-quarrybay-westlands',
+            'mongkok': 'kl-mongkok-nathan',
+            'mong kok': 'kl-mongkok-nathan',
+            'tsim sha tsui': 'kl-tsimshatsui-ashley',
+            'tsimshatsui': 'kl-tsimshatsui-ashley',
+            'jordan': 'kl-jordan-nathan',
+            'sha tin': 'nt-shatin-fun',
+            'shatin': 'nt-shatin-fun',
+            'tsuen wan': 'nt-tsuenwan-lik',
+            'tsuenwan': 'nt-tsuenwan-lik',
+            'fanling': 'nt-fanling-green',
+            'tin shui wai': 'nt-tinshui-tin'
+        }
+
+        message_lower = message.lower()
+
+        for keyword, gym_id in branch_keywords.items():
+            if keyword in message_lower:
+                return gym_id
+
+        return None
+
+    def get_branch_availability(self, gym_id, category=None):
+        """Get availability for a specific branch"""
+        try:
+            print(f"🏢 Getting availability for branch: {gym_id}")
+
+            # Query machines for this gym
+            response = self.current_state_table.scan(
+                FilterExpression='gymId = :gym_id',
+                ExpressionAttributeValues={':gym_id': gym_id}
+            )
+
+            machines = response.get('Items', [])
+
+            if not machines:
+                return None
+
+            # Group by category
+            categories = {}
+            for machine in machines:
+                machine_category = machine.get('category', 'unknown')
+                if machine_category not in categories:
+                    categories[machine_category] = {'total': 0, 'free': 0, 'machines': []}
+
+                categories[machine_category]['total'] += 1
+                if machine.get('status') == 'free':
+                    categories[machine_category]['free'] += 1
+
+                categories[machine_category]['machines'].append({
+                    'machineId': machine.get('machineId'),
+                    'status': machine.get('status'),
+                    'lastUpdate': machine.get('lastUpdate')
+                })
+
+            branch_coords = get_branch_coordinates(gym_id)
+            branch_name = gym_id.replace('-', ' ').title() + ' Branch'
+
+            return {
+                'branchId': gym_id,
+                'name': branch_name,
+                'coordinates': branch_coords,
+                'categories': categories
+            }
+
+        except Exception as e:
+            print(f"❌ Error getting branch availability: {str(e)}")
+            return None
 
     def get_availability_by_category(self, lat, lon, category, radius=10):
         """Get machine availability for category near user location"""
@@ -1081,6 +1169,48 @@ class GeminiChatEngine:
     def generate_gemini_generic_response(self, user_message):
         """Generate generic response for non-specific queries"""
         return "I'm your gym equipment assistant! I can help you find available machines for legs, chest, or back workouts. Just tell me what you'd like to work on and share your location, and I'll find the best options nearby."
+
+    def generate_branch_specific_response(self, user_message, branch_data, category=None):
+        """Generate response for branch-specific queries"""
+        branch_name = branch_data['name']
+        categories = branch_data['categories']
+
+        if category and category in categories:
+            # Specific category requested
+            cat_data = categories[category]
+            free_count = cat_data['free']
+            total_count = cat_data['total']
+
+            if free_count > 0:
+                response = f"At **{branch_name}**, there are currently **{free_count}/{total_count}** {category} machines available! 💪\n\n"
+                response += f"Free machines include:\n"
+
+                free_machines = [m for m in cat_data['machines'] if m['status'] == 'free']
+                for machine in free_machines[:3]:  # Show first 3
+                    machine_name = machine['machineId'].replace('-', ' ').title()
+                    response += f"• {machine_name}\n"
+
+                if len(free_machines) > 3:
+                    response += f"• ...and {len(free_machines) - 3} more\n"
+
+                response += f"\nGreat time for your {category} workout!"
+            else:
+                response = f"At **{branch_name}**, all {total_count} {category} machines are currently occupied. 😔\n\n"
+                response += f"I recommend checking back in 15-30 minutes when machines might become available!"
+
+        else:
+            # General branch inquiry - show all categories
+            response = f"Here's what's available at **{branch_name}**:\n\n"
+
+            for cat_name, cat_data in categories.items():
+                free_count = cat_data['free']
+                total_count = cat_data['total']
+                status_emoji = "✅" if free_count > 0 else "🔴"
+                response += f"{status_emoji} **{cat_name.title()}**: {free_count}/{total_count} available\n"
+
+            response += f"\nWhich type of workout are you interested in? 🏋️‍♂️"
+
+        return response
 
 
 def lambda_handler(event, context):

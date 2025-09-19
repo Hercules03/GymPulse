@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Map, Marker, Overlay } from 'pigeon-maps';
 import { type Branch } from '@/services/gymService';
+import { useGeolocation } from '@/hooks/useGeolocation';
 
 // Custom marker component for availability-based styling
 interface CustomMarkerProps {
@@ -19,53 +20,53 @@ function CustomMarker({ anchor, availability, branch, isSelected, onClick }: Cus
   };
 
   const color = getMarkerColor(availability);
-  const size = isSelected ? 50 : 42; // Slightly larger for better text fit
-  const availabilityText = Math.round(availability).toString();
-
-  // Adjust font size based on text length
-  const getFontSize = (text: string) => {
-    if (text.length >= 3) return '10px'; // 100%
-    if (text.length === 2) return '11px'; // 89%
-    return '12px'; // 5%
-  };
+  const size = isSelected ? 20 : 16; // Smaller since no text needed
 
   return (
     <div
-      onClick={onClick}
-      className="flex items-center justify-center cursor-pointer transform transition-all duration-200 hover:scale-110"
+      className="flex items-center justify-center cursor-pointer transform transition-all duration-200 hover:scale-110 active:scale-95"
       style={{
-        width: size,
-        height: size,
-        marginLeft: -size / 2,
-        marginTop: -size / 2,
+        width: size + 8,
+        height: size + 12,
+        marginLeft: -(size + 8) / 2,
+        marginTop: -(size + 12),
+        zIndex: 2,
+        position: 'relative',
+        pointerEvents: 'auto',
+      }}
+      role="button"
+      aria-label={`View ${branch.name} branch dashboard`}
+      onClick={(e) => {
+        console.log('🟡 Direct click on marker container!', { branchId: branch.id });
+        e.stopPropagation();
+        e.preventDefault();
+        onClick();
       }}
     >
-      <div
-        className="rounded-full border-3 border-white shadow-lg flex items-center justify-center"
+      <svg
+        width={size + 8}
+        height={size + 12}
+        viewBox="0 0 24 30"
+        className={`drop-shadow-lg ${isSelected ? 'ring-4 ring-blue-300 rounded-full' : ''}`}
         style={{
-          backgroundColor: color,
-          width: size - 6, // More space for text
-          height: size - 6,
-          minWidth: size - 6, // Ensure consistent size
-          minHeight: size - 6,
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+          zIndex: 3,
+          pointerEvents: 'auto',
+        }}
+        onClick={(e) => {
+          console.log('🔴 Pin clicked!', { branchId: branch.id });
+          e.stopPropagation();
+          e.preventDefault();
+          onClick();
         }}
       >
-        <span
-          className="text-white font-bold leading-none select-none"
-          style={{
-            fontSize: getFontSize(availabilityText),
-            lineHeight: '1',
-            textAlign: 'center',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-          }}
-        >
-          {availabilityText}%
-        </span>
-      </div>
+        <path
+          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+          fill={color}
+          stroke="white"
+          strokeWidth="1"
+        />
+      </svg>
     </div>
   );
 }
@@ -154,17 +155,79 @@ interface InteractiveMapProps {
   branches?: Branch[];
   selectedBranch?: string | null;
   onBranchSelect?: (branchId: string) => void;
+  onBranchNavigate?: (branchId: string) => void;
 }
 
 export default function InteractiveMap({
   branches = [],
   selectedBranch,
-  onBranchSelect
+  onBranchSelect,
+  onBranchNavigate
 }: InteractiveMapProps) {
   const [showPopup, setShowPopup] = useState<string | null>(null);
+  const [mapHeight, setMapHeight] = useState(400);
+  const [mapWidth, setMapWidth] = useState(600);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const userLocation = useGeolocation();
 
-  // Default center for Hong Kong
-  const defaultCenter: [number, number] = [22.3193, 114.1694];
+  // Calculate map dimensions based on container
+  useLayoutEffect(() => {
+    const updateMapDimensions = () => {
+      if (mapContainerRef.current) {
+        const containerHeight = mapContainerRef.current.clientHeight;
+        const containerWidth = mapContainerRef.current.clientWidth;
+        console.log('Map dimensions update:', { containerHeight, containerWidth });
+        setMapHeight(containerHeight > 0 ? containerHeight : 400);
+        setMapWidth(containerWidth > 0 ? containerWidth : 600);
+      }
+    };
+
+    updateMapDimensions();
+    window.addEventListener('resize', updateMapDimensions);
+
+    // Use ResizeObserver if available for more accurate container size tracking
+    let resizeObserver: ResizeObserver | null = null;
+    if (mapContainerRef.current && window.ResizeObserver) {
+      resizeObserver = new ResizeObserver(updateMapDimensions);
+      resizeObserver.observe(mapContainerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateMapDimensions);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, []);
+
+  // Force recalculation after mount to handle timing issues
+  useEffect(() => {
+    const timers: NodeJS.Timeout[] = [];
+    
+    // Try multiple times with increasing delays to catch when layout is ready
+    [100, 250, 500].forEach(delay => {
+      const timer = setTimeout(() => {
+        if (mapContainerRef.current) {
+          const containerHeight = mapContainerRef.current.clientHeight;
+          const containerWidth = mapContainerRef.current.clientWidth;
+          console.log(`Delayed map recalc (${delay}ms):`, { containerHeight, containerWidth });
+          
+          if (containerHeight > 0 && containerWidth > 0) {
+            setMapHeight(containerHeight);
+            setMapWidth(containerWidth);
+          }
+        }
+      }, delay);
+      timers.push(timer);
+    });
+
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+    };
+  }, []);
+
+  // Default center for Hong Kong (Central area)
+  const defaultCenter: [number, number] = [22.2819, 114.1577];
 
   if (branches.length === 0) {
     return (
@@ -185,40 +248,70 @@ export default function InteractiveMap({
     );
   }
 
-  // Calculate map center and zoom based on branches
+  // Calculate map center and zoom based on user location and branches
   const getMapBounds = () => {
-    if (branches.length === 0) return { center: defaultCenter, zoom: 11 };
+    // Priority 1: If we have user location, center on that
+    if (userLocation.latitude && userLocation.longitude && !userLocation.error) {
+      return {
+        center: [userLocation.latitude, userLocation.longitude] as [number, number],
+        zoom: 14 // Higher zoom level to see precise locations
+      };
+    }
 
-    const lats = branches.map(b => b.coordinates.lat);
-    const lons = branches.map(b => b.coordinates.lon);
+    // Priority 2: If we have branches, center on them
+    if (branches.length > 0) {
+      const lats = branches.map(b => b.coordinates.lat);
+      const lons = branches.map(b => b.coordinates.lon);
 
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
-    const minLon = Math.min(...lons);
-    const maxLon = Math.max(...lons);
+      const minLat = Math.min(...lats);
+      const maxLat = Math.max(...lats);
+      const minLon = Math.min(...lons);
+      const maxLon = Math.max(...lons);
 
-    const centerLat = (minLat + maxLat) / 2;
-    const centerLon = (minLon + maxLon) / 2;
+      const centerLat = (minLat + maxLat) / 2;
+      const centerLon = (minLon + maxLon) / 2;
 
-    // Calculate zoom level based on bounds (simple approximation)
-    const latDiff = maxLat - minLat;
-    const lonDiff = maxLon - minLon;
-    const maxDiff = Math.max(latDiff, lonDiff);
+      // Calculate zoom level based on bounds (simple approximation)
+      const latDiff = maxLat - minLat;
+      const lonDiff = maxLon - minLon;
+      const maxDiff = Math.max(latDiff, lonDiff);
 
-    let zoom = 11;
-    if (maxDiff < 0.01) zoom = 14;
-    else if (maxDiff < 0.05) zoom = 12;
-    else if (maxDiff < 0.1) zoom = 11;
-    else zoom = 10;
+      let zoom = 13;
+      if (maxDiff < 0.01) zoom = 15;
+      else if (maxDiff < 0.05) zoom = 14;
+      else if (maxDiff < 0.1) zoom = 13;
+      else zoom = 12;
 
-    return { center: [centerLat, centerLon] as [number, number], zoom };
+      return { center: [centerLat, centerLon] as [number, number], zoom };
+    }
+
+    // Priority 3: Default to Hong Kong center
+    return { center: defaultCenter, zoom: 13 };
   };
 
   const { center, zoom } = getMapBounds();
 
   const handleMarkerClick = (branchId: string) => {
-    setShowPopup(branchId);
-    onBranchSelect?.(branchId);
+    console.log('🔵 Marker clicked!', { branchId, onBranchNavigate: !!onBranchNavigate });
+    
+    // Enhanced mobile detection: check screen width AND touch capability
+    const isMobile = window.innerWidth < 1024 || ('ontouchstart' in window);
+    console.log('📱 Device detection:', { 
+      isMobile, 
+      screenWidth: window.innerWidth, 
+      touchCapable: 'ontouchstart' in window 
+    });
+
+    if (isMobile && onBranchNavigate) {
+      console.log('🚀 Navigating to branch dashboard:', branchId);
+      // On mobile, clicking marker navigates directly to branch
+      onBranchNavigate(branchId);
+    } else {
+      console.log('🖥️ Desktop mode: showing popup');
+      // On desktop, show popup and select branch
+      setShowPopup(branchId);
+      onBranchSelect?.(branchId);
+    }
   };
 
   const handleClosePopup = () => {
@@ -227,13 +320,25 @@ export default function InteractiveMap({
 
   const handleViewDetails = (branchId: string) => {
     setShowPopup(null);
-    onBranchSelect?.(branchId);
+    if (onBranchNavigate) {
+      onBranchNavigate(branchId);
+    } else {
+      onBranchSelect?.(branchId);
+    }
   };
 
   return (
-    <div className="w-full h-full rounded-lg overflow-hidden shadow-sm bg-gray-100">
+    <div
+      ref={mapContainerRef}
+      className="w-full h-full overflow-hidden shadow-sm bg-gray-100"
+      style={{
+        minHeight: '400px',
+        position: 'relative'
+      }}
+    >
       <Map
-        height="100%"
+        height={mapHeight}
+        width={mapWidth}
         center={center}
         zoom={zoom}
         dprs={[1, 2]}
@@ -247,7 +352,24 @@ export default function InteractiveMap({
           </span>
         }
       >
-        {/* Render markers */}
+        {/* Render user location marker */}
+        {userLocation.latitude && userLocation.longitude && !userLocation.error && (
+          <Marker anchor={[userLocation.latitude, userLocation.longitude]}>
+            <div className="flex items-center justify-center">
+              <div className="bg-blue-500 p-2 rounded-full shadow-lg border-2 border-white">
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+            </div>
+          </Marker>
+        )}
+
+        {/* Render branch markers */}
         {branches.map((branch) => {
           const availability = branch.availability || 0;
           const isSelected = selectedBranch === branch.id;
@@ -256,6 +378,11 @@ export default function InteractiveMap({
             <Marker
               key={branch.id}
               anchor={[branch.coordinates.lat, branch.coordinates.lon]}
+              onClick={() => {
+                console.log('🎯 Marker onClick triggered!', { branchId: branch.id });
+                handleMarkerClick(branch.id);
+              }}
+              style={{ zIndex: 1 }}
             >
               <CustomMarker
                 anchor={[branch.coordinates.lat, branch.coordinates.lon]}

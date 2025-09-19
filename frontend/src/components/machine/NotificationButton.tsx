@@ -22,11 +22,7 @@ export default function NotificationButton({ machineId, status }: NotificationBu
   };
 
   if (status === 'available' || status === 'free') {
-    return (
-      <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-green-50 text-green-700 w-full">
-        <span>✓ Available Now</span>
-      </div>
-    );
+    return null; // Don't show notification button for available machines
   }
 
   return (

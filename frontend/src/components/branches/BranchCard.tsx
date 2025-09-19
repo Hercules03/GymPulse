@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Clock, Users } from 'lucide-react';
 
@@ -18,9 +19,12 @@ interface Branch {
 
 interface BranchCardProps {
   branch: Branch;
+  onNavigate?: () => void;
 }
 
-export default function BranchCard({ branch }: BranchCardProps) {
+export default function BranchCard({ branch, onNavigate }: BranchCardProps) {
+  const navigate = useNavigate();
+
   const getAvailabilityColor = (percentage: number) => {
     if (percentage >= 70) return 'text-green-600 bg-green-50';
     if (percentage >= 40) return 'text-orange-600 bg-orange-50';
@@ -33,9 +37,17 @@ export default function BranchCard({ branch }: BranchCardProps) {
     return 'Low';
   };
 
+  const handleClick = () => {
+    onNavigate?.(); // Call the callback to close bottom sheet if needed
+    navigate(`/dashboard/${branch.id}`);
+  };
+
   return (
-    <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
-      <CardContent className="p-6">
+    <Card
+      className="border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
+      onClick={handleClick}
+    >
+      <CardContent className="px-4 py-10">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-gray-900 mb-1">{branch.name}</h3>

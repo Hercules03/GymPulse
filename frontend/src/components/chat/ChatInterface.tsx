@@ -294,71 +294,79 @@ export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
   if (!isOpen) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      className="fixed bottom-4 right-4 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
-    >
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-            <Users className="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <h3 className="font-medium text-white">Gym Assistant</h3>
-            <p className="text-blue-100 text-xs">Online</p>
-          </div>
-        </div>
-        <button
-          onClick={onClose}
-          className="text-white/80 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black bg-opacity-25 z-40" onClick={onClose} />
+      
+      {/* Chat Dialog */}
+      <div className="fixed bottom-20 right-4 w-96 max-w-[calc(100vw-32px)] h-[500px] bg-white rounded-2xl shadow-2xl z-50 border border-gray-200 flex flex-col overflow-hidden"
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ duration: 0.2 }}
+          className="flex flex-col h-full"
         >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* Messages */}
-      <div className="h-96 overflow-y-auto p-4 space-y-3">
-        {messages.map((message) => (
-          <div key={message.id}>
-            <ChatBubble message={message} />
-            {message.recommendations && (
-              <div className="mt-3 space-y-2">
-                {message.recommendations.map((rec, index) => (
-                  <motion.div
-                    key={rec.branchId}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <BranchRecommendationCard recommendation={rec} />
-                  </motion.div>
-                ))}
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 flex items-center justify-between rounded-t-2xl">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <Users className="w-4 h-4 text-white" />
               </div>
-            )}
-          </div>
-        ))}
-        
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex justify-start"
-          >
-            <div className="bg-gray-100 rounded-2xl px-4 py-3 max-w-[80%]">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div>
+                <h3 className="font-medium text-white">Gym Assistant</h3>
+                <p className="text-blue-100 text-xs">Online</p>
               </div>
             </div>
-          </motion.div>
-        )}
-        
-        <div ref={messagesEndRef} />
-      </div>
+            <button
+              onClick={onClose}
+              className="text-white/80 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+            {messages.map((message) => (
+              <div key={message.id}>
+                <ChatBubble message={message} />
+                {message.recommendations && (
+                  <div className="mt-3 space-y-2">
+                    {message.recommendations.map((rec, index) => (
+                      <motion.div
+                        key={rec.branchId}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <BranchRecommendationCard recommendation={rec} />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            
+            {isLoading && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex justify-start"
+              >
+                <div className="bg-gray-100 rounded-2xl px-4 py-3 max-w-[80%]">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
 
       {/* Location Permission Request */}
       <AnimatePresence>
@@ -370,45 +378,47 @@ export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
         )}
       </AnimatePresence>
 
-      {/* Example Prompts */}
-      {messages.length <= 1 && !isLoading && (
-        <div className="px-4 py-2 border-t border-gray-100">
-          <p className="text-xs text-gray-500 mb-2">Try asking:</p>
-          <div className="flex flex-wrap gap-1">
-            {examplePrompts.map((prompt, index) => (
-              <button
-                key={index}
-                onClick={() => handleSendMessage(prompt)}
-                className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-full transition-colors"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+          {/* Example Prompts */}
+          {messages.length <= 1 && !isLoading && (
+            <div className="px-4 py-2 border-t border-gray-100 bg-white">
+              <p className="text-xs text-gray-500 mb-2">Try asking:</p>
+              <div className="flex flex-wrap gap-1">
+                {examplePrompts.map((prompt, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSendMessage(prompt)}
+                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-full transition-colors"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {/* Input */}
-      <div className="border-t border-gray-100 p-4">
-        <div className="flex items-center gap-3">
-          <input
-            type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Ask about gym availability..."
-            className="flex-1 px-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            disabled={isLoading}
-          />
-          <button
-            onClick={() => handleSendMessage()}
-            disabled={!inputMessage.trim() || isLoading}
-            className="w-9 h-9 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-colors"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </div>
+          {/* Input */}
+          <div className="border-t border-gray-100 p-4 bg-white rounded-b-2xl">
+            <div className="flex items-center gap-3">
+              <input
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                placeholder="Ask about gym availability..."
+                className="flex-1 px-4 py-2 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={isLoading}
+              />
+              <button
+                onClick={() => handleSendMessage()}
+                disabled={!inputMessage.trim() || isLoading}
+                className="w-9 h-9 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-full flex items-center justify-center transition-colors"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </motion.div>
       </div>
-    </motion.div>
+    </>
   );
 }

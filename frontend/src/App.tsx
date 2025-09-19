@@ -5,22 +5,20 @@ import Dashboard from './pages/Dashbord';
 import Branches from './pages/Branches';
 import Machines from './pages/Machines';
 import MachineDetail from './pages/MachineDetail';
-import MLValidationPage from './components/test/MLValidationPage';
 import './globals.css';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/branches" replace />} />
         <Route path="/*" element={
           <Layout>
             <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/branches" element={<Branches />} />
+              <Route path="/dashboard/:branchId" element={<Dashboard />} />
               <Route path="/machines" element={<Machines />} />
               <Route path="/machine-detail" element={<MachineDetail />} />
-              <Route path="/ml-validation" element={<MLValidationPage />} />
             </Routes>
           </Layout>
         } />

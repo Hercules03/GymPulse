@@ -46,8 +46,8 @@ export default function CategoryCard({
 
   return (
     <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer h-full">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-6">
+      <CardContent className="px-4 py-12">
+        <div className="flex items-center justify-between mb-8">
           <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getCategoryColor(category)}`}>
             {getCategoryIcon(category, { size: 24 })}
           </div>
@@ -56,11 +56,11 @@ export default function CategoryCard({
             <div className="text-xs text-gray-500">of {totalMachines}</div>
           </div>
         </div>
-        
-        <div className="space-y-3">
+
+        <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900 capitalize">{category}</h3>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-green-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${availabilityPercentage}%` }}
             />

@@ -50,9 +50,9 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
     }
     
     return (
-      <div className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm w-full">
-        <Clock className="w-4 h-4" />
-        <span>Ready to use</span>
+      <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm w-full">
+        <TrendingUp className="w-4 h-4" />
+        <span>Likely to stay free</span>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, X } from 'lucide-react';
 
@@ -9,19 +9,69 @@ interface FloatingChatButtonProps {
 }
 
 export default function FloatingChatButton({ isOpen, onClick, hasUnreadMessages = false }: FloatingChatButtonProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragConstraints, setDragConstraints] = useState({ top: 80, left: 20, right: 0, bottom: 0 });
+  const constraintsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateConstraints = () => {
+      setDragConstraints({
+        top: 80, // Below header
+        left: 20,
+        right: window.innerWidth - 96, // Account for button width + padding
+        bottom: window.innerHeight - 96
+      });
+    };
+
+    updateConstraints();
+    window.addEventListener('resize', updateConstraints);
+    return () => window.removeEventListener('resize', updateConstraints);
+  }, []);
+
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    // Small delay to prevent click event after drag
+    setTimeout(() => setIsDragging(false), 100);
+  };
+
+  const handleClick = () => {
+    if (!isDragging) {
+      onClick();
+    }
+  };
+
   return (
-    <motion.button
-      onClick={onClick}
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className={`fixed bottom-4 right-4 z-40 w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center ${
-        isOpen 
-          ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' 
-          : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700'
-      }`}
-    >
+    <>
+      {/* Invisible constraints container */}
+      <div ref={constraintsRef} className="fixed inset-0 pointer-events-none" />
+
+      <motion.button
+        drag
+        dragMomentum={false}
+        dragElastic={0.1}
+        dragConstraints={constraintsRef}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onClick={handleClick}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          y: 0 // No need to move up with popup dialog
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        whileHover={{ scale: isDragging ? 1 : 1.05 }}
+        whileTap={{ scale: isDragging ? 1 : 0.95 }}
+        className={`fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center cursor-pointer ${
+          isOpen
+            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700'
+        } ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        style={{ touchAction: 'none' }}
+      >
       {/* Notification Badge */}
       {hasUnreadMessages && !isOpen && (
         <motion.div
@@ -61,5 +111,6 @@ export default function FloatingChatButton({ isOpen, onClick, hasUnreadMessages 
         />
       )}
     </motion.button>
+    </>
   );
 }

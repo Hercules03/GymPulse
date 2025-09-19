@@ -57,7 +57,7 @@ export default function BranchRecommendationCard({ recommendation }: BranchRecom
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
+      className="bg-white border border-gray-200 rounded-xl px-4 py-10 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
     >
       <Link to={createPageUrl(`Branches?branch=${recommendation.branchId}`)}>
         {/* Header */}

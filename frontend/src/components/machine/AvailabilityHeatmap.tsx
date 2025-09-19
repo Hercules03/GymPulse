@@ -130,8 +130,8 @@ export default function AvailabilityHeatmap({ usageData, mlAnalytics }: Availabi
           </div>
         </div>
 
-        {/* AI Insights Section */}
-        {usageData.length > 0 && (
+        {/* AI Insights Section - Only show when mlAnalytics is provided (development mode) */}
+        {usageData.length > 0 && mlAnalytics && (
           <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0">

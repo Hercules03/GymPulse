@@ -22,6 +22,12 @@ export default function MachineDetail() {
   const [mlAnalytics, setMlAnalytics] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // App mode state
+  const [appMode, setAppMode] = useState<'demo' | 'development'>(() => {
+    const saved = localStorage.getItem('gym-pulse-app-mode');
+    return (saved as 'demo' | 'development') || 'demo';
+  });
+
   const machineId = searchParams.get('id');
   const category = searchParams.get('category');
   const branch = searchParams.get('branch');
@@ -51,80 +57,209 @@ export default function MachineDetail() {
     return Math.round((totalUsage / usageData.length) * 10) / 10; // Round to 1 decimal
   };
 
+  // Generate mock data for demo mode
+  const generateMockHeatmapData = () => {
+    console.log('MachineDetail: Generating mock heatmap data for demo mode');
+    return Array.from({ length: 24 }, (_, hour) => {
+      let baseUsage;
+      // Morning peak: 6-9 AM (high usage)
+      if (hour >= 6 && hour <= 9) {
+        baseUsage = 60 + Math.random() * 30; // 60-90%
+      }
+      // Lunch peak: 12-1 PM (medium-high usage)
+      else if (hour >= 12 && hour <= 13) {
+        baseUsage = 50 + Math.random() * 25; // 50-75%
+      }
+      // Evening peak: 6-9 PM (highest usage)
+      else if (hour >= 18 && hour <= 21) {
+        baseUsage = 70 + Math.random() * 25; // 70-95%
+      }
+      // Off-peak daytime: 2-5 PM (medium usage)
+      else if (hour >= 14 && hour <= 17) {
+        baseUsage = 30 + Math.random() * 20; // 30-50%
+      }
+      // Late night/early morning: 10 PM - 5 AM (low usage)
+      else if (hour >= 22 || hour <= 5) {
+        baseUsage = 5 + Math.random() * 15; // 5-20%
+      }
+      // Morning transition: 10-11 AM (medium usage)
+      else {
+        baseUsage = 35 + Math.random() * 20; // 35-55%
+      }
+
+      return {
+        hour,
+        usage_percentage: Math.round(baseUsage),
+        predicted_free_time: hour < 23 ? `${Math.round(Math.random() * 45 + 5)} min` : null
+      };
+    });
+  };
+
   const loadMachineData = useCallback(async () => {
     console.log('=== MachineDetail Debug ===');
+    console.log('MachineDetail: Current app mode:', appMode);
     console.log('machineId:', machineId);
     console.log('category:', category);
     console.log('branch:', branch);
-    
+
     if (!machineId && !category) {
       console.log('No machineId or category found, returning early');
       return;
     }
-    
+
     setIsLoading(true);
     try {
       if (machineId) {
-        // Load machine details and usage data from AWS API in single call
-        try {
-          const apiUrl = `https://cp58oqed6g.execute-api.ap-east-1.amazonaws.com/prod/machines/${machineId}/history?range=24h`;
-          console.log('Fetching from API URL:', apiUrl);
-          const response = await fetch(apiUrl);
-          console.log('API Response status:', response.status);
-          if (response.ok) {
-            const historyData = await response.json();
-            console.log('API Response data:', historyData);
-            console.log('Current status from API:', historyData.currentStatus);
-            if (historyData.machineId) {
-              // Create machine object from API response
-              const extractedStatus = historyData.currentStatus?.status || 'unknown';
-              console.log('Extracted status:', extractedStatus);
-              const machineObject = {
-                machine_id: historyData.machineId,
-                name: `${historyData.category.charAt(0).toUpperCase() + historyData.category.slice(1)} Machine - ${historyData.machineId}`,
-                category: historyData.category,
-                location: historyData.gymId,
-                status: extractedStatus, // Use actual status from API
-                last_updated: new Date().toISOString()
-              };
-              console.log('Setting machine object:', machineObject);
-              setMachine(machineObject);
-              // Set usage data from same response
-              setUsageData(historyData.usageData || []);
-              // Set forecast data from API response
-              setForecast(historyData.forecast || null);
-              // Set ML analytics data from API response
-              const mlData = {
-                total_data_points: historyData.dataPoints || (historyData.usageData || []).length,
-                peak_hours: calculatePeakHoursFromUsage(historyData.usageData || []),
-                avg_occupancy: calculateAvgOccupancy(historyData.usageData || []),
-                date_range: historyData.timeRange || '24 hours',
-                anomalies_count: (historyData.anomalies || []).length,
-                ml_insights: historyData.ml_insights
-              };
-              setMlAnalytics(mlData);
-              console.log('Forecast data:', historyData.forecast);
-              console.log('ML Analytics data:', mlData);
-              console.log('Raw API response:', historyData);
+        if (appMode === 'development') {
+          // Load machine details and usage data from AWS API in single call
+          console.log('MachineDetail: Loading REAL data from API for development mode');
+          try {
+            const apiUrl = `https://cp58oqed6g.execute-api.ap-east-1.amazonaws.com/prod/machines/${machineId}/history?range=24h`;
+            console.log('Fetching from API URL:', apiUrl);
+            const response = await fetch(apiUrl);
+            console.log('API Response status:', response.status);
+            if (response.ok) {
+              const historyData = await response.json();
+              console.log('API Response data:', historyData);
+              console.log('Current status from API:', historyData.currentStatus);
+              if (historyData.machineId) {
+                // Create machine object from API response
+                const extractedStatus = historyData.currentStatus?.status || 'unknown';
+                console.log('Extracted status:', extractedStatus);
+                const machineObject = {
+                  machine_id: historyData.machineId,
+                  name: `${historyData.category.charAt(0).toUpperCase() + historyData.category.slice(1)} Machine - ${historyData.machineId}`,
+                  category: historyData.category,
+                  location: historyData.gymId,
+                  status: extractedStatus, // Use actual status from API
+                  last_updated: new Date().toISOString()
+                };
+                console.log('Setting machine object:', machineObject);
+                setMachine(machineObject);
+                // Set usage data from same response
+                setUsageData(historyData.usageData || []);
+                // Set forecast data from API response
+                setForecast(historyData.forecast || null);
+                // Set ML analytics data from API response
+                const mlData = {
+                  total_data_points: historyData.dataPoints || (historyData.usageData || []).length,
+                  peak_hours: calculatePeakHoursFromUsage(historyData.usageData || []),
+                  avg_occupancy: calculateAvgOccupancy(historyData.usageData || []),
+                  date_range: historyData.timeRange || '24 hours',
+                  anomalies_count: (historyData.anomalies || []).length,
+                  ml_insights: historyData.ml_insights
+                };
+                setMlAnalytics(mlData);
+                console.log('Forecast data:', historyData.forecast);
+                console.log('ML Analytics data:', mlData);
+                console.log('Raw API response:', historyData);
+              } else {
+                setMachine(null);
+                setUsageData([]);
+                setForecast(null);
+                setMlAnalytics(null);
+              }
             } else {
+              console.error('Failed to load machine details:', response.status);
               setMachine(null);
               setUsageData([]);
               setForecast(null);
               setMlAnalytics(null);
             }
-          } else {
-            console.error('Failed to load machine details:', response.status);
+          } catch (error) {
+            console.error('Error loading machine details:', error);
             setMachine(null);
             setUsageData([]);
             setForecast(null);
             setMlAnalytics(null);
           }
-        } catch (error) {
-          console.error('Error loading machine details:', error);
-          setMachine(null);
-          setUsageData([]);
-          setForecast(null);
-          setMlAnalytics(null);
+        } else {
+          // Demo mode - use REAL status from API but MOCK heatmap data
+          console.log('MachineDetail: Demo mode - Getting REAL status from API but using MOCK heatmap data');
+
+          try {
+            const apiUrl = `https://cp58oqed6g.execute-api.ap-east-1.amazonaws.com/prod/machines/${machineId}/history?range=24h`;
+            console.log('Fetching real status from API URL:', apiUrl);
+            const response = await fetch(apiUrl);
+            console.log('API Response status:', response.status);
+
+            if (response.ok) {
+              const historyData = await response.json();
+              console.log('API Response data:', historyData);
+              console.log('Current status from API:', historyData.currentStatus);
+
+              if (historyData.machineId) {
+                // Use REAL machine data from API
+                const extractedStatus = historyData.currentStatus?.status || 'unknown';
+                console.log('Extracted REAL status:', extractedStatus);
+                const machineObject = {
+                  machine_id: historyData.machineId,
+                  name: `${historyData.category.charAt(0).toUpperCase() + historyData.category.slice(1)} Machine - ${historyData.machineId}`,
+                  category: historyData.category,
+                  location: historyData.gymId,
+                  status: extractedStatus, // Use REAL status from API
+                  last_updated: new Date().toISOString()
+                };
+                console.log('Setting machine object with REAL status:', machineObject);
+                setMachine(machineObject);
+
+                // But use MOCK heatmap data for better demo visualization
+                const mockUsageData = generateMockHeatmapData();
+                console.log('MachineDetail: Generated MOCK heatmap data for demo:', mockUsageData);
+                setUsageData(mockUsageData);
+                setForecast({ likely_free_30min: Math.random() > 0.5 });
+                setMlAnalytics(null); // No ML analytics in demo mode
+              } else {
+                // Fallback if API doesn't return machine data
+                console.log('API did not return machine data, using fallback');
+                const machineObject = {
+                  machine_id: machineId,
+                  name: `${category?.charAt(0).toUpperCase() + category?.slice(1)} Machine - ${machineId}`,
+                  category: category || 'legs',
+                  location: branch || 'hk-central',
+                  status: 'unknown',
+                  last_updated: new Date().toISOString()
+                };
+                setMachine(machineObject);
+                const mockUsageData = generateMockHeatmapData();
+                setUsageData(mockUsageData);
+                setForecast({ likely_free_30min: Math.random() > 0.5 });
+                setMlAnalytics(null);
+              }
+            } else {
+              console.error('Failed to load machine status from API:', response.status);
+              // Fallback to basic mock data if API fails
+              const machineObject = {
+                machine_id: machineId,
+                name: `${category?.charAt(0).toUpperCase() + category?.slice(1)} Machine - ${machineId}`,
+                category: category || 'legs',
+                location: branch || 'hk-central',
+                status: 'unknown',
+                last_updated: new Date().toISOString()
+              };
+              setMachine(machineObject);
+              const mockUsageData = generateMockHeatmapData();
+              setUsageData(mockUsageData);
+              setForecast({ likely_free_30min: Math.random() > 0.5 });
+              setMlAnalytics(null);
+            }
+          } catch (error) {
+            console.error('Error loading machine status from API:', error);
+            // Fallback to basic mock data if API fails
+            const machineObject = {
+              machine_id: machineId,
+              name: `${category?.charAt(0).toUpperCase() + category?.slice(1)} Machine - ${machineId}`,
+              category: category || 'legs',
+              location: branch || 'hk-central',
+              status: 'unknown',
+              last_updated: new Date().toISOString()
+            };
+            setMachine(machineObject);
+            const mockUsageData = generateMockHeatmapData();
+            setUsageData(mockUsageData);
+            setForecast({ likely_free_30min: Math.random() > 0.5 });
+            setMlAnalytics(null);
+          }
         }
       } else if (category && branch) {
         // Create a temporary machine object for category view
@@ -145,11 +280,37 @@ export default function MachineDetail() {
       setMachine(null); // Ensure machine is null on error to show not found
     }
     setIsLoading(false);
-  }, [machineId, category, branch]);
+  }, [machineId, category, branch, appMode]);
 
   useEffect(() => {
     loadMachineData();
   }, [loadMachineData]);
+
+  // Listen for app mode changes
+  useEffect(() => {
+    const handleModeChange = () => {
+      const newMode = localStorage.getItem('gym-pulse-app-mode') as 'demo' | 'development' || 'demo';
+      console.log('MachineDetail: Mode change detected, switching to:', newMode);
+      setAppMode(newMode);
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'gym-pulse-app-mode') {
+        const newMode = e.newValue as 'demo' | 'development' || 'demo';
+        console.log('MachineDetail: Storage change detected, switching to:', newMode);
+        setAppMode(newMode);
+      }
+    };
+
+    // Listen for custom events and storage changes
+    window.addEventListener('appModeChanged', handleModeChange);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('appModeChanged', handleModeChange);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -182,9 +343,9 @@ export default function MachineDetail() {
     <>
       {/* Header */}
       <header className="bg-white border-b border-gray-100 px-6 py-6">
-        <div className="max-w-4xl mx-auto flex items-center gap-4">
-          <Link 
-            to={createPageUrl('Dashboard')} 
+        <div className="flex items-center gap-4">
+          <Link
+            to={`/machines?branch=${branch || ''}&category=${category || 'legs'}`}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
@@ -222,10 +383,12 @@ export default function MachineDetail() {
                       <MapPin className="w-4 h-4" />
                       <span>{machine.location}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      <span>ID: {machine.machine_id}</span>
-                    </div>
+                    {appMode === 'development' && (
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        <span>ID: {machine.machine_id}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-3">

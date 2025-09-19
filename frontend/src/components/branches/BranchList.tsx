@@ -19,9 +19,10 @@ interface Branch {
 interface BranchListProps {
   branches: Branch[];
   isLoading: boolean;
+  onBranchNavigate?: () => void;
 }
 
-export default function BranchList({ branches, isLoading }: BranchListProps) {
+export default function BranchList({ branches, isLoading, onBranchNavigate }: BranchListProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -57,7 +58,7 @@ export default function BranchList({ branches, isLoading }: BranchListProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: index * 0.1 }}
         >
-          <BranchCard branch={branch} />
+          <BranchCard branch={branch} onNavigate={onBranchNavigate} />
         </motion.div>
       ))}
     </div>
