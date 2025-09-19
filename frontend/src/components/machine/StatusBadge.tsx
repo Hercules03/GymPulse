@@ -56,7 +56,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
   const config = getStatusConfig(status);
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${config.bg} ${config.text} ${config.border}`}>
+    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border whitespace-nowrap ${config.bg} ${config.text} ${config.border}`}>
       <span className="text-xs">{config.icon}</span>
       {config.label}
     </div>

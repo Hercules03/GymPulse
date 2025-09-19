@@ -97,7 +97,9 @@ export default function Dashboard() {
 
   // Load peak hours data when selected location changes
   useEffect(() => {
-    loadPeakHoursData(selectedLocation);
+    if (selectedLocation) { // Only load if we have a valid branch ID
+      loadPeakHoursData(selectedLocation);
+    }
   }, [selectedLocation, loadPeakHoursData]);
 
   // Update last update time when WebSocket receives new data
@@ -109,7 +111,7 @@ export default function Dashboard() {
       // Refresh peak hours data periodically when receiving updates
       // (debounced to avoid too many API calls)
       const shouldRefreshPeakHours = Math.random() < 0.1; // 10% chance per update
-      if (shouldRefreshPeakHours) {
+      if (shouldRefreshPeakHours && selectedLocation) {
         console.log('🔄 Refreshing peak hours forecast due to real-time data changes...');
         loadPeakHoursData(selectedLocation);
       }

@@ -25,8 +25,13 @@ export default function AvailabilityHeatmap({ usageData, mlAnalytics }: Availabi
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const currentHour = new Date().getHours();
 
+  // Debug: Log usage data to see what's actually being received
+  console.log('AvailabilityHeatmap received usageData:', usageData);
+  console.log('Sample usage values:', usageData.slice(0, 5).map(d => ({ hour: d.hour, usage: d.usage_percentage })));
+
   const getIntensityColor = (usage: number) => {
     const intensity = Math.round(usage); // usage is already percentage 0-100
+    console.log(`Color calculation: usage=${usage}, intensity=${intensity}`);
     if (intensity >= 80) return 'bg-red-500';
     if (intensity >= 60) return 'bg-orange-500';
     if (intensity >= 40) return 'bg-yellow-500';

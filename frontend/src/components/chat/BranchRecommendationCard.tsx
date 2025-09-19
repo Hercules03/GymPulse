@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Clock, Users, Navigation, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { getCategoryIcon } from "@/components/icons/CategoryIcons";
 
 interface BranchRecommendation {
   branchId: string;
@@ -21,16 +22,21 @@ interface BranchRecommendationCardProps {
 export default function BranchRecommendationCard({ recommendation }: BranchRecommendationCardProps) {
   const availabilityPercentage = (recommendation.availableCount / recommendation.totalCount) * 100;
   
-  const getCategoryIcon = (category: string) => {
+  // Get appropriate color scheme for each category
+  const getCategoryColor = (category: string) => {
     switch (category) {
       case 'legs':
-        return '🦵';
+        return 'bg-blue-50 text-blue-600';
       case 'chest':
-        return '💪';
+        return 'bg-red-50 text-red-600';
       case 'back':
-        return '🔙';
+        return 'bg-green-50 text-green-600';
+      case 'cardio':
+        return 'bg-purple-50 text-purple-600';
+      case 'arms':
+        return 'bg-orange-50 text-orange-600';
       default:
-        return '🏋️';
+        return 'bg-gray-50 text-gray-600';
     }
   };
 
@@ -57,8 +63,8 @@ export default function BranchRecommendationCard({ recommendation }: BranchRecom
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-lg">
-              {getCategoryIcon(recommendation.category)}
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getCategoryColor(recommendation.category)}`}>
+              {getCategoryIcon(recommendation.category, { size: 20 })}
             </div>
             <div>
               <h4 className="font-semibold text-gray-900">{recommendation.name}</h4>

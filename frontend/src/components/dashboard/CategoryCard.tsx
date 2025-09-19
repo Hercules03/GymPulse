@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
+import { getCategoryIcon } from "@/components/icons/CategoryIcons";
 
 interface Machine {
   name: string;
@@ -23,16 +24,21 @@ export default function CategoryCard({
   occupiedCount, 
   offlineCount 
 }: CategoryCardProps) {
-  const getCategoryIcon = (category: string) => {
+  // Get appropriate color scheme for each category
+  const getCategoryColor = (category: string) => {
     switch (category) {
       case 'legs':
-        return '🦵';
+        return 'bg-blue-50 text-blue-600';
       case 'chest':
-        return '💪';
+        return 'bg-red-50 text-red-600';
       case 'back':
-        return '🔙';
+        return 'bg-green-50 text-green-600';
+      case 'cardio':
+        return 'bg-purple-50 text-purple-600';
+      case 'arms':
+        return 'bg-orange-50 text-orange-600';
       default:
-        return '🏋️';
+        return 'bg-gray-50 text-gray-600';
     }
   };
 
@@ -42,8 +48,8 @@ export default function CategoryCard({
     <Card className="border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer h-full">
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-2xl">
-            {getCategoryIcon(category)}
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getCategoryColor(category)}`}>
+            {getCategoryIcon(category, { size: 24 })}
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold text-gray-900">{availableCount}</div>

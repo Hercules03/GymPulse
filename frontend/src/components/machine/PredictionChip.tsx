@@ -36,11 +36,11 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
                      'bg-blue-50 text-blue-700';
       
       return (
-        <div className={`inline-flex items-center gap-2 px-3 py-2 ${bgColor} rounded-lg text-sm`}>
+        <div className={`flex items-center gap-2 px-3 py-2 ${bgColor} rounded-lg text-sm w-full`}>
           <Clock className="w-4 h-4" />
           <span>Free now</span>
           {forecast.metadata?.reliable && (
-            <div className="flex items-center gap-1 text-xs opacity-75">
+            <div className="flex items-center gap-1 text-xs opacity-75 ml-auto">
               <Info className="w-3 h-3" />
               <span>{forecast.confidence} confidence</span>
             </div>
@@ -50,7 +50,7 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
     }
     
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm">
+      <div className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm w-full">
         <Clock className="w-4 h-4" />
         <span>Ready to use</span>
       </div>
@@ -60,7 +60,7 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
   // Handle offline machines
   if (status === 'offline') {
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-2 bg-gray-50 text-gray-700 rounded-lg text-sm">
+      <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 text-gray-700 rounded-lg text-sm w-full">
         <AlertCircle className="w-4 h-4" />
         <span>Currently offline</span>
       </div>
@@ -81,11 +81,11 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
                   Clock;
 
       return (
-        <div className={`inline-flex items-center gap-2 px-3 py-2 ${bgColor} rounded-lg text-sm`}>
+        <div className={`flex items-center gap-2 px-3 py-2 ${bgColor} rounded-lg text-sm w-full`}>
           <Icon className="w-4 h-4" />
           <span>{forecast.display_text}</span>
           {forecast.metadata?.reliable && forecast.confidence !== 'none' && (
-            <div className="flex items-center gap-1 text-xs opacity-75">
+            <div className="flex items-center gap-1 text-xs opacity-75 ml-auto">
               <Info className="w-3 h-3" />
               <span>{forecast.confidence}</span>
             </div>
@@ -97,7 +97,7 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
     // Fallback to legacy predicted time format
     if (predictedFreeTime) {
       return (
-        <div className="inline-flex items-center gap-2 px-3 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm">
+        <div className="flex items-center gap-2 px-3 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm w-full">
           <Clock className="w-4 h-4" />
           <span>Available in ~{predictedFreeTime}</span>
         </div>
@@ -106,7 +106,7 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
 
     // Default occupied state
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm">
+      <div className="flex items-center gap-2 px-3 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm w-full">
         <Clock className="w-4 h-4" />
         <span>Currently in use</span>
       </div>
@@ -115,7 +115,7 @@ export default function PredictionChip({ predictedFreeTime, status, forecast }: 
 
   // Default fallback
   return (
-    <div className="inline-flex items-center gap-2 px-3 py-2 bg-gray-50 text-gray-700 rounded-lg text-sm">
+    <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 text-gray-700 rounded-lg text-sm w-full">
       <Clock className="w-4 h-4" />
       <span>Status unknown</span>
     </div>

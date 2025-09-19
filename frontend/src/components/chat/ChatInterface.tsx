@@ -43,7 +43,7 @@ export default function ChatInterface({ isOpen, onClose }: ChatInterfaceProps) {
     {
       id: '1',
       type: 'assistant',
-      content: "Hi! I'm your gym assistant. I can help you find available equipment nearby. Try asking me something like 'Leg day nearby?' 💪",
+      content: "Hi! I'm your gym assistant. I can help you find available equipment nearby. Try asking me something like 'Leg day nearby?' or 'Find chest equipment close to me'.",
       timestamp: new Date()
     }
   ]);

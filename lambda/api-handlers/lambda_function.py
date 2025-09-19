@@ -841,9 +841,13 @@ class GeminiChatEngine:
             # Try to get real walking times from Google Maps API
             google_api_key = os.environ.get('GOOGLE_MAPS_API_KEY')
 
-            if google_api_key and len(branches) <= 5:  # Rate limit protection
+            print(f"🔍 Route calculation debug: API key present: {bool(google_api_key)}, Branch count: {len(branches)}")
+
+            if google_api_key and len(branches) <= 25:  # Increased limit for better coverage
+                print(f"✅ Using Google Maps API for {len(branches)} branches")
                 return self.get_google_walking_times(user_location, branches, google_api_key)
             else:
+                print(f"⚠️ Using fallback estimation (API key: {bool(google_api_key)}, branches: {len(branches)})")
                 # Fallback to improved estimation
                 return self.get_estimated_walking_times(branches)
 
@@ -1032,7 +1036,9 @@ class GeminiChatEngine:
                 response += f"🥇 **{top_branch['name']}** (Recommended)\n"
                 response += f"• {top_branch['freeCount']}/{top_branch['totalCount']} {category} machines available\n"
 
-                if route_info.get('etaMinutes'):
+                if route_info.get('transportMethod'):
+                    response += f"• {route_info['transportMethod']}\n"
+                elif route_info.get('etaMinutes'):
                     response += f"• {route_info['etaMinutes']} minutes away\n"
 
                 # Add alternatives
@@ -1043,7 +1049,9 @@ class GeminiChatEngine:
                         if branch.get('freeCount', 0) > 0:
                             alt_route = routes_by_branch.get(branch['branchId'], {})
                             response += f"• {branch['name']}: {branch['freeCount']} available"
-                            if alt_route.get('etaMinutes'):
+                            if alt_route.get('transportMethod'):
+                                response += f" ({alt_route['transportMethod']})"
+                            elif alt_route.get('etaMinutes'):
                                 response += f" ({alt_route['etaMinutes']} min)"
                             response += "\n"
 
@@ -1119,6 +1127,8 @@ def lambda_handler(event, context):
                 }
         elif path.startswith('/machines/') and '/history' in path and http_method == 'GET':
             return handle_machine_history_request(event, context, cors_headers)
+        elif path.startswith('/forecast/machine/') and http_method == 'GET':
+            return handle_forecast_request(event, context, cors_headers)
         elif path.startswith('/alerts') and http_method == 'POST':
             return handle_alerts_request(event, context, cors_headers)
         elif path.startswith('/chat') and http_method == 'POST':
@@ -1590,6 +1600,133 @@ def handle_chat_request(event, context, cors_headers):
         }
 
 
+def handle_forecast_request(event, context, cors_headers):
+    """
+    Handle GET /forecast/machine/{machineId} - return ML-based forecast for a specific machine
+    """
+    try:
+        # Extract machine ID from path: /forecast/machine/{machineId}
+        path = event.get('path', '')
+        path_parts = path.split('/')
+        if len(path_parts) >= 4:
+            machine_id = path_parts[3]
+        else:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', **cors_headers},
+                'body': json.dumps({'error': 'Invalid path format. Expected: /forecast/machine/{machineId}'})
+            }
+
+        # Get query parameters
+        query_params = event.get('queryStringParameters') or {}
+        minutes = int(query_params.get('minutes', 30))  # Default to 30 minutes
+
+        print(f"🔮 Generating ML forecast for machine: {machine_id}, timeframe: {minutes} minutes")
+
+        # Get machine info from current state
+        machine_response = current_state_table.get_item(Key={'machineId': machine_id})
+        if 'Item' not in machine_response:
+            return {
+                'statusCode': 404,
+                'headers': {'Content-Type': 'application/json', **cors_headers},
+                'body': json.dumps({'error': f'Machine {machine_id} not found'})
+            }
+
+        machine = machine_response['Item']
+        gym_id = machine.get('gymId')
+        category = machine.get('category')
+
+        if not gym_id or not category:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', **cors_headers},
+                'body': json.dumps({'error': f'Missing gymId or category for machine {machine_id}'})
+            }
+
+        # Initialize ML forecasting engine
+        ml_engine = MLForecastEngine()
+
+        # Get historical data for ML analysis
+        current_time = int(time.time())
+        start_time = current_time - (14 * 24 * 60 * 60)  # 14 days ago
+
+        # Query aggregates table
+        gym_category_key = f"{gym_id}_{category}"
+        response = aggregates_table.query(
+            KeyConditionExpression='gymId_category = :gck AND timestamp15min BETWEEN :start AND :end',
+            ExpressionAttributeValues={
+                ':gck': gym_category_key,
+                ':start': start_time,
+                ':end': current_time
+            },
+            ScanIndexForward=True
+        )
+
+        historical_data = response.get('Items', [])
+        print(f"📊 Retrieved {len(historical_data)} historical data points for ML forecast")
+
+        # Prepare current context
+        current_context = {
+            'machine_id': machine_id,
+            'status': machine.get('status', 'unknown'),
+            'timestamp': current_time,
+            'category': category,
+            'gym_id': gym_id,
+            'forecast_minutes': minutes
+        }
+
+        # Generate ML forecast
+        ml_forecast = ml_engine.generate_ai_forecast(machine_id, historical_data, current_context)
+
+        # Extract forecast data
+        forecast_data = ml_forecast.get('forecast', {})
+
+        # Determine peak hours if not in forecast
+        if 'peak_hours' not in forecast_data and len(historical_data) > 0:
+            data_array = ml_engine.prepare_time_series_data(historical_data)
+            peak_hours = ml_engine.get_peak_hours_numpy(data_array)
+            forecast_data['peak_hours'] = peak_hours
+
+        # Build response in format expected by frontend
+        response_data = {
+            'machineId': machine_id,
+            'forecast': {
+                'likelyFreeIn30m': forecast_data.get('likelyFreeIn30m', False),
+                'classification': forecast_data.get('classification', 'analyzing'),
+                'display_text': forecast_data.get('display_text', 'AI: Analyzing patterns...'),
+                'confidence': forecast_data.get('confidence', 'low'),
+                'probability': forecast_data.get('forecast_usage', 50.0) / 100.0,  # Convert to 0-1 range
+                'peak_hours': forecast_data.get('peak_hours', 'Analysis pending')
+            },
+            'success': True,
+            'ml_data': {
+                'models_used': ml_forecast.get('models_used', 0),
+                'data_points_analyzed': ml_forecast.get('data_points_analyzed', len(historical_data)),
+                'confidence_score': ml_forecast.get('confidence_score', 0.1),
+                'anomalies_detected': len(ml_forecast.get('anomalies', [])),
+                'ml_insights': ml_forecast.get('ml_insights', 'Building ML models...')
+            }
+        }
+
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', **cors_headers},
+            'body': json.dumps(response_data)
+        }
+
+    except Exception as e:
+        print(f"❌ Error in forecast request: {str(e)}")
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json', **cors_headers},
+            'body': json.dumps({
+                'error': 'Failed to generate forecast',
+                'details': str(e),
+                'success': False
+            })
+        }
+
+
 def handle_peak_hours_request(event, context, cors_headers):
     """
     Handle GET /branches/{branchId}/peak-hours - return ML-based peak hours forecast for a branch
@@ -1811,10 +1948,25 @@ def handle_peak_hours_request(event, context, cors_headers):
 
 
 def get_branch_coordinates(gym_id):
-    """Helper function to get branch coordinates"""
+    """Helper function to get branch coordinates for realistic Hong Kong locations"""
     coordinates = {
-        'hk-central': {'lat': 22.2819, 'lon': 114.1577},
-        'hk-causeway': {'lat': 22.2783, 'lon': 114.1747}
+        # Hong Kong Island
+        'hk-central-caine': {'lat': 22.2819, 'lon': 114.1577},  # Central (close to Kennedy Town)
+        'hk-causeway-hennessy': {'lat': 22.2783, 'lon': 114.1747},  # Causeway Bay
+        'hk-quarrybay-westlands': {'lat': 22.2855, 'lon': 114.2155},  # Quarry Bay
+
+        # Kowloon
+        'kl-mongkok-nathan': {'lat': 22.3193, 'lon': 114.1694},  # Mongkok (farther)
+        'kl-tsimshatsui-ashley': {'lat': 22.2978, 'lon': 114.1722},  # Tsim Sha Tsui
+        'kl-jordan-nathan': {'lat': 22.3045, 'lon': 114.1712},  # Jordan
+        'kl-taikok-ivy': {'lat': 22.3165, 'lon': 114.2247},  # Tai Kok Tsui
+
+        # New Territories
+        'nt-shatin-fun': {'lat': 22.3817, 'lon': 114.1883},  # Sha Tin (much farther)
+        'nt-tsuenwan-lik': {'lat': 22.3708, 'lon': 114.1133},  # Tsuen Wan
+        'nt-maonshan-lee': {'lat': 22.4058, 'lon': 114.2347},  # Ma On Shan (very far)
+        'nt-fanling-green': {'lat': 22.4928, 'lon': 114.1378},  # Fanling (very far)
+        'nt-tinshui-tin': {'lat': 22.4578, 'lon': 114.0042},  # Tin Shui Wai (very far)
     }
     return coordinates.get(gym_id, {'lat': 22.2819, 'lon': 114.1577})
 

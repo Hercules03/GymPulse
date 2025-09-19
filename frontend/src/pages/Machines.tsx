@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Clock, Activity, Dumbbell, Heart, ArrowUp } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Activity } from 'lucide-react';
 import { gymService } from '@/services/gymService';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
 
@@ -9,6 +9,8 @@ import StatusBadge from '@/components/machine/StatusBadge';
 import NotificationButton from '@/components/machine/NotificationButton';
 import PredictionChip from '@/components/machine/PredictionChip';
 import AvailabilityHeatmap from '@/components/machine/AvailabilityHeatmap';
+import { getMachineIcon } from '@/components/icons/MachineIcons';
+import { getCategoryIcon } from '@/components/icons/CategoryIcons';
 
 interface Machine {
   machineId: string;
@@ -21,11 +23,7 @@ interface Machine {
   alertEligible: boolean;
 }
 
-const CategoryIcons = {
-  legs: Dumbbell,
-  chest: Heart,
-  back: ArrowUp
-} as const;
+// Category icons are now handled by getCategoryIcon function
 
 export default function MachinesPage() {
   const location = useLocation();
@@ -47,13 +45,26 @@ export default function MachinesPage() {
   });
 
   const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
-  const CategoryIcon = CategoryIcons[category as keyof typeof CategoryIcons] || Dumbbell;
+
+  // Helper function to get branch name from branchId
+  const getBranchName = (branchId: string) => {
+    const branchMap: Record<string, string> = {
+      'hk-central': 'Central Branch',
+      'hk-causeway': 'Causeway Bay Branch',
+      'central': 'Central Branch',
+      'causeway': 'Causeway Bay Branch'
+    };
+    return branchMap[branchId] || branchId;
+  };
 
   useEffect(() => {
     const loadMachines = async () => {
       setIsLoading(true);
       setError(null);
-      
+
+      // Set branch name from branchId
+      setBranchName(getBranchName(branchId));
+
       try {
         // Load machines for this branch and category
         console.log('Loading machines for:', { branchId, category });
@@ -192,7 +203,7 @@ export default function MachinesPage() {
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <div className="flex items-center gap-3">
-                <CategoryIcon className="w-8 h-8 text-blue-600" />
+                {getCategoryIcon(category, { size: 32, className: "text-blue-600" })}
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">{categoryName} Equipment</h1>
                   <div className="flex items-center gap-2 text-gray-500 text-sm">
@@ -236,14 +247,21 @@ export default function MachinesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 flex flex-col h-full"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-lg mb-1">{machine.name}</h3>
-                  <p className="text-sm text-gray-500">{machine.type.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
+              <div className="flex items-start justify-between mb-4 gap-3">
+                <div className="flex items-start gap-3 min-w-0 flex-1">
+                  <div className="mt-1 flex-shrink-0">
+                    {getCategoryIcon(category, { size: 32, className: "text-gray-600" })}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-gray-900 text-lg mb-1 truncate">{machine.name}</h3>
+                    <p className="text-sm text-gray-500 truncate">{machine.type.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
+                  </div>
                 </div>
-                <StatusBadge status={machine.status} />
+                <div className="flex-shrink-0">
+                  <StatusBadge status={machine.status} />
+                </div>
               </div>
 
               <div className="space-y-3 mb-4">
@@ -260,20 +278,20 @@ export default function MachinesPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between">
-                <PredictionChip 
+              <div className="mt-auto space-y-3">
+                <PredictionChip
                   machineId={machine.machineId}
                   status={machine.status}
                 />
-                
-                <div className="flex items-center gap-2">
+
+                <div className="flex flex-col gap-2 w-full">
                   <NotificationButton
                     machineId={machine.machineId}
                     status={machine.status}
                   />
                   <Link
                     to={`/machine-detail?id=${machine.machineId}`}
-                    className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors"
+                    className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors text-center"
                   >
                     Details
                   </Link>
@@ -296,7 +314,9 @@ export default function MachinesPage() {
 
         {machines.length === 0 && !isLoading && (
           <div className="text-center py-12">
-            <CategoryIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <div className="mx-auto mb-4">
+              {getCategoryIcon(category, { size: 64, className: "text-gray-300 mx-auto" })}
+            </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No machines found</h3>
             <p className="text-gray-500">
               No {category} equipment available at {branchName}.

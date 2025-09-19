@@ -3,7 +3,7 @@ import { gymService, type Branch } from '@/services/gymService';
 import { extractCategoriesFromBranches } from '@/utils/categoryUtils';
 import BranchList from '@/components/branches/BranchList';
 import BranchSearch from '@/components/branches/BranchSearch';
-import MapPlaceholder from '@/components/branches/MapPlaceholder';
+import InteractiveMap from '@/components/branches/MapPlaceholder';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
 
 export default function BranchesPage() {
@@ -11,6 +11,7 @@ export default function BranchesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
   
   // WebSocket integration for real-time updates - dynamically subscribe to loaded branches
   const webSocket = useMachineUpdates({
@@ -118,6 +119,12 @@ export default function BranchesPage() {
     );
   }, [enrichedBranches, searchTerm]);
 
+  const handleBranchSelect = (branchId: string) => {
+    setSelectedBranch(branchId);
+    // Navigate to branch details (you can add navigation logic here)
+    console.log('Selected branch:', branchId);
+  };
+
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
@@ -170,7 +177,11 @@ export default function BranchesPage() {
 
         {/* Right Panel: Map */}
         <div className="hidden lg:block bg-gray-100 p-6">
-          <MapPlaceholder />
+          <InteractiveMap
+            branches={filteredBranches}
+            selectedBranch={selectedBranch}
+            onBranchSelect={handleBranchSelect}
+          />
         </div>
       </div>
     </div>

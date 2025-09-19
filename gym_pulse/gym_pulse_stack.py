@@ -384,6 +384,16 @@ class GymPulseStack(Stack):
             )
         )
         
+        # Forecast endpoints for machine predictions
+        forecast_resource = api.root.add_resource("forecast")
+        forecast_machine_resource = forecast_resource.add_resource("machine")
+        forecast_machine_id_resource = forecast_machine_resource.add_resource("{machineId}")
+        forecast_machine_id_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(api_lambda),
+            api_key_required=False
+        )
+
         # Health check endpoint (no API key required)
         health_resource = api.root.add_resource("health")
         health_resource.add_method(

@@ -22,13 +22,17 @@ export default function NotificationButton({ machineId, status }: NotificationBu
   };
 
   if (status === 'available' || status === 'free') {
-    return null; // Don't show notification button for available machines
+    return (
+      <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-green-50 text-green-700 w-full">
+        <span>✓ Available Now</span>
+      </div>
+    );
   }
 
   return (
     <button
       onClick={handleNotificationToggle}
-      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+      className={`w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
         isSubscribed
           ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

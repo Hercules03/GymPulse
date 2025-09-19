@@ -4831,43 +4831,43 @@
       "morning": {
         "start": 6,
         "end": 9,
-        "base_occupancy_rate": 0.6,
+        "base_occupancy_rate": 0.75,
         "description": "Morning rush - cardio popular, office workers"
       },
       "lunch": {
         "start": 12,
         "end": 14,
-        "base_occupancy_rate": 0.45,
+        "base_occupancy_rate": 0.55,
         "description": "Lunch sessions - quick workouts, business areas"
       },
       "evening": {
         "start": 18,
         "end": 22,
-        "base_occupancy_rate": 0.85,
+        "base_occupancy_rate": 0.95,
         "description": "Prime time - highest demand, all equipment busy"
       },
       "late_evening": {
         "start": 22,
         "end": 24,
-        "base_occupancy_rate": 0.25,
+        "base_occupancy_rate": 0.20,
         "description": "Wind down - moderate usage, strength training"
       },
       "night": {
         "start": 0,
         "end": 6,
-        "base_occupancy_rate": 0.1,
+        "base_occupancy_rate": 0.05,
         "description": "Night shift - minimal usage, shift workers"
       },
       "midday": {
         "start": 9,
         "end": 12,
-        "base_occupancy_rate": 0.3,
+        "base_occupancy_rate": 0.25,
         "description": "Mid-morning - retirees, flexible schedules"
       },
       "afternoon": {
         "start": 14,
         "end": 18,
-        "base_occupancy_rate": 0.35,
+        "base_occupancy_rate": 0.40,
         "description": "Afternoon - students, part-time workers"
       }
     },
