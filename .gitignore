@@ -1,5 +1,4 @@
 *.swp
-package-lock.json
 __pycache__
 .pytest_cache
 .venv
@@ -10,4 +9,51 @@ __pycache__
 cdk.out
 node_modules
 
+# Environment files
 .env
+.env.local
+.env.production
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+
+# ZIP files and packages
+*.zip
+*.tar.gz
+*.tgz
+
+# Test artifacts
+test-*.json
+test-*.py
+test-*.js
+response.json
+results.csv
+
+# Lambda layers and dependencies
+lambda-layer-*/
+*-layer/
+connect_device_package/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# CDK context and outputs
+cdk.context.json
+cdk-outputs.json
