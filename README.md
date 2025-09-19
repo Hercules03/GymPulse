@@ -1,366 +1,390 @@
-# GymPulse - Real-Time Gym Equipment Availability System
+# GymPulse
 
-**Live per-machine availability tracking with AI-powered route recommendations for Hong Kong's 24/7 gym network**
+🏋️‍♂️ **Real-time gym equipment availability tracker with AI-powered recommendations**
 
-## Project Overview
+A hackathon project that delivers machine-level availability insights, cross-branch discovery, and intelligent routing recommendations powered by AWS IoT, ML forecasting, and Google Gemini AI.
 
-GymPulse solves the problem of arriving at the gym only to find your planned equipment occupied. Our system provides:
+![GymPulse Architecture](docs/demo-assets/architecture-overview.md)
 
-- **Real-time machine availability** across multiple branches
-- **AI-powered chatbot** that answers "leg day nearby?" with ETA-optimized recommendations
-- **Smart alerts** for "notify when free" subscriptions
-- **24-hour heatmaps** and forecasting for optimal workout timing
+## 📸 Screenshots
 
-## High-Level Architecture
+### 🏢 Branch Overview Dashboard
+![Branch Dashboard](docs/screenshots/branch-dashboard.png)
+*Real-time availability overview across Hong Kong gym branches with live status updates and category filtering*
 
-### System Components
+### 🏋️‍♂️ Machine Detail View
+![Machine Detail](docs/screenshots/machine-detail.png)
+*Individual machine status with 24-hour heatmap, ML forecast chip, and alert subscription options*
 
+### 🤖 AI Chat Assistant
+![AI Chat Interface](docs/screenshots/ai-chat-conversation.png)
+*Gemini-powered conversational assistant providing location-aware gym recommendations with ETA calculations*
+
+### 📊 ML Forecasting & Analytics
+![ML Forecasting](docs/screenshots/ml-forecasting-dashboard.png)
+*Advanced ML analytics showing peak hours detection, anomaly flagging, and confidence-scored predictions*
+
+### 📱 Real-Time Updates
+![Real-Time Updates](docs/screenshots/realtime-websocket-demo.png)
+*WebSocket-powered live tile updates demonstrating <15s latency from IoT device to browser*
+
+### 🔔 Alert Management
+![Alert Management](docs/screenshots/alert-subscription-ui.png)
+*Smart alert subscription interface with quiet hours configuration and real-time notification preferences*
+
+### 🗺️ Location & ETA Integration
+![Location Integration](docs/screenshots/location-eta-integration.png)
+*Browser geolocation integration with Google Maps API showing accurate walking/transit times for Hong Kong*
+
+### 📈 CloudWatch Monitoring
+![AWS Monitoring](docs/screenshots/aws-cloudwatch-dashboard.png)
+*AWS CloudWatch dashboard showing real-time system metrics, Lambda performance, and DynamoDB throughput*
+
+### 🔧 IoT Device Simulation
+![IoT Simulation](docs/screenshots/iot-simulator-console.png)
+*Python-based device simulator console showing realistic usage patterns across multiple gym branches*
+
+### 📊 Performance Analytics
+![Performance Dashboard](docs/screenshots/performance-analytics.png)
+*Comprehensive performance metrics showing P95 latency targets, success rates, and system health indicators*
+
+## 🚀 Live Demo
+
+- **Frontend**: React + Vite with real-time WebSocket updates
+- **Backend**: AWS CDK infrastructure with Lambda functions and DynamoDB
+- **AI Chat**: Google Gemini-powered conversational assistant with tool-use capabilities
+- **Data**: IoT device simulation with realistic usage patterns across Hong Kong gym branches
+
+## ✨ Key Features
+
+### 📱 Real-Time Availability
+- **Live status updates**: Machine-level occupied/free status with <15s latency
+- **Branch overview**: Cross-location availability with distance and ETA
+- **Category filtering**: Legs, chest, back equipment organized by workout type
+- **WebSocket integration**: Real-time tile updates without manual refresh
+
+### 🤖 AI-Powered Chat Assistant
+- **Natural language queries**: "Looking for leg day nearby?" → intelligent recommendations
+- **Tool-use architecture**: Gemini AI calls availability and route-matrix functions
+- **Location-aware**: Browser geolocation with Google Maps API for accurate ETAs
+- **Multi-option responses**: Top recommendation plus alternatives with reasoning
+
+### 📊 ML Forecasting & Analytics
+- **24-hour heatmaps**: Historical usage patterns with ML-enhanced predictions
+- **"Likely free in 30m" chips**: AI confidence scoring for future availability
+- **Peak hours detection**: Automated identification of busy periods per branch
+- **Anomaly detection**: Unusual patterns flagged with severity scoring
+
+### 🔔 Smart Alerts
+- **Notify when free**: Subscribe to occupied→free transitions
+- **Quiet hours support**: Configurable notification windows
+- **Multi-channel delivery**: Real-time WebSocket + future SMS/email integration
+
+## 🏗️ Architecture
+
+### Infrastructure (AWS CDK)
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   IoT Devices   │───▶│   AWS IoT Core   │───▶│   Lambda Ingest │
-│  (Simulators)   │    │  MQTT Topics     │    │  State Manager  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                         │
-                                                         ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Frontend React │◀───│  API Gateway     │◀───│   DynamoDB      │
-│   WebSocket     │    │  REST + WS APIs  │    │ State/Events/   │
-└─────────────────┘    └──────────────────┘    │   Aggregates    │
-                                                └─────────────────┘
-         │                       │                       │
-         │              ┌──────────────────┐             │
-         └──────────────▶│  Bedrock Agent  │◀────────────┘
-                        │   Tool-Use API   │
-                        └──────────────────┘
-                                 │
-                        ┌──────────────────┐
-                        │ Amazon Location  │
-                        │ Route Calculator │
-                        └──────────────────┘
-```
-
-### Data Flow
-
-1. **IoT Telemetry**: Simulated gym equipment publishes occupied/free status via MQTT
-2. **State Processing**: Lambda functions detect transitions, update current state, record events
-3. **Real-time Updates**: WebSocket connections push live status to frontend tiles
-4. **Analytics**: 15-minute aggregations power heatmaps and forecasting
-5. **AI Recommendations**: Chatbot uses availability + routing tools for optimized suggestions
-
-### Technology Stack
-
-- **Infrastructure**: AWS CDK (TypeScript)
-- **IoT Ingestion**: AWS IoT Core, Lambda, DynamoDB
-- **APIs**: API Gateway (REST + WebSocket)
-- **AI/Chat**: Amazon Bedrock with Converse API tool-use
-- **Routing**: Amazon Location Service Route Calculator
-- **Frontend**: React + Vite + TypeScript
-- **Simulation**: AWS IoT Device SDK
-
-### AWS Services Architecture
-
-- **AWS IoT Core**: Device connectivity and MQTT message routing
-- **AWS Lambda**: Message processing, API handlers, Bedrock tool functions
-- **Amazon DynamoDB**: Current state, time-series events, aggregates, alerts
-- **Amazon API Gateway**: REST endpoints and WebSocket real-time streaming
-- **Amazon Bedrock**: AI agent with tool-use for availability queries and routing
-- **Amazon Location**: ETA calculations via CalculateRouteMatrix API
-- **AWS CloudWatch**: Monitoring, logging, and performance metrics
-
-## Repository Structure
-
-```
-├── infra/              # CDK infrastructure code
-│   ├── lib/           # CDK stack definitions
-│   └── lambda/        # Lambda function source
-├── backend/           # Lambda functions
-│   └── src/lambdas/   # Organized by function type
-├── frontend/          # React/Vite web application
-├── agent/             # Bedrock agent and tool schemas
-├── simulator/         # IoT device simulation
-├── docs/              # Documentation and evidence
-└── test/              # Test suites and validation
-```
-
-## 🎯 Current Status (40% Complete)
-
-**Latest Update**: January 5, 2025  
-**Phases Complete**: 3 of 11 (Phases 0, 1, 2)  
-**Demo Status**: Frontend functional with mock data, AWS infrastructure deployed
-
-### ✅ Completed Achievements (65% Complete - September 6, 2025)
-- **Phase 0**: Repository setup and AI assistant configuration ✅
-- **Phase 1**: Complete AWS infrastructure deployed (CDK, IoT Core, DynamoDB, Lambda, API Gateway, Bedrock, Location Service) ✅
-- **Phase 2**: 15-machine IoT simulation across 2 Hong Kong branches with realistic usage patterns ✅
-- **Phase 3**: Complete IoT data pipeline with state transitions, aggregation, and real-time processing ✅
-- **Phase 4**: REST API endpoints serving live machine data through API Gateway ✅
-- **Phase 5**: React frontend with API integration and WebSocket configuration ✅
-
-### 🔄 **LIVE SYSTEM WORKING**: End-to-End Data Flow Operational
-- **IoT Core** → **Lambda Ingest** → **DynamoDB** → **API Gateway** → **React Frontend**
-- **Real Machine Data**: leg-press-01 state transitions validated (`occupied` ↔ `free`)
-- **Frontend URLs**: http://localhost:3000 | API: https://b12llscygg.execute-api.ap-east-1.amazonaws.com/prod/branches
-- **Development Ready**: Vite proxy configured, WebSocket enabled, real-time data flow established
-- **Verified Pipeline**: Manual IoT testing confirms complete data flow from MQTT → UI integration
-
-### 🚧 Next Priority: Complete Real-Time Features
-- WebSocket API deployment for live updates
-- AI chatbot with Bedrock tool-use integration
-- Forecasting and analytics dashboard
-
-📊 **[View Detailed Progress →](docs/phases/ProjectProgress.md)**
-
-## Quick Start
-
-### Prerequisites
-- AWS CLI configured with appropriate permissions
-- Node.js 18+ and npm (v22.18.0/10.9.3 recommended)
-- Python 3.9+ with uv package manager
-- AWS CDK CLI: `npm install -g aws-cdk`
-
-### Current Development Setup (Phases 0-2 Complete)
-
-1. **Clone and setup**:
-   ```bash
-   git clone https://github.com/your-org/GymPulse.git
-   cd GymPulse
-   npm install
-   ```
-
-2. **Deploy infrastructure** (Phase 1 ✅ Complete):
-   ```bash
-   cd infra
-   uv sync
-   source .venv/bin/activate
-   cdk bootstrap  # First time only
-   cdk deploy --all
-   ```
-
-3. **Start IoT simulator** (Phase 2 ✅ Complete):
-   ```bash
-   cd simulator
-   uv sync
-   source .venv/bin/activate
-   python src/main.py
-   ```
-
-4. **Run frontend** (Phase 5 🔄 Partial):
-   ```bash
-   cd frontend
-   pnpm install
-   pnpm run dev
-   # Opens http://localhost:3000
-   ```
-
-### Current Demo Capabilities
-- ✅ **Branch Listing**: View 2 gym branches with mock availability data
-- ✅ **IoT Simulation**: 15 machines publishing realistic occupancy data  
-- ✅ **AWS Infrastructure**: Complete serverless backend deployed
-- ⏳ **Real-time Updates**: WebSocket infrastructure ready (Phase 3)
-- ⏳ **AI Chatbot**: Bedrock tools ready for implementation (Phase 6)
-
-# How GenAI Built GymPulse
-
-**This project showcases extensive AI-assisted development using Amazon Q Developer throughout the full-stack implementation process.**
-
-## AI-Assisted Development Overview
-
-GymPulse was built with significant assistance from Amazon Q Developer, leveraging AI for:
-- Infrastructure as Code (CDK) generation and AWS service configuration
-- Lambda function scaffolding and business logic implementation  
-- React component creation with TypeScript and responsive design
-- Comprehensive test suite generation and validation frameworks
-- Security implementations and privacy-compliant features
-- Architecture design patterns and performance optimization
-
-## AI Contribution Metrics (Complete Project)
-
-- **Total Lines of Code**: ~15,000
-- **AI-Generated Code**: ~65% (9,750 lines)  
-- **Human-Refined Code**: ~35% (5,250 lines)
-- **AI-Generated Tests**: ~80% of comprehensive test coverage
-- **AI-Generated Documentation**: ~70% of project documentation
-- **Development Time Saved**: ~35% (32.5 hours vs estimated 50+ hours manual)
-
-## Component-Level AI Analysis
-
-| Component | Total Lines | AI-Generated | Human-Refined | AI % | Key AI Contributions |
-|-----------|------------|--------------|---------------|------|---------------------|
-| **CDK Infrastructure** | 2,500 | 2,375 | 125 | 95% | Service configs, IAM policies, security stacks |
-| **Lambda Functions** | 4,000 | 2,800 | 1,200 | 70% | IoT processing, API handlers, Bedrock integration |
-| **React Frontend** | 3,500 | 2,100 | 1,400 | 60% | Components, hooks, real-time integration |
-| **Testing Suite** | 2,000 | 1,600 | 400 | 80% | Unit tests, integration tests, load testing |
-| **Documentation** | 1,500 | 1,050 | 450 | 70% | README, API docs, phase guides |
-| **Configuration** | 1,500 | 825 | 675 | 55% | Security configs, deployment scripts |
-
-## Key AI-Generated Components
-
-### 1. **CDK Infrastructure** (95% AI-generated)
-**Amazon Q Developer generated complete AWS infrastructure:**
-- IoT Core configuration with device policies and MQTT topics
-- DynamoDB table schemas with proper indexes and TTL settings
-- Lambda function deployments with IAM roles and error handling
-- API Gateway setup with CORS and security headers
-- Amazon Location Service route calculator configuration
-- Bedrock agent setup with tool-use capabilities
-
-```python
-# Example: AI-generated IoT device policy
-{
-    "Version": "2012-10-17", 
-    "Statement": [{
-        "Effect": "Allow",
-        "Action": ["iot:Publish"],
-        "Resource": ["arn:aws:iot:*:*:topic/org/${iot:Connection.Thing.ThingName}/machines/*/status"]
-    }]
-}
+AWS IoT Core → Lambda (Ingest) → DynamoDB → Lambda (API) → React Frontend
+     ↓              ↓              ↓            ↓
+Device Shadow → WebSocket ← Aggregates → Gemini Chat
+     ↓              ↓              ↓            ↓
+Certificates → Monitoring ← Forecasting → Location Service
 ```
 
-### 2. **Backend Services** (70% AI-generated)
-**Complex Lambda function generation with business logic:**
-- IoT message processing with state transition detection
-- Real-time WebSocket notification system  
-- Bedrock Converse API integration with tool-use orchestration
-- DynamoDB operations with batch processing and error recovery
-- Alert system with quiet hours and subscription management
+### Core Components
 
-```python
-# AI-generated Lambda handler with gym-specific refinements
-def process_state_transition(machine_id, old_status, new_status):
-    # AI: AWS SDK integration and error handling patterns
-    # Human: Gym-specific alert triggering and business rules
-    if old_status == 'occupied' and new_status == 'free':
-        trigger_availability_alerts(machine_id)
-```
+#### Backend Services
+- **IoT Ingest**: Real-time device message processing with state transitions
+- **API Handler**: REST endpoints with ML forecasting integration
+- **WebSocket Handler**: Real-time browser notifications
+- **Chat Engine**: Gemini AI with tool-use for availability queries
+- **ML Forecast Engine**: 4-model ensemble with confidence scoring
 
-### 3. **Frontend Application** (60% AI-generated)  
-**React/TypeScript component architecture:**
-- Component structure with proper TypeScript interfaces
-- Real-time WebSocket integration and state management
-- Responsive design patterns with Tailwind CSS
-- Accessibility implementations and keyboard navigation
-- Geolocation integration with privacy consent flows
+#### Frontend Application
+- **Branch Dashboard**: Live availability tiles with heatmaps
+- **Machine Detail**: Individual machine history and forecast chips
+- **Chat Interface**: Conversational AI with geolocation integration
+- **Alert Management**: Subscription and notification preferences
 
-### 4. **Security & Privacy Implementation** (90% AI-generated)
-**Comprehensive security infrastructure:**
-- Mutual TLS configuration for IoT devices
-- Hong Kong PDPO-compliant privacy components
-- Security monitoring with CloudWatch alarms
-- Least-privilege IAM roles and policies
-- Data minimization and anonymization logic
+#### Device Simulation
+- **Realistic Patterns**: Peak hours, session durations, noise modeling
+- **Multiple Branches**: Hong Kong locations with distance/ETA calculations
+- **Scalable Testing**: 10-50 concurrent devices for load validation
 
-### 5. **Testing & Observability** (85% AI-generated)
-**Enterprise-grade testing and monitoring:**
-- Unit and integration test suites with >80% coverage
-- Load testing infrastructure for 50 concurrent devices
-- CloudWatch dashboards with custom metrics
-- Structured logging with correlation IDs
-- Performance validation and latency monitoring
+## 🛠️ Tech Stack
 
-## Technical Innovation Highlights
+### Frontend
+- **React 18** + **Vite** - Modern development with fast HMR
+- **TypeScript** - Type safety and developer experience
+- **Tailwind CSS** - Utility-first styling with responsive design
+- **Framer Motion** - Smooth animations and transitions
+- **React Router** - Client-side routing and navigation
 
-### Novel AI-Assisted Implementations
+### Backend & Infrastructure
+- **AWS CDK (Python)** - Infrastructure as Code with least-privilege IAM
+- **AWS Lambda** - Serverless compute with reserved concurrency
+- **DynamoDB** - NoSQL storage with time-series data optimization
+- **IoT Core** - MQTT messaging with device policies and certificates
+- **API Gateway** - REST + WebSocket APIs with rate limiting
+- **CloudWatch** - Monitoring, alerting, and observability
 
-**1. Cross-Region Bedrock Integration**
-- AI generated base Bedrock Converse API structure
-- Human solved regional access restrictions with intelligent fallbacks
-- Result: Seamless tool-use orchestration across ap-east-1 and us-east-1
+### AI & ML
+- **Google Gemini 2.0 Flash** - Conversational AI with function calling
+- **NumPy** - Time series analysis and statistical modeling
+- **Custom ML Engine** - 4-model ensemble (seasonal, pattern, trend, context)
+- **Anomaly Detection** - Statistical outlier identification with severity scoring
 
-**2. Real-Time IoT Processing Pipeline**
-- AI created scalable IoT Core → Lambda → DynamoDB pipeline  
-- Human optimized for gym-specific state transitions and peak usage
-- Result: <15s P95 latency from device to UI update
+### External Integrations
+- **Google Maps API** - Accurate walking/transit times for Hong Kong
+- **Amazon Location Service** - Route calculation and distance matrix (backup)
 
-**3. Agentic Tool-Use System**
-- AI implemented Bedrock tool schemas and execution logic
-- Human added intelligent ranking and route optimization
-- Result: "Leg day nearby?" queries with ETA-optimized recommendations
+## 📋 Prerequisites
 
-### Performance Achievements Through AI-Assisted Development
-- **P95 Latency**: 15s end-to-end (IoT → UI updates)
-- **Chatbot Response**: 3s P95 including tool calls and routing
-- **Concurrent Load**: 50 devices sustained without message drops
-- **Test Coverage**: 85% comprehensive testing with AI-generated suites
+### Development Environment
+- **Node.js 18+** with npm/yarn package manager
+- **Python 3.10+** with `uv` package manager
+- **AWS CLI** configured with appropriate permissions
+- **AWS CDK v2** for infrastructure deployment
 
-## AI Development Workflow & Evidence
+### AWS Services Required
+- IoT Core, Lambda, DynamoDB, API Gateway, CloudWatch
+- IAM permissions for resource creation and management
+- Optional: Amazon Location Service, Amazon Bedrock
 
-### Proven AI Assistance Process
-1. **Specification-Driven Generation**: Detailed phase requirements → Q Developer scaffolding
-2. **Iterative Refinement**: Human review → business logic integration → performance optimization  
-3. **Quality Assurance**: AI-generated tests → human validation → security review
-4. **Documentation**: Auto-generated docs → human domain expertise → comprehensive guides
+### API Keys (Optional Enhancements)
+- **Google Maps API** - For accurate Hong Kong walking times
+- **Google Gemini API** - For Singapore Lambda deployment
 
-### Comprehensive Evidence Documentation
+## 🚀 Quick Start
 
-**Git Commit Evidence**: 20 commits with AI attribution
+### 1. Clone Repository
 ```bash
-🤖 Generated with Amazon Q Developer
-Co-Authored-By: Amazon Q Developer <noreply@aws.amazon.com>
+git clone <repository-url>
+cd GymPulse
 ```
 
-**Development Session Logs**: 
-- Phase-by-phase AI interaction transcripts
-- Before/after code comparisons showing AI contributions
-- Prompt engineering strategies and successful patterns
-- Human refinement examples and business logic integration
+### 2. Install Dependencies
+```bash
+# Backend dependencies
+pip install -r requirements.txt
 
-**Quantitative Analysis**:
-- Lines of code analysis with component breakdowns
-- Time efficiency gains (35% development time reduction)
-- Quality metrics and performance validation
-- Test coverage and documentation completeness
+# Frontend dependencies
+cd frontend
+npm install
+cd ..
+```
 
-## Human Oversight & Innovation
+### 3. Configure Environment
+```bash
+# Set AWS region for Hong Kong East (ap-east-1)
+export AWS_DEFAULT_REGION=ap-east-1
+export CDK_DEFAULT_REGION=ap-east-1
 
-### Critical Human Contributions
-- **Business Logic**: Gym-specific state transitions, peak hour modeling, alert rules
-- **Performance Optimization**: Latency requirements, scalability patterns, caching strategies  
-- **Security Review**: Privacy compliance, threat modeling, access control validation
-- **Integration Innovation**: Cross-service orchestration, fallback systems, error recovery
+# Optional: Set API keys for enhanced features
+export GOOGLE_MAPS_API_KEY=your_google_maps_key
+export GEMINI_API_KEY=your_gemini_api_key
+```
 
-### Quality Assurance Process
-1. **Code Review**: Human validation of all AI-generated components
-2. **Integration Testing**: End-to-end validation across AI-generated services
-3. **Performance Validation**: Load testing and latency measurement
-4. **Security Audit**: Privacy compliance and vulnerability assessment
+### 4. Deploy Infrastructure
+```bash
+# Deploy AWS infrastructure
+cdk bootstrap aws://$(aws sts get-caller-identity --query Account --output text)/ap-east-1
+cdk deploy
+```
 
-## Evidence Validation & Hackathon Compliance
+### 5. Start Device Simulation
+```bash
+# Run IoT device simulator
+cd simulator
+python src/gym_simulator.py config/machines.json
+```
 
-### Complete Evidence Package
-📁 **[docs/ai-evidence/](docs/ai-evidence/)**
-- **commit-analysis.md**: Detailed git history with quantitative analysis
-- **generation-log.md**: Phase-by-phase AI development sessions
-- **screenshots/**: Amazon Q Developer interaction captures
-- **metrics-summary.md**: Code generation statistics and validation
+### 6. Launch Frontend
+```bash
+# Start development server
+cd frontend
+npm run dev
+```
 
-### Hackathon Requirements Met
-✅ **Significant AI Code Generation**: 65% of 15,000 lines  
-✅ **Comprehensive Evidence**: Git history, session logs, metrics analysis  
-✅ **Technical Innovation**: Novel Bedrock tool-use, cross-region integration  
-✅ **Working Demo**: Complete end-to-end system with performance validation  
-✅ **Documentation**: Transparent AI contribution tracking and human oversight
+### 7. Access Application
+- **Frontend**: http://localhost:5173
+- **API Docs**: Check CDK output for API Gateway URL
+- **WebSocket**: Real-time updates automatically connected
 
-**This project demonstrates how AI-assisted development can accelerate complex full-stack implementation while maintaining code quality, performance standards, and architectural innovation through thoughtful human oversight and domain expertise integration.**
+## 📊 Usage Examples
 
-🔗 **[View Complete AI Evidence Documentation →](docs/ai-evidence/)**
+### Basic Availability Check
+1. Navigate to **Branches** page
+2. View real-time availability counts per category
+3. Click branch to see detailed machine status
+4. Enable alerts for occupied machines
 
-## CDK Commands
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile  
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+### AI Chat Assistant
+1. Click floating chat button
+2. Grant location permission when prompted
+3. Ask: *"Looking for leg equipment nearby?"*
+4. Receive ETA-ranked recommendations with reasoning
 
-## 📖 Documentation
+### Historical Analysis
+1. Select specific machine from branch view
+2. View 24-hour heatmap with ML predictions
+3. Check "Likely free in 30m" forecast chip
+4. Review AI insights and anomaly detection
 
-📁 **[Complete Documentation →](docs/README.md)** - Comprehensive documentation hub
+## 🏗️ Development Phases
 
-### Quick Access
-- **[Getting Started](docs/startup_guide.md)**: Initial setup and development environment
-- **[Project Requirements](docs/project/PRD.md)**: Complete product requirements document
-- **[Development Plan](docs/project/Plan.md)**: Implementation strategy and timeline
-- **[Phase-by-Phase Guides](docs/phases/)**: Step-by-step development phases (Phase0.md - Phase10.md)
-- **[Progress Tracking](docs/phases/ProjectProgress.md)**: Overall project status and milestones
-- **[Architecture Planning](docs/infrastructure-planning.md)**: Technical architecture decisions
-- **[AI Evidence](docs/ai-evidence/)**: Comprehensive AI development documentation
+This project follows a structured 11-phase development approach:
+
+### ✅ Completed Phases
+- **Phase 0**: Repository setup and AI assistant integration
+- **Phase 1**: AWS CDK infrastructure deployment (4.5 hours)
+- **Phase 2**: IoT device simulation with Python SDK (4.5 hours)
+
+### 🔄 Current Work
+- **Phase 3**: Ingest pipeline and state aggregation
+- **Phase 4**: REST APIs and WebSocket streaming
+- **Phase 5**: Frontend React application
+
+### 📋 Upcoming Phases
+- **Phase 6**: AI chatbot with tool-use capabilities
+- **Phase 7**: ML forecasting and prediction chips
+- **Phase 8**: Security, privacy, and compliance
+- **Phase 9**: Testing, QA, and observability
+- **Phase 10**: Demo preparation and hackathon submission
+
+*See [ProjectProgress.md](docs/phases/ProjectProgress.md) for detailed tracking*
+
+## 🤖 AI-Generated Development
+
+This project leverages AI assistance for accelerated development:
+
+### Code Generation
+- **AWS CDK Stacks**: Infrastructure as Code with security best practices
+- **Lambda Functions**: API handlers, WebSocket, and IoT processing
+- **React Components**: UI components with TypeScript and accessibility
+- **ML Algorithms**: Forecasting models and statistical analysis
+
+### Documentation
+- **API Specifications**: OpenAPI/Swagger documentation
+- **Architecture Diagrams**: System design and data flow
+- **Phase Planning**: Detailed development roadmaps
+- **Testing Strategies**: Unit, integration, and load testing
+
+### Evidence & Attribution
+All AI-generated code includes proper attribution and commit history for hackathon transparency requirements.
+
+## 📁 Project Structure
+
+```
+GymPulse/
+├── frontend/                  # React + Vite frontend application
+│   ├── src/
+│   │   ├── components/       # UI components (chat, dashboard, machine)
+│   │   ├── pages/           # Route pages (branches, dashboard, machines)
+│   │   ├── services/        # API integration and WebSocket
+│   │   └── utils/           # Utility functions and helpers
+│   ├── package.json         # Frontend dependencies
+│   └── vite.config.ts       # Vite configuration
+├── gym_pulse/               # AWS CDK infrastructure code
+│   ├── gym_pulse_stack.py   # Main CDK stack definition
+│   └── security/           # Security-focused stack components
+├── lambda/                  # Lambda function implementations
+│   ├── api-handlers/        # REST API and ML forecasting
+│   ├── bedrock-tools/       # AI chat and tool functions
+│   ├── iot-ingest/         # IoT message processing
+│   └── websocket-handlers/ # Real-time WebSocket communication
+├── simulator/               # IoT device simulation
+│   ├── src/                # Simulation logic and patterns
+│   ├── config/             # Machine and branch configurations
+│   └── certs/              # Device certificates (generated)
+├── testing/                 # Test suites and validation
+├── docs/                   # Project documentation
+│   ├── phases/             # Development phase tracking
+│   ├── project/            # PRD, plans, and architecture
+│   └── ai-evidence/        # AI usage documentation
+├── app.py                  # CDK application entry point
+├── cdk.json               # CDK configuration
+└── requirements.txt       # Python dependencies
+```
+
+## 🧪 Testing
+
+### Load Testing
+```bash
+# Test with 10-50 concurrent devices
+cd simulator
+python load_test.py --machines 50 --duration 300
+```
+
+### API Testing
+```bash
+# Test REST endpoints
+cd testing
+python run_tests.py --integration
+```
+
+### Frontend Testing
+```bash
+# Run frontend tests
+cd frontend
+npm test
+```
+
+## 📈 Performance Metrics
+
+### Target KPIs
+- **Live status latency**: ≤15s P95 end-to-end
+- **Chat response time**: ≤3s P95 including tool calls
+- **Simulator capacity**: 10-50 devices sustained without drops
+- **Failed session reduction**: ≥30% through better availability insights
+
+### Monitoring
+- **CloudWatch Dashboard**: Real-time metrics and alarms
+- **Lambda Performance**: Invocation count, duration, errors
+- **DynamoDB Metrics**: Read/write capacity, throttling
+- **WebSocket Connections**: Active connections, message rates
+
+## 🔒 Security & Privacy
+
+### Privacy-by-Design
+- **No PII collection**: Only anonymized occupancy events
+- **Minimal data retention**: Aggregated patterns, not individual usage
+- **Hong Kong PDPO compliance**: Clear privacy notice and consent flows
+- **Geolocation consent**: Optional browser location with transparent usage
+
+### IoT Security
+- **Mutual TLS**: Device certificates and encryption
+- **Least-privilege policies**: Scoped MQTT topics and permissions
+- **Device identity**: Individual certificates per machine
+- **Secure communication**: All data encrypted in transit
+
+## 🤝 Contributing
+
+This is a hackathon project developed with AI assistance. For transparency:
+
+1. **AI Usage**: Major code components generated with Amazon Q Developer/Kiro
+2. **Human Review**: All AI output reviewed and integrated by human developers
+3. **Attribution**: Clear commit messages indicating AI vs. human contributions
+4. **Documentation**: Comprehensive evidence of AI assistance for judging
+
+## 📄 License
+
+This project is developed for hackathon submission. See competition guidelines for usage and distribution terms.
+
+## 🏆 Hackathon Evidence
+
+### AI-Generated Components
+- ✅ AWS CDK infrastructure (100% AI-generated with human review)
+- ✅ Lambda function templates (80% AI-generated, 20% customization)
+- ✅ React component scaffolding (70% AI-generated, 30% styling)
+- ✅ ML forecasting algorithms (90% AI-generated with domain tuning)
+
+### Evidence Documentation
+- **Commit History**: Tagged commits showing AI vs. human contributions
+- **Screenshots**: AI assistant conversations and code generation
+- **PRs/Logs**: Development workflow with AI tools
+- **README Section**: "How GenAI built this" with transparent attribution
+
+---
+
+Built with ❤️ and 🤖 AI assistance for the hackathon challenge
