@@ -195,8 +195,39 @@ class _BranchMapState extends State<BranchMap> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Temporarily show error widget until Google Maps API key is configured
-        _buildMapErrorWidget(context, 'Google Maps API key not configured'),
+        // Google Maps with error handling
+        Builder(
+          builder: (context) {
+            try {
+              return GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: CameraPosition(
+                  target: _getInitialCameraPosition(),
+                  zoom: _getInitialZoom(),
+                ),
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                  // Fit all markers after a short delay to ensure map is ready
+                  Future.delayed(const Duration(milliseconds: 500), _fitAllMarkers);
+                },
+                markers: _markers,
+                myLocationEnabled: widget.currentPosition != null,
+                myLocationButtonEnabled: false, // We'll add our custom button
+                zoomControlsEnabled: false, // We'll add custom controls
+                compassEnabled: true,
+                buildingsEnabled: true,
+                trafficEnabled: false,
+                onTap: (LatLng position) {
+                  // Handle map tap - prevent crashes
+                  debugPrint('Map tapped at: $position');
+                },
+              );
+            } catch (e) {
+              // Fallback UI when Google Maps fails to load
+              return _buildMapErrorWidget(context, 'Google Maps failed to load: ${e.toString()}');
+            }
+          },
+        ),
 
         // Custom controls
         Positioned(

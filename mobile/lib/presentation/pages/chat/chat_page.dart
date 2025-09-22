@@ -155,23 +155,23 @@ class _ChatPageState extends State<ChatPage> {
   void _sendMessage(String message) {
     if (message.trim().isEmpty) return;
 
-    // Add user message
-    context.read<ChatProvider>().addMessage(message, isUser: true);
     _messageController.clear();
 
-    // Scroll to bottom
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-
-    // Send message to API
+    // Send message to API (this will add the user message and handle the response)
     context.read<ChatProvider>().sendMessage(message);
+
+    // Scroll to bottom after a short delay to ensure message is added
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+    });
   }
 
 }

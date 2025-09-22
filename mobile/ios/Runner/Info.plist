@@ -63,5 +63,9 @@
 	<!-- Notification Permissions -->
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>Gympulse Mobile would like to send you notifications about gym availability, workout reminders, and important updates.</string>
+	
+	<!-- Google Maps API Key -->
+	<key>GOOGLE_MAPS_API_KEY</key>
+	<string>AIzaSyB8np8DnDYoexPH_UGW4hfbTG4im8nNA1c</string>
 </dict>
 </plist>
