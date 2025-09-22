@@ -329,7 +329,7 @@ export default function MachinesPage() {
               <div className="flex items-start justify-between mb-4 gap-3">
                 <div className="flex items-start gap-3 min-w-0 flex-1">
                   <div className="mt-1 flex-shrink-0">
-                    {getCategoryIcon(category, { size: 32, className: "text-gray-600" })}
+                    {getMachineIcon(machine.type, machine.name, { size: 32, className: "text-gray-600" })}
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-gray-900 text-lg mb-1 leading-tight">{machine.name}</h3>
