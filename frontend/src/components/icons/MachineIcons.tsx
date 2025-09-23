@@ -182,6 +182,161 @@ export const BattleRopeIcon: React.FC<MachineIconProps> = ({ className = "", siz
   />
 );
 
+// New icon components for missing machine types
+export const TricepExtensionIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/tricep-extension.png"
+    alt="Tricep Extension Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const BicepCurlIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/bicep-curl.png"
+    alt="Bicep Curl Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const ChestFlyIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/chest-fly.png"
+    alt="Chest Fly Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const LegCurlIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/leg-curl.png"
+    alt="Leg Curl Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const LegExtensionIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/leg-extension.png"
+    alt="Leg Extension Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const AbsMachineIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/abs-machine.png"
+    alt="Abs Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const ShoulderPressIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/shoulder-press.png"
+    alt="Shoulder Press Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const FunctionalTrainerIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/functional-trainer.png"
+    alt="Functional Trainer"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const DipsIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/dips.png"
+    alt="Dips Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const CalfRaiseIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/calf-raise.png"
+    alt="Calf Raise Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const StretchingAreaIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/stretching-area.png"
+    alt="Stretching Area"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const RowingCardioIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/cableroll.png"
+    alt="Rowing Cardio Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const InclinePressIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/chest-press.png"
+    alt="Incline Press Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
+export const TBarRowIcon: React.FC<MachineIconProps> = ({ className = "", size = 32 }) => (
+  <img
+    src="/icons/cableroll.png"
+    alt="T-Bar Row Machine"
+    width={size}
+    height={size}
+    className={className}
+    style={{ objectFit: 'contain' }}
+  />
+);
+
 // Machine type to icon mapping
 export const MachineIconMap: Record<string, React.FC<MachineIconProps>> = {
   // Legs Equipment
@@ -192,6 +347,12 @@ export const MachineIconMap: Record<string, React.FC<MachineIconProps>> = {
   'squat_rack': SquatRackIcon,
   'smith-machine': SmithMachineIcon,
   'smith_machine': SmithMachineIcon,
+  'leg-curl': LegCurlIcon,
+  'leg_curl': LegCurlIcon,
+  'leg-extension': LegExtensionIcon,
+  'leg_extension': LegExtensionIcon,
+  'calf-raise': CalfRaiseIcon,
+  'calf_raise': CalfRaiseIcon,
 
   // Chest Equipment
   'bench-press': BenchPressIcon,
@@ -199,6 +360,11 @@ export const MachineIconMap: Record<string, React.FC<MachineIconProps>> = {
   'benchpress': BenchPressIcon,
   'chest-press': ChestPressIcon,
   'chest_press': ChestPressIcon,
+  'incline-press': InclinePressIcon,
+  'incline_press': InclinePressIcon,
+  'chest-fly': ChestFlyIcon,
+  'chest_fly': ChestFlyIcon,
+  'dips': DipsIcon,
   'cable-crossover': CableCrossoverIcon,
   'cable_crossover': CableCrossoverIcon,
 
@@ -210,20 +376,26 @@ export const MachineIconMap: Record<string, React.FC<MachineIconProps>> = {
   'cable_row': CableRowIcon,
   'cablerow': CableRowIcon,
   'rowing': CableRowIcon,
+  'rowing-cardio': RowingCardioIcon,
+  'rowing_cardio': RowingCardioIcon,
   'row': CableRowIcon,
   'pull-up': PullUpBarIcon,
   'pull_up': PullUpBarIcon,
   'pullup': PullUpBarIcon,
   'pull-up-bar': PullUpBarIcon,
-  't-bar-row': CableRowIcon,
-  't_bar_row': CableRowIcon,
-  'tbar-row': CableRowIcon,
-  'tbarrow': CableRowIcon,
+  't-bar-row': TBarRowIcon,
+  't_bar_row': TBarRowIcon,
+  'tbar-row': TBarRowIcon,
+  'tbarrow': TBarRowIcon,
 
   // Arms Equipment
   'dumbbell': DumbbellIcon,
   'preacher-curl': PreacherCurlIcon,
   'preacher_curl': PreacherCurlIcon,
+  'tricep-extension': TricepExtensionIcon,
+  'tricep_extension': TricepExtensionIcon,
+  'bicep-curl': BicepCurlIcon,
+  'bicep_curl': BicepCurlIcon,
 
   // Cardio Equipment
   'treadmill': TreadmillIcon,
@@ -234,6 +406,14 @@ export const MachineIconMap: Record<string, React.FC<MachineIconProps>> = {
   'exercise_bike': StationaryBikeIcon,
 
   // Other Equipment
+  'abs-machine': AbsMachineIcon,
+  'abs_machine': AbsMachineIcon,
+  'shoulder-press': ShoulderPressIcon,
+  'shoulder_press': ShoulderPressIcon,
+  'functional-trainer': FunctionalTrainerIcon,
+  'functional_trainer': FunctionalTrainerIcon,
+  'stretching-area': StretchingAreaIcon,
+  'stretching_area': StretchingAreaIcon,
   'kettlebell': KettlebellIcon,
   'battle-rope': BattleRopeIcon,
   'battle_rope': BattleRopeIcon,
@@ -255,8 +435,9 @@ export const getMachineIcon = (machineType: string, machineName?: string, props?
     ];
 
     for (const nameKey of nameVariants) {
-      IconComponent = MachineIconMap[nameKey];
-      if (IconComponent) {
+      const foundIcon = MachineIconMap[nameKey];
+      if (foundIcon) {
+        IconComponent = foundIcon;
         break;
       }
     }
