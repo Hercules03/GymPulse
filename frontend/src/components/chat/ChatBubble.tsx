@@ -44,11 +44,11 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
 
         {/* Message Bubble */}
         <div className={`relative px-4 py-2 rounded-2xl shadow-sm ${
-          isUser 
-            ? 'bg-blue-500 text-white rounded-br-md' 
+          isUser
+            ? 'bg-blue-500/90 backdrop-blur-sm text-white rounded-br-md'
             : isSystem
-              ? 'bg-green-50 text-green-800 border border-green-200'
-              : 'bg-gray-100 text-gray-800 rounded-bl-md'
+              ? 'bg-green-50/90 backdrop-blur-sm text-green-800 border border-green-200/50'
+              : 'bg-white/90 backdrop-blur-sm text-gray-800 rounded-bl-md border border-gray-200/50'
         }`}>
           <div className="text-sm leading-relaxed">
             <ReactMarkdown
@@ -102,11 +102,11 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
 
           {/* Tail */}
           <div className={`absolute bottom-0 w-3 h-3 ${
-            isUser 
-              ? 'right-0 bg-blue-500 rounded-bl-full' 
+            isUser
+              ? 'right-0 bg-blue-500/90 backdrop-blur-sm rounded-bl-full'
               : isSystem
-                ? 'left-0 bg-green-50 border-l border-b border-green-200'
-                : 'left-0 bg-gray-100 rounded-br-full'
+                ? 'left-0 bg-green-50/90 backdrop-blur-sm border-l border-b border-green-200/50'
+                : 'left-0 bg-white/90 backdrop-blur-sm rounded-br-full border-l border-b border-gray-200/50'
           }`} style={{
             transform: isUser ? 'translateX(8px)' : 'translateX(-8px)'
           }} />

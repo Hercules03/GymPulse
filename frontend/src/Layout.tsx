@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BarChart } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import ChatInterface from '@/components/chat/ChatInterface';
 import FloatingChatButton from '@/components/chat/FloatingChatButton';
+import { useChatContext } from '@/contexts/ChatContext';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const { isChatOpen, setIsChatOpen } = useChatContext();
+
+  // Check if we're on the branches page
+  const isBranchesPage = location.pathname === '/branches';
 
   return (
     <div className="min-h-screen w-full bg-gray-50">
@@ -37,18 +41,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* Chat Interface */}
-      <FloatingChatButton 
-        isOpen={isChatOpen}
-        onClick={() => setIsChatOpen(!isChatOpen)}
-      />
-      
-      <AnimatePresence>
-        <ChatInterface 
+      {/* Chat Interface - Only show floating button on non-branches pages */}
+      {!isBranchesPage && (
+        <FloatingChatButton
           isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
+          onClick={() => setIsChatOpen(!isChatOpen)}
         />
-      </AnimatePresence>
+      )}
+
+      {/* Chat Interface - Only show on non-branches pages */}
+      {!isBranchesPage && (
+        <AnimatePresence>
+          <ChatInterface
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+          />
+        </AnimatePresence>
+      )}
     </div>
   );
 }

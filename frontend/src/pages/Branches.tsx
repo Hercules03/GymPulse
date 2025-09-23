@@ -7,6 +7,7 @@ import InteractiveMap from '@/components/branches/MapPlaceholder';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { Settings, X } from 'lucide-react';
+import InteractiveTypingBubble from '@/components/chat/InteractiveTypingBubble';
 
 export default function BranchesPage() {
   const [branches, setBranches] = useState<Branch[]>([]);
@@ -14,17 +15,17 @@ export default function BranchesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isBranchSheetOpen, setIsBranchSheetOpen] = useState(false);
 
   // Handle escape key to close bottom sheet
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isBottomSheetOpen) {
-        setIsBottomSheetOpen(false);
+      if (e.key === 'Escape' && isBranchSheetOpen) {
+        setIsBranchSheetOpen(false);
       }
     };
 
-    if (isBottomSheetOpen) {
+    if (isBranchSheetOpen) {
       document.addEventListener('keydown', handleEscape);
       // Prevent background scrolling
       document.body.style.overflow = 'hidden';
@@ -34,7 +35,7 @@ export default function BranchesPage() {
       document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
     };
-  }, [isBottomSheetOpen]);
+  }, [isBranchSheetOpen]);
 
   // App mode state
   const [appMode, setAppMode] = useState<'demo' | 'development'>(() => {
@@ -253,6 +254,19 @@ export default function BranchesPage() {
           <div className="p-6 shrink-0">
             <BranchSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </div>
+
+          {/* Desktop Interactive Typing Bubble */}
+          <div className="px-6 pb-4">
+            <InteractiveTypingBubble
+              onToggle={() => {}}
+              className="w-full"
+              userLocation={userLocation.latitude && userLocation.longitude ? {
+                lat: userLocation.latitude,
+                lon: userLocation.longitude
+              } : null}
+            />
+          </div>
+
           <div className="flex-1 overflow-y-auto px-6 pb-6">
             {error ? (
               <div className="flex items-center justify-center p-8">
@@ -282,10 +296,22 @@ export default function BranchesPage() {
           />
         </div>
 
+        {/* Interactive Typing Bubble - Above the white pill on mobile */}
+        <div className="lg:hidden fixed bottom-20 left-4 right-4 z-50">
+          <InteractiveTypingBubble
+            onToggle={() => {}}
+            className="w-full"
+            userLocation={userLocation.latitude && userLocation.longitude ? {
+              lat: userLocation.latitude,
+              lon: userLocation.longitude
+            } : null}
+          />
+        </div>
+
         {/* Mobile Bottom Sheet Pull-up Indicator - Full Width */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 pointer-events-none">
           <button
-            onClick={() => setIsBottomSheetOpen(true)}
+            onClick={() => setIsBranchSheetOpen(true)}
             className="pointer-events-auto w-full bg-white rounded-t-2xl px-6 py-4 shadow-2xl border-t border-l border-r border-gray-200 transition-all duration-200 hover:bg-gray-50 active:bg-gray-100"
           >
             <div className="flex flex-col items-center gap-2">
@@ -298,12 +324,12 @@ export default function BranchesPage() {
         </div>
 
         {/* Mobile Bottom Sheet */}
-        {isBottomSheetOpen && (
+        {isBranchSheetOpen && (
           <div className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm flex flex-col justify-end transition-all duration-300">
             {/* Touch to close overlay */}
             <div
               className="flex-1"
-              onClick={() => setIsBottomSheetOpen(false)}
+              onClick={() => setIsBranchSheetOpen(false)}
             />
 
             {/* Bottom Sheet */}
@@ -311,7 +337,7 @@ export default function BranchesPage() {
               {/* Drag Handle - Clickable to close */}
               <div className="flex justify-center pt-4 pb-2">
                 <button
-                  onClick={() => setIsBottomSheetOpen(false)}
+                  onClick={() => setIsBranchSheetOpen(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                   aria-label="Close search"
                 >
@@ -329,7 +355,7 @@ export default function BranchesPage() {
                 </div>
                 {/* Keep X button for desktop users who might expect it */}
                 <button
-                  onClick={() => setIsBottomSheetOpen(false)}
+                  onClick={() => setIsBranchSheetOpen(false)}
                   className="hidden lg:flex p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   <X className="w-5 h-5" />
@@ -360,7 +386,7 @@ export default function BranchesPage() {
                     <BranchList
                       branches={filteredBranches}
                       isLoading={isLoading}
-                      onBranchNavigate={() => setIsBottomSheetOpen(false)}
+                      onBranchNavigate={() => setIsBranchSheetOpen(false)}
                     />
                   </div>
                 )}
@@ -369,6 +395,7 @@ export default function BranchesPage() {
           </div>
         )}
       </div>
+
     </div>
   );
 }
