@@ -342,15 +342,10 @@ export default function MachinesPage() {
               </div>
 
               <div className="space-y-3 mb-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Activity className="w-4 h-4" />
-                  <span>ID: {machine.machineId}</span>
-                </div>
-                
                 {machine.lastUpdate && (
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Clock className="w-4 h-4" />
-                    <span>Updated: {new Date(machine.lastUpdate * 1000).toLocaleTimeString()}</span>
+                    <span>Updated: {new Date(machine.lastUpdate * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                 )}
               </div>
