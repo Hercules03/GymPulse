@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../domain/entities/branch.dart';
 
 class BranchCard extends StatelessWidget {
@@ -39,31 +38,45 @@ class BranchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final distance = _calculateDistance();
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppConstants.defaultPadding),
-      elevation: AppConstants.cardElevation,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFF3F4F6)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 1,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-        child: Padding(
-          padding: const EdgeInsets.all(AppConstants.defaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          hoverColor: const Color(0xFFF9FAFB),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           branch.name,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF111827),
+                            height: 1.2,
                           ),
                         ),
                         if (branch.address != null) ...[
@@ -119,62 +132,75 @@ class BranchCard extends StatelessWidget {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: branch.availabilityPercentage > 30
-                              ? Colors.green[100]
-                              : branch.availabilityPercentage > 10
-                                  ? Colors.orange[100]
-                                  : Colors.red[100],
+                          color: branch.availabilityPercentage >= 70
+                              ? const Color(0xFFECFDF5)
+                              : branch.availabilityPercentage >= 40
+                                  ? const Color(0xFFFFF7ED)
+                                  : const Color(0xFFFEF2F2),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          '${branch.availabilityPercentage.round()}%',
+                          branch.availabilityPercentage >= 70
+                              ? 'High Availability'
+                              : branch.availabilityPercentage >= 40
+                                  ? 'Medium Availability'
+                                  : 'Low Availability',
                           style: TextStyle(
-                            color: branch.availabilityPercentage > 30
-                                ? Colors.green[800]
-                                : branch.availabilityPercentage > 10
-                                    ? Colors.orange[800]
-                                    : Colors.red[800],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                            color: branch.availabilityPercentage >= 70
+                                ? const Color(0xFF059669)
+                                : branch.availabilityPercentage >= 40
+                                    ? const Color(0xFFD97706)
+                                    : const Color(0xFFDC2626),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
                           ),
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Available',
+                        distance != null
+                            ? '${_formatDistance(distance)} • ${(distance * 12).round()} min'
+                            : 'Distance unknown',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Colors.grey[600],
+                          fontSize: 10,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: AppConstants.defaultPadding),
+              const SizedBox(height: 16),
               Row(
                 children: [
-                  _buildStatChip(
-                    context,
-                    icon: Icons.fitness_center,
-                    label: 'Total',
-                    value: '${branch.totalMachines}',
-                    color: Colors.blue,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.people,
+                          size: 16,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${branch.availableMachines}/${branch.totalMachines} available',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(width: 8),
-                  _buildStatChip(
-                    context,
-                    icon: Icons.check_circle,
-                    label: 'Available',
-                    value: '${branch.availableMachines}',
-                    color: Colors.green,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildStatChip(
-                    context,
-                    icon: Icons.access_time,
-                    label: 'Busy',
-                    value: '${branch.totalMachines - branch.availableMachines}',
-                    color: Colors.orange,
+                  SizedBox(
+                    width: 80,
+                    child: LinearProgressIndicator(
+                      value: branch.availabilityPercentage / 100,
+                      backgroundColor: Colors.grey[200],
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Color(0xFF3B82F6),
+                      ),
+                      minHeight: 6,
+                    ),
                   ),
                 ],
               ),
@@ -198,83 +224,62 @@ class BranchCard extends StatelessWidget {
                 ),
               ],
               if (branch.amenities.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: branch.amenities.take(3).map((amenity) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        amenity,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[700],
-                          fontSize: 10,
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.only(top: 16),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.grey[100]!),
+                    ),
+                  ),
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      ...branch.amenities.take(3).map((amenity) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            amenity,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey[600],
+                              fontSize: 11,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      if (branch.amenities.length > 3)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '+${branch.amenities.length - 3} more',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey[600],
+                              fontSize: 11,
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                    ],
+                  ),
                 ),
               ],
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildStatChip(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-    required Color color,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 6,
-        ),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: color.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color: color,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 10,
-                color: color,
-              ),
-            ),
-          ],
         ),
       ),
     );

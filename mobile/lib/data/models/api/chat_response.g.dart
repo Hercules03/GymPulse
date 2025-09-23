@@ -33,6 +33,8 @@ ChatResponse _$ChatResponseFromJson(Map<String, dynamic> json) => ChatResponse(
           .toList(),
       sessionId: json['sessionId'] as String,
       fallback: json['fallback'] as bool?,
+      geminiPowered: json['gemini_powered'] as bool?,
+      timestamp: json['timestamp'] as String?,
     );
 
 Map<String, dynamic> _$ChatResponseToJson(ChatResponse instance) =>
@@ -42,6 +44,8 @@ Map<String, dynamic> _$ChatResponseToJson(ChatResponse instance) =>
       'toolsUsed': instance.toolsUsed,
       'sessionId': instance.sessionId,
       'fallback': instance.fallback,
+      'gemini_powered': instance.geminiPowered,
+      'timestamp': instance.timestamp,
     };
 
 UserLocationModel _$UserLocationModelFromJson(Map<String, dynamic> json) =>

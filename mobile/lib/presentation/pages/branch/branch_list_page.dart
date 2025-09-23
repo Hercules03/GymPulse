@@ -8,12 +8,28 @@ import '../../../core/constants/app_constants.dart';
 import '../../../domain/entities/branch.dart';
 import '../../../shared/enums/equipment_category.dart';
 import '../../providers/gym_provider.dart';
+import '../../providers/chat_provider.dart';
 import '../../widgets/common/error_widget.dart';
 import '../../widgets/common/loading_widget.dart';
 import '../../widgets/common/connection_status_widget.dart';
 import '../../widgets/branch/branch_card.dart';
 import '../../widgets/branch/branch_map.dart';
+import '../../widgets/common/shimmer_widget.dart';
 import '../machine/machine_list_page.dart';
+
+class ChatMessage {
+  final String id;
+  final String content;
+  final bool isUser;
+  final DateTime timestamp;
+
+  ChatMessage({
+    required this.id,
+    required this.content,
+    required this.isUser,
+    required this.timestamp,
+  });
+}
 
 class BranchListPage extends StatefulWidget {
   const BranchListPage({super.key});
@@ -22,23 +38,34 @@ class BranchListPage extends StatefulWidget {
   State<BranchListPage> createState() => _BranchListPageState();
 }
 
-class _BranchListPageState extends State<BranchListPage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _BranchListPageState extends State<BranchListPage> with TickerProviderStateMixin {
   Position? _currentPosition;
   bool _isLocationLoading = false;
+  bool _isBranchSheetOpen = false;
+  bool _isChatExpanded = false;
+  final TextEditingController _chatController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  final List<ChatMessage> _chatMessages = [];
+  bool _isChatLoading = false;
+  String _searchTerm = '';
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
     _loadBranches();
     _getCurrentLocation();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _chatController.dispose();
+    _searchController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -286,23 +313,40 @@ class _BranchListPageState extends State<BranchListPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
-        title: const Text('Gym Branches'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.list), text: 'List'),
-            Tab(icon: Icon(Icons.map), text: 'Map'),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        title: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.bar_chart,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'GymPulse',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
           ],
         ),
         actions: [
-          const ConnectionStatusWidget(iconSize: 18),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.chat),
-            onPressed: () => context.go('/chat'),
-            tooltip: 'AI Assistant',
-          ),
           IconButton(
             icon: _isLocationLoading
                 ? const SizedBox(
@@ -310,29 +354,287 @@ class _BranchListPageState extends State<BranchListPage>
                     height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Icon(Icons.my_location),
+                : const Icon(Icons.my_location, color: Colors.black54),
             onPressed: _isLocationLoading ? null : _getCurrentLocation,
             tooltip: 'Get current location',
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.black54),
             onPressed: _loadBranches,
             tooltip: 'Refresh branches',
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          const ConnectionStatusBanner(),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildListView(),
-                _buildMapView(),
-              ],
+          // Header with title
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Colors.white,
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(24, 16, 24, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Find a Gym',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Select a branch to see details and availability',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
+
+          // Map view - starts below header
+          Positioned(
+            top: 100, // Height for header
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: _buildMapView(),
+          ),
+
+          // Availability indicator - top left corner
+          Positioned(
+            top: 120, // Below the header
+            left: 16,
+            child: Consumer<GymProvider>(
+              builder: (context, gymProvider, child) {
+                final branchCount = gymProvider.branches.length;
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    '$branchCount gym${branchCount != 1 ? 's' : ''}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          // Interactive Chat Bubble - floating above bottom sheet
+          Positioned(
+            bottom: 100, // Above bottom sheet
+            left: 16,
+            right: 16,
+            child: _InteractiveChatBubble(),
+          ),
+
+          // Bottom sheet indicator
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Consumer<GymProvider>(
+              builder: (context, gymProvider, child) {
+                final branchCount = gymProvider.branches.length;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isBranchSheetOpen = true;
+                    });
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[400],
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Tap to search',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          // Bottom sheet overlay
+          if (_isBranchSheetOpen)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isBranchSheetOpen = false;
+                });
+              },
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GestureDetector(
+                    onTap: () {}, // Prevent closing when tapping sheet content
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.75,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                      ),
+                      child: Column(
+                        children: [
+                          // Drag handle
+                          Container(
+                            width: 40,
+                            height: 4,
+                            margin: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+
+                          // Header
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Find a Gym',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      'Select a branch to see details',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isBranchSheetOpen = false;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Search
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: const Color(0xFFE5E7EB)),
+                              ),
+                              child: TextField(
+                                controller: _searchController,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _searchTerm = value;
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Search branches...',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xFF9CA3AF),
+                                    fontSize: 14,
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Color(0xFF9CA3AF),
+                                    size: 20,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          Container(
+                            height: 1,
+                            color: const Color(0xFFF3F4F6),
+                          ),
+
+                          // List content
+                          Expanded(child: _buildFilteredListView()),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -394,45 +696,498 @@ class _BranchListPageState extends State<BranchListPage>
     );
   }
 
+  Widget _buildFilteredListView() {
+    return Consumer<GymProvider>(
+      builder: (context, gymProvider, child) {
+        if (gymProvider.isLoadingBranches) {
+          return _buildShimmerLoading();
+        }
+
+        if (gymProvider.hasError) {
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: Center(
+              child: Column(
+                children: [
+                  Text(
+                    gymProvider.errorMessage ?? 'Failed to load branches',
+                    style: const TextStyle(
+                      color: Color(0xFFEF4444),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: _loadBranches,
+                    child: const Text(
+                      'Try Again',
+                      style: TextStyle(
+                        color: Color(0xFF3B82F6),
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Filter branches based on search term
+        final filteredBranches = gymProvider.branches.where((branch) {
+          if (_searchTerm.isEmpty) return true;
+          return branch.name.toLowerCase().contains(_searchTerm.toLowerCase()) ||
+                 (branch.address?.toLowerCase().contains(_searchTerm.toLowerCase()) ?? false);
+        }).toList();
+
+        if (filteredBranches.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(
+              child: Text(
+                'No branches found matching your search.',
+                style: TextStyle(
+                  color: Color(0xFF6B7280),
+                  fontSize: 14,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          itemCount: filteredBranches.length,
+          itemBuilder: (context, index) {
+            final branch = filteredBranches[index];
+            return AnimatedContainer(
+              duration: Duration(milliseconds: 400 + (index * 100)),
+              curve: Curves.easeOutBack,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: BranchCard(
+                  branch: branch,
+                  currentPosition: _currentPosition,
+                  onTap: () {
+                    setState(() {
+                      _isBranchSheetOpen = false;
+                    });
+                    _onBranchSelected(branch);
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: List.generate(3, (index) =>
+          Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFFF3F4F6)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ShimmerContainer(
+                  height: 16,
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                const SizedBox(height: 12),
+                ShimmerContainer(
+                  height: 12,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                const SizedBox(height: 12),
+                ShimmerContainer(
+                  height: 8,
+                  width: double.infinity,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildMapView() {
     return Consumer<GymProvider>(
       builder: (context, gymProvider, child) {
         if (gymProvider.isLoadingBranches) {
-          return const LoadingWidget(message: 'Loading map...');
-        }
-
-        if (gymProvider.hasError) {
-          return CustomErrorWidget(
-            message: gymProvider.errorMessage ?? 'Failed to load map',
-            onRetry: _loadBranches,
+          return Container(
+            color: const Color(0xFFF3F4F6),
+            child: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Color(0xFF3B82F6),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Loading Map',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Preparing to show branch locations and\navailability',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         }
 
-        return Stack(
-          children: [
-            BranchMap(
-              branches: gymProvider.branches,
-              currentPosition: _currentPosition,
-              onBranchSelected: _onBranchSelected,
+        if (gymProvider.hasError) {
+          return Container(
+            color: const Color(0xFFF3F4F6),
+            child: CustomErrorWidget(
+              message: gymProvider.errorMessage ?? 'Failed to load map',
+              onRetry: _loadBranches,
             ),
-            // Add a fallback button to switch to list view if map fails
-            Positioned(
-              top: 16,
-              left: 16,
-              child: FloatingActionButton(
-                mini: true,
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black87,
-                onPressed: () {
-                  _tabController.animateTo(0); // Switch to list view
-                },
-                tooltip: 'Switch to list view',
-                child: const Icon(Icons.list),
-              ),
-            ),
-          ],
+          );
+        }
+
+        return BranchMap(
+          branches: gymProvider.branches,
+          currentPosition: _currentPosition,
+          onBranchSelected: _onBranchSelected,
         );
       },
     );
+  }
+
+  Widget _InteractiveChatBubble() {
+    final examplePrompts = [
+      "Leg day nearby?",
+      "Find chest equipment close to me",
+      "Where can I do back exercises?",
+      "What's available at Central branch?"
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Chat messages - show above input when expanded
+        if (_isChatExpanded && (_chatMessages.isNotEmpty || _isChatLoading))
+          Container(
+            constraints: const BoxConstraints(maxHeight: 300),
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListView.builder(
+              reverse: true,
+              itemCount: _chatMessages.length + (_isChatLoading ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (_isChatLoading && index == 0) {
+                  return Container(
+                    alignment: Alignment.centerLeft,
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.grey[400],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Typing...',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                final messageIndex = _isChatLoading ? index - 1 : index;
+                final message = _chatMessages[messageIndex];
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    mainAxisAlignment: message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (!message.isUser) ...[
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: const Color(0xFFF3F4F6),
+                          child: Icon(
+                            Icons.smart_toy,
+                            size: 16,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.7,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: message.isUser
+                              ? const Color(0xFF3B82F6).withOpacity(0.9)
+                              : Colors.white.withOpacity(0.9),
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(16),
+                            topRight: const Radius.circular(16),
+                            bottomLeft: Radius.circular(message.isUser ? 16 : 4),
+                            bottomRight: Radius.circular(message.isUser ? 4 : 16),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                          border: message.isUser ? null : Border.all(
+                            color: Colors.grey[200]!.withOpacity(0.5),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              message.content,
+                              style: TextStyle(
+                                color: message.isUser ? Colors.white : Colors.black87,
+                                fontSize: 14,
+                                height: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _formatTimestamp(message.timestamp),
+                              style: TextStyle(
+                                color: message.isUser
+                                    ? Colors.blue[100]
+                                    : Colors.grey[500],
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (message.isUser) ...[
+                        const SizedBox(width: 8),
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: const Color(0xFF3B82F6),
+                          child: const Icon(
+                            Icons.person,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+
+        // Example prompts - show above input when expanded and no messages
+        if (_isChatExpanded && _chatMessages.isEmpty && !_isChatLoading)
+          Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: Column(
+              children: examplePrompts.map((prompt) =>
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: ElevatedButton(
+                    onPressed: () => _sendMessage(prompt),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black87,
+                      elevation: 2,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(color: Colors.grey[300]!),
+                      ),
+                    ),
+                    child: Text(
+                      prompt,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ),
+              ).toList(),
+            ),
+          ),
+
+        // Main chat input
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _chatController,
+                  onTap: () {
+                    setState(() {
+                      _isChatExpanded = true;
+                    });
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      // Update send button state
+                    });
+                    // Keep expanded if user is typing
+                    if (value.isNotEmpty && !_isChatExpanded) {
+                      setState(() {
+                        _isChatExpanded = true;
+                      });
+                    }
+                  },
+                  onSubmitted: (value) {
+                    if (value.trim().isNotEmpty) {
+                      _sendMessage(value);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: _chatMessages.isNotEmpty
+                        ? "Continue the conversation..."
+                        : "Ask me anything about gym equipment...",
+                    hintStyle: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 14,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                child: GestureDetector(
+                  onTap: () {
+                    if (_chatController.text.trim().isNotEmpty) {
+                      _sendMessage(_chatController.text);
+                    }
+                  },
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: _chatController.text.trim().isNotEmpty
+                          ? const Color(0xFF3B82F6)
+                          : const Color(0xFF9CA3AF),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _sendMessage(String message) async {
+    if (message.trim().isEmpty) return;
+
+    // Add user message
+    setState(() {
+      _chatMessages.insert(0, ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        content: message,
+        isUser: true,
+        timestamp: DateTime.now(),
+      ));
+      _isChatLoading = true;
+    });
+
+    _chatController.clear();
+
+    // Simulate AI response (replace with actual API call)
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      _chatMessages.insert(0, ChatMessage(
+        id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
+        content: "Thanks for your question! I'm here to help you find the best gym equipment. Let me check our availability for you.",
+        isUser: false,
+        timestamp: DateTime.now(),
+      ));
+      _isChatLoading = false;
+    });
+  }
+
+  String _formatTimestamp(DateTime timestamp) {
+    final now = DateTime.now();
+    final diff = now.difference(timestamp);
+
+    if (diff.inMinutes < 1) {
+      return 'just now';
+    } else if (diff.inMinutes < 60) {
+      return '${diff.inMinutes}m ago';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours}h ago';
+    } else {
+      return '${timestamp.day}/${timestamp.month}';
+    }
   }
 }

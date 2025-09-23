@@ -28,9 +28,11 @@ class CategoryCardWidget extends StatelessWidget {
         : 0.0;
 
     return Card(
-      elevation: 2,
+      elevation: 1,
+      shadowColor: Colors.black.withOpacity(0.08),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
       ),
       child: InkWell(
         onTap: onTap,
@@ -43,61 +45,87 @@ class CategoryCardWidget extends StatelessWidget {
               Row(
                 children: [
                   _getCategoryIcon(category),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _getCategoryDisplayName(category),
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                  const Spacer(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '$availableCount',
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[900],
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '$totalMachines machines',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
+                      ),
+                      Text(
+                        'of $totalMachines',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[500],
+                          fontSize: 11,
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _getCategoryDisplayName(category),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[900],
                     ),
                   ),
-                  _AvailabilityIndicator(
-                    percentage: availabilityPercentage,
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: availabilityPercentage / 100,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF10B981),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '$availableCount available',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[500],
+                          fontSize: 11,
+                        ),
+                      ),
+                      Text(
+                        '$occupiedCount in use',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[500],
+                          fontSize: 11,
+                        ),
+                      ),
+                      if (offlineCount > 0)
+                        Text(
+                          '$offlineCount offline',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[500],
+                            fontSize: 11,
+                          ),
+                        ),
+                    ],
                   ),
                 ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  _StatusChip(
-                    label: 'Available',
-                    count: availableCount,
-                    color: Colors.green,
-                  ),
-                  const SizedBox(width: 8),
-                  _StatusChip(
-                    label: 'Occupied',
-                    count: occupiedCount,
-                    color: Colors.red,
-                  ),
-                  const SizedBox(width: 8),
-                  _StatusChip(
-                    label: 'Offline',
-                    count: offlineCount,
-                    color: Colors.grey,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              LinearProgressIndicator(
-                value: availabilityPercentage / 100,
-                backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  _getCategoryColor(category),
-                ),
               ),
             ],
           ),
@@ -109,6 +137,7 @@ class CategoryCardWidget extends StatelessWidget {
   Widget _getCategoryIcon(String category) {
     IconData iconData;
     Color color = _getCategoryColor(category);
+    Color backgroundColor = _getCategoryBackgroundColor(category);
 
     switch (category.toLowerCase()) {
       case 'legs':
@@ -131,16 +160,16 @@ class CategoryCardWidget extends StatelessWidget {
     }
 
     return Container(
-      width: 40,
-      height: 40,
+      width: 48,
+      height: 48,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Icon(
         iconData,
         color: color,
-        size: 20,
+        size: 24,
       ),
     );
   }
@@ -165,103 +194,35 @@ class CategoryCardWidget extends StatelessWidget {
   Color _getCategoryColor(String category) {
     switch (category.toLowerCase()) {
       case 'legs':
-        return Colors.blue;
+        return const Color(0xFF2563EB);
       case 'chest':
-        return Colors.red;
+        return const Color(0xFFDC2626);
       case 'back':
-        return Colors.green;
+        return const Color(0xFF059669);
       case 'cardio':
-        return Colors.purple;
+        return const Color(0xFF7C3AED);
       case 'arms':
-        return Colors.orange;
+        return const Color(0xFFEA580C);
       default:
-        return Colors.grey;
+        return const Color(0xFF6B7280);
+    }
+  }
+
+  Color _getCategoryBackgroundColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'legs':
+        return const Color(0xFFDBEAFE);
+      case 'chest':
+        return const Color(0xFFFEF2F2);
+      case 'back':
+        return const Color(0xFFECFDF5);
+      case 'cardio':
+        return const Color(0xFFF3E8FF);
+      case 'arms':
+        return const Color(0xFFFFF7ED);
+      default:
+        return const Color(0xFFF9FAFB);
     }
   }
 }
 
-class _AvailabilityIndicator extends StatelessWidget {
-  final double percentage;
-
-  const _AvailabilityIndicator({required this.percentage});
-
-  @override
-  Widget build(BuildContext context) {
-    Color color;
-    String status;
-
-    if (percentage >= 70) {
-      color = Colors.green;
-      status = 'High';
-    } else if (percentage >= 30) {
-      color = Colors.orange;
-      status = 'Moderate';
-    } else {
-      color = Colors.red;
-      status = 'Low';
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            '$status (${percentage.toStringAsFixed(0)}%)',
-            style: TextStyle(
-              color: color,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  final String label;
-  final int count;
-  final Color color;
-
-  const _StatusChip({
-    required this.label,
-    required this.count,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Text(
-        '$label: $count',
-        style: TextStyle(
-          color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
-}

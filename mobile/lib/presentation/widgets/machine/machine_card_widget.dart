@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../domain/entities/machine.dart';
+import '../../../shared/enums/equipment_category.dart';
+import '../../../shared/enums/machine_status.dart';
 
 class MachineCardWidget extends StatelessWidget {
   final Machine machine;
@@ -14,9 +16,11 @@ class MachineCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 1,
+      shadowColor: Colors.black.withOpacity(0.08),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
       ),
       child: InkWell(
         onTap: onTap,
@@ -42,7 +46,7 @@ class MachineCardWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          machine.location,
+                          machine.displayType,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.grey[600],
                           ),
@@ -60,42 +64,42 @@ class MachineCardWidget extends StatelessWidget {
                     _InfoChip(
                       icon: Icons.access_time,
                       label: 'Free in ${machine.estimatedFreeTime}',
-                      color: Colors.orange,
+                      color: const Color(0xFFD97706),
                     ),
                     const SizedBox(width: 8),
                   ],
-                  if (machine.usageCount != null) ...[
+                  if (machine.lastUpdateTime != null) ...[
                     _InfoChip(
-                      icon: Icons.trending_up,
-                      label: '${machine.usageCount} uses',
-                      color: Colors.blue,
+                      icon: Icons.update,
+                      label: 'Updated ${_formatTimeAgo(machine.lastUpdateTime!)}',
+                      color: const Color(0xFF2563EB),
                     ),
                     const SizedBox(width: 8),
                   ],
-                  if (machine.averageUsageTime != null) ...[
+                  if (machine.alertEligible) ...[
                     _InfoChip(
-                      icon: Icons.timer,
-                      label: '${machine.averageUsageTime!.toInt()}min avg',
-                      color: Colors.green,
+                      icon: Icons.notifications,
+                      label: 'Alerts enabled',
+                      color: const Color(0xFF059669),
                     ),
                   ],
                 ],
               ),
-              if (machine.features != null && machine.features!.isNotEmpty) ...[
+              if (machine.type != null) ...[
                 const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 4,
-                  children: machine.features!.map((feature) {
-                    return Chip(
-                      label: Text(
-                        feature,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      backgroundColor: Colors.grey[100],
-                    );
-                  }).toList(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    machine.type!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[700],
+                      fontSize: 12,
+                    ),
+                  ),
                 ),
               ],
             ],
@@ -147,17 +151,32 @@ class MachineCardWidget extends StatelessWidget {
   Color _getCategoryColor(EquipmentCategory category) {
     switch (category) {
       case EquipmentCategory.legs:
-        return Colors.blue;
+        return const Color(0xFF2563EB);
       case EquipmentCategory.chest:
-        return Colors.red;
+        return const Color(0xFFDC2626);
       case EquipmentCategory.back:
-        return Colors.green;
+        return const Color(0xFF059669);
       case EquipmentCategory.cardio:
-        return Colors.purple;
+        return const Color(0xFF7C3AED);
       case EquipmentCategory.arms:
-        return Colors.orange;
+        return const Color(0xFFEA580C);
       default:
-        return Colors.grey;
+        return const Color(0xFF6B7280);
+    }
+  }
+
+  String _formatTimeAgo(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inMinutes < 1) {
+      return 'just now';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours}h ago';
+    } else {
+      return '${difference.inDays}d ago';
     }
   }
 }
@@ -175,22 +194,22 @@ class _StatusBadge extends StatelessWidget {
 
     switch (status) {
       case MachineStatus.available:
-        color = Colors.green;
+        color = const Color(0xFF059669);
         label = 'Available';
         icon = Icons.check_circle;
         break;
       case MachineStatus.occupied:
-        color = Colors.red;
+        color = const Color(0xFFDC2626);
         label = 'Occupied';
         icon = Icons.person;
         break;
       case MachineStatus.offline:
-        color = Colors.grey;
+        color = const Color(0xFF6B7280);
         label = 'Offline';
         icon = Icons.error;
         break;
       case MachineStatus.unknown:
-        color = Colors.orange;
+        color = const Color(0xFFD97706);
         label = 'Unknown';
         icon = Icons.help;
         break;

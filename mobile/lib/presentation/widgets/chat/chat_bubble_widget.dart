@@ -100,9 +100,9 @@ class ChatBubbleWidget extends StatelessWidget {
       margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: const Color(0xFFDBEAFE),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.blue[200]!),
+        border: Border.all(color: const Color(0xFF93C5FD)),
       ),
       child: InkWell(
         onTap: () => _handleRecommendationTap(context, recommendation),
@@ -110,7 +110,7 @@ class ChatBubbleWidget extends StatelessWidget {
           children: [
             Icon(
               _getRecommendationIcon(recommendation.type),
-              color: Colors.blue[700],
+              color: const Color(0xFF2563EB),
               size: 20,
             ),
             const SizedBox(width: 8),
@@ -120,9 +120,9 @@ class ChatBubbleWidget extends StatelessWidget {
                 children: [
                   Text(
                     recommendation.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue[900],
+                      color: Color(0xFF1E3A8A),
                       fontSize: 14,
                     ),
                   ),
@@ -130,8 +130,8 @@ class ChatBubbleWidget extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       recommendation.description,
-                      style: TextStyle(
-                        color: Colors.blue[700],
+                      style: const TextStyle(
+                        color: Color(0xFF2563EB),
                         fontSize: 12,
                       ),
                     ),
@@ -139,9 +139,9 @@ class ChatBubbleWidget extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
-              color: Colors.blue[700],
+              color: Color(0xFF2563EB),
               size: 16,
             ),
           ],

@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../core/network/api_client.dart';
+import '../../core/constants/api_constants.dart';
 import '../../data/models/api/chat_response.dart';
 import '../../data/datasources/remote/gym_api_service.dart';
 
@@ -82,7 +83,7 @@ class ChatProvider extends ChangeNotifier {
       role: 'user',
       timestamp: DateTime.now(),
     );
-    
+
     _messages.add(userMessage);
     _currentInput = '';
     _isLoading = true;
@@ -92,11 +93,11 @@ class ChatProvider extends ChangeNotifier {
     try {
       // Get user location if available
       await _getUserLocation();
-      
+
       // Prepare chat request
       final chatRequest = ChatRequest(
         message: message.trim(),
-        userLocation: _userLocation != null 
+        userLocation: _userLocation != null
             ? UserLocationModel(
                 lat: _userLocation!.latitude,
                 lon: _userLocation!.longitude,
@@ -106,14 +107,14 @@ class ChatProvider extends ChangeNotifier {
       );
 
       _logger.i('Sending chat request: ${chatRequest.toJson()}');
-      
+
       // Send request to API
       final chatResponse = await _apiService.sendChatMessage(chatRequest);
-      
+
       _logger.i('Chat response received: ${chatResponse.toJson()}');
-      
+
       // Convert API recommendations to app format
-      final recommendations = chatResponse.recommendations?.map((rec) => 
+      final recommendations = chatResponse.recommendations?.map((rec) =>
         ChatRecommendation(
           type: 'branch',
           title: rec.name,
@@ -122,7 +123,7 @@ class ChatProvider extends ChangeNotifier {
           category: rec.category,
         ),
       ).toList();
-      
+
       // Add assistant response
       final assistantMessage = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -131,12 +132,12 @@ class ChatProvider extends ChangeNotifier {
         timestamp: DateTime.now(),
         recommendations: recommendations,
       );
-      
+
       _messages.add(assistantMessage);
       _logger.i('Chat message sent and response received');
     } catch (e) {
       _logger.e('Error sending chat message: $e');
-      
+
       // Fallback to mock response if API fails
       final fallbackMessage = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -145,7 +146,7 @@ class ChatProvider extends ChangeNotifier {
         timestamp: DateTime.now(),
         recommendations: _generateMockRecommendations(),
       );
-      
+
       _messages.add(fallbackMessage);
       _logger.w('Using fallback response due to API error');
     }
@@ -156,7 +157,7 @@ class ChatProvider extends ChangeNotifier {
 
   Future<void> _getUserLocation() async {
     if (_userLocation != null) return; // Already have location
-    
+
     try {
       // Check if location services are enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -185,7 +186,7 @@ class ChatProvider extends ChangeNotifier {
         desiredAccuracy: LocationAccuracy.medium,
         timeLimit: const Duration(seconds: 10),
       );
-      
+
       _logger.i('User location obtained: ${_userLocation!.latitude}, ${_userLocation!.longitude}');
     } catch (e) {
       _logger.w('Failed to get user location: $e');
@@ -250,6 +251,32 @@ class ChatProvider extends ChangeNotifier {
     
     _messages.add(message);
     notifyListeners();
+  }
+
+  /// Test function to check API connectivity
+  Future<void> testApiConnection() async {
+    try {
+      _logger.i('=== TESTING API CONNECTION ===');
+      _logger.i('Base URL: ${ApiConstants.baseUrl}');
+
+      // Test health endpoint first
+      final healthResponse = await _apiService.healthCheck();
+      _logger.i('Health check successful: ${healthResponse.toJson()}');
+
+      // Test simple chat message
+      final testRequest = ChatRequest(
+        message: 'Hello, this is a test message',
+        sessionId: 'test_session_${DateTime.now().millisecondsSinceEpoch}',
+      );
+
+      _logger.i('Sending test chat request: ${testRequest.toJson()}');
+      final testResponse = await _apiService.sendChatMessage(testRequest);
+      _logger.i('Test chat response: ${testResponse.toJson()}');
+
+    } catch (e, stackTrace) {
+      _logger.e('API test failed: $e');
+      _logger.e('Stack trace: $stackTrace');
+    }
   }
 
   @override

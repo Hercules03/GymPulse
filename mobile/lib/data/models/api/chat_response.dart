@@ -22,7 +22,7 @@ class ChatRequest {
 }
 
 /// API response model for chat messages
-@JsonSerializable()
+@JsonSerializable(ignoreUnannotated: false)
 class ChatResponse {
   const ChatResponse({
     required this.response,
@@ -30,6 +30,8 @@ class ChatResponse {
     this.toolsUsed,
     required this.sessionId,
     this.fallback,
+    this.geminiPowered,
+    this.timestamp,
   });
 
   final String response;
@@ -37,6 +39,9 @@ class ChatResponse {
   final List<String>? toolsUsed;
   final String sessionId;
   final bool? fallback;
+  @JsonKey(name: 'gemini_powered')
+  final bool? geminiPowered;
+  final String? timestamp;
 
   factory ChatResponse.fromJson(Map<String, dynamic> json) =>
       _$ChatResponseFromJson(json);
