@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/map_styles.dart';
 import '../../../domain/entities/branch.dart';
 
 class BranchMap extends StatefulWidget {
@@ -27,6 +31,7 @@ class _BranchMapState extends State<BranchMap> {
   Set<Marker> _markers = {};
   LatLng? _userLocation;
   Branch? _selectedBranch;
+  String _mapStyle = MapStyles.minimal;
 
   @override
   void initState() {
@@ -43,9 +48,9 @@ class _BranchMapState extends State<BranchMap> {
     }
   }
 
-  void _initializeMap() {
+  Future<void> _initializeMap() async {
     _updateUserLocation();
-    _createMarkers();
+    await _createMarkers();
   }
 
   void _updateUserLocation() {
@@ -57,16 +62,20 @@ class _BranchMapState extends State<BranchMap> {
     }
   }
 
-  void _createMarkers() {
+  Future<void> _createMarkers() async {
     final Set<Marker> markers = {};
 
     // Add user location marker if available
     if (_userLocation != null) {
+      final userIcon = await _createSimpleMarkerIcon(
+        const Color(0xFF7BB3F0), // Muted blue with less saturation
+        12.0,
+      );
       markers.add(
         Marker(
           markerId: const MarkerId('user_location'),
           position: _userLocation!,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          icon: userIcon,
           infoWindow: const InfoWindow(
             title: 'Your Location',
           ),
@@ -81,19 +90,20 @@ class _BranchMapState extends State<BranchMap> {
         branch.coordinates.longitude,
       );
 
-      // Determine marker color based on availability
-      double hue = BitmapDescriptor.hueRed; // Default to red (busy)
+      // Determine marker color based on availability with less saturation
+      Color markerColor = const Color(0xFFE57373); // Muted red (busy)
       if (branch.availabilityPercentage > 50) {
-        hue = BitmapDescriptor.hueGreen; // Green for good availability
+        markerColor = const Color(0xFF81C784); // Muted green (good availability)
       } else if (branch.availabilityPercentage > 25) {
-        hue = BitmapDescriptor.hueOrange; // Orange for moderate availability
+        markerColor = const Color(0xFFFFB74D); // Muted orange (moderate availability)
       }
 
+      final branchIcon = await _createSimpleMarkerIcon(markerColor, 16.0);
       markers.add(
         Marker(
           markerId: MarkerId(branch.id),
           position: position,
-          icon: BitmapDescriptor.defaultMarkerWithHue(hue),
+          icon: branchIcon,
           infoWindow: InfoWindow(
             title: branch.name,
             snippet: '${branch.availabilityPercentage.round()}% available',
@@ -191,6 +201,54 @@ class _BranchMapState extends State<BranchMap> {
     );
   }
 
+  Future<void> _changeMapStyle() async {
+    final GoogleMapController controller = await _controller.future;
+
+    // Cycle through different styles
+    String newStyle;
+    switch (_mapStyle) {
+      case MapStyles.minimal:
+        newStyle = MapStyles.silver;
+        break;
+      case MapStyles.silver:
+        newStyle = MapStyles.retro;
+        break;
+      case MapStyles.retro:
+      default:
+        newStyle = MapStyles.minimal;
+        break;
+    }
+
+    setState(() {
+      _mapStyle = newStyle;
+    });
+
+    await controller.setMapStyle(_mapStyle);
+  }
+
+  Future<BitmapDescriptor> _createSimpleMarkerIcon(Color color, double size) async {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = color;
+    final Paint strokePaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 2.0
+      ..style = PaintingStyle.stroke;
+
+    // Draw simple circle marker
+    final double radius = size;
+    canvas.drawCircle(Offset(radius, radius), radius - 1, paint);
+    canvas.drawCircle(Offset(radius, radius), radius - 1, strokePaint);
+
+    // Convert to image
+    final ui.Picture picture = pictureRecorder.endRecording();
+    final ui.Image image = await picture.toImage((radius * 2).toInt(), (radius * 2).toInt());
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List bytes = byteData!.buffer.asUint8List();
+
+    return BitmapDescriptor.fromBytes(bytes);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -205,21 +263,26 @@ class _BranchMapState extends State<BranchMap> {
                   target: _getInitialCameraPosition(),
                   zoom: _getInitialZoom(),
                 ),
-                onMapCreated: (GoogleMapController controller) {
+                onMapCreated: (GoogleMapController controller) async {
                   _controller.complete(controller);
+                  // Apply minimal map style
+                  await controller.setMapStyle(_mapStyle);
                   // Fit all markers after a short delay to ensure map is ready
                   Future.delayed(const Duration(milliseconds: 500), _fitAllMarkers);
                 },
                 markers: _markers,
                 myLocationEnabled: widget.currentPosition != null,
-                myLocationButtonEnabled: false, // We'll add our custom button
-                zoomControlsEnabled: false, // We'll add custom controls
-                compassEnabled: true,
-                buildingsEnabled: true,
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                compassEnabled: false,
+                buildingsEnabled: false,
                 trafficEnabled: false,
+                rotateGesturesEnabled: false,
+                tiltGesturesEnabled: false,
                 onTap: (LatLng position) {
-                  // Handle map tap - prevent crashes
-                  debugPrint('Map tapped at: $position');
+                  setState(() {
+                    _selectedBranch = null;
+                  });
                 },
               );
             } catch (e) {
@@ -235,6 +298,18 @@ class _BranchMapState extends State<BranchMap> {
           right: 16,
           child: Column(
             children: [
+              // Map style button
+              FloatingActionButton(
+                mini: true,
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black87,
+                onPressed: _changeMapStyle,
+                tooltip: 'Change map style',
+                child: const Icon(Icons.palette_outlined),
+              ),
+
+              const SizedBox(height: 8),
+
               // Fit all markers button
               if (widget.branches.length > 1)
                 FloatingActionButton(
@@ -263,59 +338,6 @@ class _BranchMapState extends State<BranchMap> {
           ),
         ),
 
-        // Legend
-        Positioned(
-          bottom: 16,
-          left: 16,
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Availability',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _buildLegendItem(
-                  color: Colors.green,
-                  label: '50%+ available',
-                ),
-                const SizedBox(height: 4),
-                _buildLegendItem(
-                  color: Colors.orange,
-                  label: '25-50% available',
-                ),
-                const SizedBox(height: 4),
-                _buildLegendItem(
-                  color: Colors.red,
-                  label: '<25% available',
-                ),
-                if (_userLocation != null) ...[
-                  const SizedBox(height: 4),
-                  _buildLegendItem(
-                    color: Colors.blue,
-                    label: 'Your location',
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
 
         // Selected branch info card
         if (_selectedBranch != null)
@@ -407,29 +429,6 @@ class _BranchMapState extends State<BranchMap> {
     );
   }
 
-  Widget _buildLegendItem({
-    required Color color,
-    required String label,
-  }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
-    );
-  }
 
   Widget _buildMapErrorWidget(BuildContext context, String error) {
     return Container(

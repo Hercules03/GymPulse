@@ -310,6 +310,39 @@ class _BranchListPageState extends State<BranchListPage> with TickerProviderStat
     }
   }
 
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 2,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.black54,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -318,68 +351,25 @@ class _BranchListPageState extends State<BranchListPage> with TickerProviderStat
         elevation: 0,
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
-        title: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.bar_chart,
-                color: Colors.white,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'GymPulse',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: _isLocationLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.my_location, color: Colors.black54),
-            onPressed: _isLocationLoading ? null : _getCurrentLocation,
-            tooltip: 'Get current location',
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.black54),
-            onPressed: _loadBranches,
-            tooltip: 'Refresh branches',
-          ),
-        ],
+        title: null,
+        toolbarHeight: 0, // Hide the entire app bar
       ),
       body: Stack(
         children: [
-          // Header with title
+          // Header with title and legend
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: Container(
               color: Colors.white,
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(24, 16, 24, 24),
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Find a Gym',
                       style: TextStyle(
                         fontSize: 24,
@@ -387,23 +377,29 @@ class _BranchListPageState extends State<BranchListPage> with TickerProviderStat
                         color: Colors.black87,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Select a branch to see details and availability',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black54,
-                      ),
+                    const SizedBox(height: 8),
+                    // Map Legend
+                    Row(
+                      children: [
+                        _buildLegendItem(const Color(0xFF81C784), 'Good'),
+                        const SizedBox(width: 16),
+                        _buildLegendItem(const Color(0xFFFFB74D), 'Moderate'),
+                        const SizedBox(width: 16),
+                        _buildLegendItem(const Color(0xFFE57373), 'Busy'),
+                        const SizedBox(width: 16),
+                        _buildLegendItem(const Color(0xFF7BB3F0), 'Your Location'),
+                      ],
                     ),
                   ],
                 ),
+              ),
               ),
             ),
           ),
 
           // Map view - starts below header
           Positioned(
-            top: 100, // Height for header
+            top: 110, // Adjusted for SafeArea + header with legend
             left: 0,
             right: 0,
             bottom: 0,
@@ -412,7 +408,7 @@ class _BranchListPageState extends State<BranchListPage> with TickerProviderStat
 
           // Availability indicator - top left corner
           Positioned(
-            top: 120, // Below the header
+            top: 130, // Below the header with legend
             left: 16,
             child: Consumer<GymProvider>(
               builder: (context, gymProvider, child) {
