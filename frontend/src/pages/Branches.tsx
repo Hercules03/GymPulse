@@ -237,11 +237,7 @@ export default function BranchesPage() {
     <div style={{ height: 'calc(100vh - 80px)' }} className="flex flex-col">
       {/* Page Header - Mobile Optimized */}
       <div className="bg-white border-b border-gray-100 shrink-0">
-        <div className="flex items-center justify-between px-4 lg:px-6 py-4 lg:py-6">
-          <div>
-            <h1 className="text-xl lg:text-2xl font-bold text-gray-900 tracking-tight">Find a Gym</h1>
-            <p className="text-gray-500 text-xs lg:text-sm mt-1">Select a branch to see details and availability</p>
-          </div>
+        <div className="flex items-center justify-end px-4 lg:px-6 py-3">
           {/* App Mode Toggle - Desktop Only */}
           <div className="hidden lg:flex items-center">
             <button
