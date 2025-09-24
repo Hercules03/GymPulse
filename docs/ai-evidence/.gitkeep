@@ -1,0 +1,8 @@
+# AI Evidence Directory
+
+This directory stores evidence of AI-assisted development for hackathon submission:
+
+- screenshots/ - AI generation session screenshots
+- chat-transcripts/ - Q Developer conversation exports
+- commit-diffs/ - Git diffs showing AI contributions
+- generation-logs/ - Detailed AI usage logs

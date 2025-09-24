@@ -1,0 +1,5235 @@
+{
+  "branches": [
+    {
+      "id": "hk-central-caine",
+      "name": "Central Caine Road (Flagship)",
+      "district": "Central",
+      "type": "flagship_business",
+      "size": "large",
+      "coordinates": {
+        "lat": 22.2819,
+        "lon": 114.1577
+      },
+      "peak_patterns": {
+        "lunch_boost": 2.0,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "morning_peak": 0.5,
+        "weekend_factor": 0.6
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-centralc-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-07",
+          "name": "Treadmill 7",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-08",
+          "name": "Treadmill 8",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-09",
+          "name": "Treadmill 9",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-centralc-10",
+          "name": "Treadmill 10",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-centralc-11",
+          "name": "Exercise Bike 11",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-centralc-12",
+          "name": "Exercise Bike 12",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-centralc-13",
+          "name": "Exercise Bike 13",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-centralc-14",
+          "name": "Exercise Bike 14",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-centralc-15",
+          "name": "Exercise Bike 15",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-centralc-16",
+          "name": "Exercise Bike 16",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-centralc-17",
+          "name": "Elliptical 17",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-centralc-18",
+          "name": "Elliptical 18",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-centralc-19",
+          "name": "Elliptical 19",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-centralc-20",
+          "name": "Elliptical 20",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-centralc-21",
+          "name": "Elliptical 21",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-centralc-22",
+          "name": "Rowing Cardio 22",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-centralc-23",
+          "name": "Rowing Cardio 23",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-centralc-24",
+          "name": "Rowing Cardio 24",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-centralc-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-centralc-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-centralc-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-centralc-04",
+          "name": "Squat Rack 4",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-centralc-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-centralc-06",
+          "name": "Leg Press 6",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-centralc-07",
+          "name": "Leg Press 7",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-centralc-08",
+          "name": "Leg Press 8",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-centralc-09",
+          "name": "Leg Curl 9",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-centralc-10",
+          "name": "Leg Curl 10",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-centralc-11",
+          "name": "Leg Curl 11",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-centralc-12",
+          "name": "Leg Extension 12",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "leg-extension-centralc-13",
+          "name": "Leg Extension 13",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-centralc-14",
+          "name": "Calf Raise 14",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-centralc-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-centralc-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-centralc-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-centralc-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-centralc-05",
+          "name": "Bench Press 5",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-centralc-06",
+          "name": "Bench Press 6",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-centralc-07",
+          "name": "Incline Press 7",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-centralc-08",
+          "name": "Incline Press 8",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-centralc-09",
+          "name": "Incline Press 9",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-centralc-10",
+          "name": "Incline Press 10",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-centralc-11",
+          "name": "Chest Fly 11",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-centralc-12",
+          "name": "Chest Fly 12",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-centralc-13",
+          "name": "Chest Fly 13",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-centralc-14",
+          "name": "Dips 14",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-centralc-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-centralc-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-centralc-03",
+          "name": "Lat Pulldown 3",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-centralc-04",
+          "name": "Lat Pulldown 4",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-centralc-05",
+          "name": "Rowing 5",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-centralc-06",
+          "name": "Rowing 6",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-centralc-07",
+          "name": "Pull Up 7",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "pull-up-centralc-08",
+          "name": "Pull Up 8",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-centralc-09",
+          "name": "T Bar Row 9",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "t-bar-row-centralc-10",
+          "name": "T Bar Row 10",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-centralc-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-centralc-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-centralc-03",
+          "name": "Bicep Curl 3",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-centralc-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-centralc-05",
+          "name": "Tricep Extension 5",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-centralc-06",
+          "name": "Tricep Extension 6",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-centralc-07",
+          "name": "Preacher Curl 7",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "preacher-curl-centralc-08",
+          "name": "Preacher Curl 8",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-centralc-09",
+          "name": "Cable Crossover 9",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "cable-crossover-centralc-10",
+          "name": "Cable Crossover 10",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-centralc-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-centralc-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-centralc-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "shoulder-press-centralc-04",
+          "name": "Shoulder Press 4",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-centralc-05",
+          "name": "Functional Trainer 5",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "functional-trainer-centralc-06",
+          "name": "Functional Trainer 6",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-centralc-07",
+          "name": "Stretching Area 7",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        },
+        {
+          "machineId": "stretching-area-centralc-08",
+          "name": "Stretching Area 8",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "hk-causeway-hennessy",
+      "name": "Causeway Bay Hennessy Road",
+      "district": "Causeway Bay",
+      "type": "urban_mixed",
+      "size": "large",
+      "coordinates": {
+        "lat": 22.2783,
+        "lon": 114.1747
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.3,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "morning_peak": 1.2,
+        "weekend_factor": 1.4
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-causeway-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-causeway-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-causeway-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-causeway-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-causeway-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-causeway-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-causeway-07",
+          "name": "Treadmill 7",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-causeway-08",
+          "name": "Treadmill 8",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-causeway-09",
+          "name": "Exercise Bike 9",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-causeway-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-causeway-11",
+          "name": "Exercise Bike 11",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-causeway-12",
+          "name": "Exercise Bike 12",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-causeway-13",
+          "name": "Exercise Bike 13",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-causeway-14",
+          "name": "Elliptical 14",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-causeway-15",
+          "name": "Elliptical 15",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-causeway-16",
+          "name": "Elliptical 16",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-causeway-17",
+          "name": "Elliptical 17",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-causeway-18",
+          "name": "Rowing Cardio 18",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-causeway-19",
+          "name": "Rowing Cardio 19",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-causeway-20",
+          "name": "Rowing Cardio 20",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-causeway-21",
+          "name": "Rowing Cardio 21",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-causeway-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-causeway-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-causeway-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-causeway-04",
+          "name": "Squat Rack 4",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-causeway-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-causeway-06",
+          "name": "Leg Press 6",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-causeway-07",
+          "name": "Leg Press 7",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-causeway-08",
+          "name": "Leg Curl 8",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-causeway-09",
+          "name": "Leg Curl 9",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-causeway-10",
+          "name": "Leg Extension 10",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "leg-extension-causeway-11",
+          "name": "Leg Extension 11",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-causeway-12",
+          "name": "Calf Raise 12",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-causeway-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-causeway-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-causeway-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-causeway-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-causeway-05",
+          "name": "Bench Press 5",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-causeway-06",
+          "name": "Incline Press 6",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-causeway-07",
+          "name": "Incline Press 7",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-causeway-08",
+          "name": "Incline Press 8",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-causeway-09",
+          "name": "Chest Fly 9",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-causeway-10",
+          "name": "Chest Fly 10",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-causeway-11",
+          "name": "Dips 11",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "dips-causeway-12",
+          "name": "Dips 12",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-causeway-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-causeway-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-causeway-03",
+          "name": "Lat Pulldown 3",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-causeway-04",
+          "name": "Rowing 4",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-causeway-05",
+          "name": "Rowing 5",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-causeway-06",
+          "name": "Pull Up 6",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "pull-up-causeway-07",
+          "name": "Pull Up 7",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-causeway-08",
+          "name": "T Bar Row 8",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "t-bar-row-causeway-09",
+          "name": "T Bar Row 9",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-causeway-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-causeway-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-causeway-03",
+          "name": "Bicep Curl 3",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-causeway-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-causeway-05",
+          "name": "Tricep Extension 5",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-causeway-06",
+          "name": "Tricep Extension 6",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-causeway-07",
+          "name": "Preacher Curl 7",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "preacher-curl-causeway-08",
+          "name": "Preacher Curl 8",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-causeway-09",
+          "name": "Cable Crossover 9",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-causeway-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-causeway-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-causeway-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "shoulder-press-causeway-04",
+          "name": "Shoulder Press 4",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-causeway-05",
+          "name": "Functional Trainer 5",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "functional-trainer-causeway-06",
+          "name": "Functional Trainer 6",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-causeway-07",
+          "name": "Stretching Area 7",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "kl-mongkok-nathan",
+      "name": "Mongkok Nathan Road",
+      "district": "Mongkok",
+      "type": "urban_dense",
+      "size": "large",
+      "coordinates": {
+        "lat": 22.3193,
+        "lon": 114.1694
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.2,
+        "evening_peak_start": 18,
+        "evening_peak_end": 23,
+        "morning_peak": 0.8,
+        "weekend_factor": 1.5
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-klmongko-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-07",
+          "name": "Treadmill 7",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-08",
+          "name": "Treadmill 8",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-klmongko-09",
+          "name": "Treadmill 9",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-klmongko-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-klmongko-11",
+          "name": "Exercise Bike 11",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-klmongko-12",
+          "name": "Exercise Bike 12",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-klmongko-13",
+          "name": "Exercise Bike 13",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-klmongko-14",
+          "name": "Exercise Bike 14",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-klmongko-15",
+          "name": "Exercise Bike 15",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-klmongko-16",
+          "name": "Elliptical 16",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-klmongko-17",
+          "name": "Elliptical 17",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-klmongko-18",
+          "name": "Elliptical 18",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-klmongko-19",
+          "name": "Elliptical 19",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-klmongko-20",
+          "name": "Elliptical 20",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-klmongko-21",
+          "name": "Rowing Cardio 21",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-klmongko-22",
+          "name": "Rowing Cardio 22",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-klmongko-23",
+          "name": "Rowing Cardio 23",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-klmongko-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-klmongko-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-klmongko-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-klmongko-04",
+          "name": "Squat Rack 4",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-klmongko-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-klmongko-06",
+          "name": "Leg Press 6",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-klmongko-07",
+          "name": "Leg Press 7",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-klmongko-08",
+          "name": "Leg Curl 8",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-klmongko-09",
+          "name": "Leg Curl 9",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-klmongko-10",
+          "name": "Leg Curl 10",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-klmongko-11",
+          "name": "Leg Extension 11",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "leg-extension-klmongko-12",
+          "name": "Leg Extension 12",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-klmongko-13",
+          "name": "Calf Raise 13",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-klmongko-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-klmongko-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-klmongko-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-klmongko-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-klmongko-05",
+          "name": "Bench Press 5",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-klmongko-06",
+          "name": "Incline Press 6",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-klmongko-07",
+          "name": "Incline Press 7",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-klmongko-08",
+          "name": "Incline Press 8",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-klmongko-09",
+          "name": "Chest Fly 9",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-klmongko-10",
+          "name": "Chest Fly 10",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-klmongko-11",
+          "name": "Chest Fly 11",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-klmongko-12",
+          "name": "Dips 12",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "dips-klmongko-13",
+          "name": "Dips 13",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-klmongko-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-klmongko-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-klmongko-03",
+          "name": "Lat Pulldown 3",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-klmongko-04",
+          "name": "Lat Pulldown 4",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-klmongko-05",
+          "name": "Rowing 5",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-klmongko-06",
+          "name": "Rowing 6",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-klmongko-07",
+          "name": "Pull Up 7",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "pull-up-klmongko-08",
+          "name": "Pull Up 8",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-klmongko-09",
+          "name": "T Bar Row 9",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "t-bar-row-klmongko-10",
+          "name": "T Bar Row 10",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-klmongko-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-klmongko-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-klmongko-03",
+          "name": "Bicep Curl 3",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-klmongko-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-klmongko-05",
+          "name": "Tricep Extension 5",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-klmongko-06",
+          "name": "Tricep Extension 6",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-klmongko-07",
+          "name": "Preacher Curl 7",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "preacher-curl-klmongko-08",
+          "name": "Preacher Curl 8",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-klmongko-09",
+          "name": "Cable Crossover 9",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "cable-crossover-klmongko-10",
+          "name": "Cable Crossover 10",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-klmongko-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-klmongko-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-klmongko-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "shoulder-press-klmongko-04",
+          "name": "Shoulder Press 4",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-klmongko-05",
+          "name": "Functional Trainer 5",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "functional-trainer-klmongko-06",
+          "name": "Functional Trainer 6",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        }
+      ]
+    },
+    {
+      "id": "kl-tsimshatsui-ashley",
+      "name": "Tsim Sha Tsui Ashley Road",
+      "district": "Tsim Sha Tsui",
+      "type": "tourist_business",
+      "size": "medium",
+      "coordinates": {
+        "lat": 22.2976,
+        "lon": 114.1722
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.4,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "morning_peak": 0.7,
+        "weekend_factor": 1.6
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-kltsimsh-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltsimsh-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltsimsh-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltsimsh-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltsimsh-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltsimsh-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltsimsh-07",
+          "name": "Treadmill 7",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltsimsh-08",
+          "name": "Treadmill 8",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-kltsimsh-09",
+          "name": "Exercise Bike 9",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kltsimsh-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kltsimsh-11",
+          "name": "Exercise Bike 11",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kltsimsh-12",
+          "name": "Exercise Bike 12",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kltsimsh-13",
+          "name": "Exercise Bike 13",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-kltsimsh-14",
+          "name": "Elliptical 14",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-kltsimsh-15",
+          "name": "Elliptical 15",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-kltsimsh-16",
+          "name": "Elliptical 16",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-kltsimsh-17",
+          "name": "Elliptical 17",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-kltsimsh-18",
+          "name": "Rowing Cardio 18",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-kltsimsh-19",
+          "name": "Rowing Cardio 19",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-kltsimsh-20",
+          "name": "Rowing Cardio 20",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-kltsimsh-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-kltsimsh-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-kltsimsh-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-kltsimsh-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-kltsimsh-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-kltsimsh-06",
+          "name": "Leg Press 6",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-kltsimsh-07",
+          "name": "Leg Curl 7",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-kltsimsh-08",
+          "name": "Leg Curl 8",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-kltsimsh-09",
+          "name": "Leg Extension 9",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "leg-extension-kltsimsh-10",
+          "name": "Leg Extension 10",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-kltsimsh-11",
+          "name": "Calf Raise 11",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-kltsimsh-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kltsimsh-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kltsimsh-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kltsimsh-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-kltsimsh-05",
+          "name": "Incline Press 5",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-kltsimsh-06",
+          "name": "Incline Press 6",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-kltsimsh-07",
+          "name": "Incline Press 7",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-kltsimsh-08",
+          "name": "Chest Fly 8",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-kltsimsh-09",
+          "name": "Chest Fly 9",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-kltsimsh-10",
+          "name": "Dips 10",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "dips-kltsimsh-11",
+          "name": "Dips 11",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-kltsimsh-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-kltsimsh-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-kltsimsh-03",
+          "name": "Lat Pulldown 3",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-kltsimsh-04",
+          "name": "Rowing 4",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-kltsimsh-05",
+          "name": "Rowing 5",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-kltsimsh-06",
+          "name": "Pull Up 6",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "pull-up-kltsimsh-07",
+          "name": "Pull Up 7",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-kltsimsh-08",
+          "name": "T Bar Row 8",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-kltsimsh-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-kltsimsh-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-kltsimsh-03",
+          "name": "Tricep Extension 3",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-kltsimsh-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-kltsimsh-05",
+          "name": "Preacher Curl 5",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "preacher-curl-kltsimsh-06",
+          "name": "Preacher Curl 6",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-kltsimsh-07",
+          "name": "Cable Crossover 7",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "cable-crossover-kltsimsh-08",
+          "name": "Cable Crossover 8",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-kltsimsh-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-kltsimsh-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-kltsimsh-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "shoulder-press-kltsimsh-04",
+          "name": "Shoulder Press 4",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-kltsimsh-05",
+          "name": "Functional Trainer 5",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "functional-trainer-kltsimsh-06",
+          "name": "Functional Trainer 6",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-kltsimsh-07",
+          "name": "Stretching Area 7",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "kl-jordan-nathan",
+      "name": "Jordan Nathan Road",
+      "district": "Jordan",
+      "type": "residential_urban",
+      "size": "medium",
+      "coordinates": {
+        "lat": 22.3057,
+        "lon": 114.1712
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.0,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "morning_peak": 1.3,
+        "weekend_factor": 1.3
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-kljordan-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kljordan-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kljordan-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kljordan-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kljordan-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kljordan-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-kljordan-07",
+          "name": "Exercise Bike 7",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kljordan-08",
+          "name": "Exercise Bike 8",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kljordan-09",
+          "name": "Exercise Bike 9",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kljordan-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-kljordan-11",
+          "name": "Elliptical 11",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-kljordan-12",
+          "name": "Elliptical 12",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-kljordan-13",
+          "name": "Elliptical 13",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-kljordan-14",
+          "name": "Rowing Cardio 14",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-kljordan-15",
+          "name": "Rowing Cardio 15",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-kljordan-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-kljordan-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-kljordan-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-kljordan-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-kljordan-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-kljordan-06",
+          "name": "Leg Curl 6",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-kljordan-07",
+          "name": "Leg Curl 7",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-kljordan-08",
+          "name": "Leg Extension 8",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-kljordan-09",
+          "name": "Calf Raise 9",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-kljordan-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kljordan-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kljordan-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kljordan-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-kljordan-05",
+          "name": "Incline Press 5",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-kljordan-06",
+          "name": "Incline Press 6",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-kljordan-07",
+          "name": "Chest Fly 7",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-kljordan-08",
+          "name": "Chest Fly 8",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-kljordan-09",
+          "name": "Dips 9",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-kljordan-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-kljordan-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-kljordan-03",
+          "name": "Rowing 3",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-kljordan-04",
+          "name": "Rowing 4",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-kljordan-05",
+          "name": "Pull Up 5",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-kljordan-06",
+          "name": "T Bar Row 6",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-kljordan-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-kljordan-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-kljordan-03",
+          "name": "Tricep Extension 3",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-kljordan-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-kljordan-05",
+          "name": "Preacher Curl 5",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-kljordan-06",
+          "name": "Cable Crossover 6",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-kljordan-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-kljordan-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-kljordan-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-kljordan-04",
+          "name": "Functional Trainer 4",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-kljordan-05",
+          "name": "Stretching Area 5",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "nt-shatin-fun",
+      "name": "Shatin Fun City",
+      "district": "Shatin",
+      "type": "residential_nt",
+      "size": "medium",
+      "coordinates": {
+        "lat": 22.3818,
+        "lon": 114.1877
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.8,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.4,
+        "weekend_factor": 1.8
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-ntshatin-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntshatin-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntshatin-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntshatin-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntshatin-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntshatin-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntshatin-07",
+          "name": "Treadmill 7",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-ntshatin-08",
+          "name": "Exercise Bike 8",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-ntshatin-09",
+          "name": "Exercise Bike 9",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-ntshatin-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-ntshatin-11",
+          "name": "Exercise Bike 11",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-ntshatin-12",
+          "name": "Elliptical 12",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-ntshatin-13",
+          "name": "Elliptical 13",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-ntshatin-14",
+          "name": "Elliptical 14",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-ntshatin-15",
+          "name": "Rowing Cardio 15",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-ntshatin-16",
+          "name": "Rowing Cardio 16",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-ntshatin-17",
+          "name": "Rowing Cardio 17",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-ntshatin-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-ntshatin-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-ntshatin-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-ntshatin-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-ntshatin-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-ntshatin-06",
+          "name": "Leg Curl 6",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-ntshatin-07",
+          "name": "Leg Curl 7",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-ntshatin-08",
+          "name": "Leg Extension 8",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-ntshatin-09",
+          "name": "Calf Raise 9",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-ntshatin-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-ntshatin-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-ntshatin-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-ntshatin-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-ntshatin-05",
+          "name": "Incline Press 5",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-ntshatin-06",
+          "name": "Incline Press 6",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-ntshatin-07",
+          "name": "Chest Fly 7",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-ntshatin-08",
+          "name": "Chest Fly 8",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-ntshatin-09",
+          "name": "Dips 9",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-ntshatin-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-ntshatin-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-ntshatin-03",
+          "name": "Rowing 3",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-ntshatin-04",
+          "name": "Rowing 4",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-ntshatin-05",
+          "name": "Pull Up 5",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-ntshatin-06",
+          "name": "T Bar Row 6",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "t-bar-row-ntshatin-07",
+          "name": "T Bar Row 7",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-ntshatin-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-ntshatin-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-ntshatin-03",
+          "name": "Tricep Extension 3",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-ntshatin-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-ntshatin-05",
+          "name": "Preacher Curl 5",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-ntshatin-06",
+          "name": "Cable Crossover 6",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "cable-crossover-ntshatin-07",
+          "name": "Cable Crossover 7",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-ntshatin-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-ntshatin-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-ntshatin-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "shoulder-press-ntshatin-04",
+          "name": "Shoulder Press 4",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-ntshatin-05",
+          "name": "Functional Trainer 5",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "functional-trainer-ntshatin-06",
+          "name": "Functional Trainer 6",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        }
+      ]
+    },
+    {
+      "id": "kl-taikok-ivy",
+      "name": "Tai Kok Tsui Ivy Street",
+      "district": "Tai Kok Tsui",
+      "type": "residential_urban",
+      "size": "medium",
+      "coordinates": {
+        "lat": 22.3163,
+        "lon": 114.1581
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.9,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "morning_peak": 1.3,
+        "weekend_factor": 1.4
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-kltaikok-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltaikok-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltaikok-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltaikok-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltaikok-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-kltaikok-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-kltaikok-07",
+          "name": "Exercise Bike 7",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kltaikok-08",
+          "name": "Exercise Bike 8",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kltaikok-09",
+          "name": "Exercise Bike 9",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-kltaikok-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-kltaikok-11",
+          "name": "Elliptical 11",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-kltaikok-12",
+          "name": "Elliptical 12",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-kltaikok-13",
+          "name": "Elliptical 13",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-kltaikok-14",
+          "name": "Rowing Cardio 14",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-kltaikok-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-kltaikok-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-kltaikok-03",
+          "name": "Leg Press 3",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-kltaikok-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-kltaikok-05",
+          "name": "Leg Curl 5",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-kltaikok-06",
+          "name": "Leg Curl 6",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-kltaikok-07",
+          "name": "Leg Extension 7",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-kltaikok-08",
+          "name": "Calf Raise 8",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-kltaikok-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kltaikok-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-kltaikok-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-kltaikok-04",
+          "name": "Incline Press 4",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-kltaikok-05",
+          "name": "Incline Press 5",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-kltaikok-06",
+          "name": "Chest Fly 6",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-kltaikok-07",
+          "name": "Chest Fly 7",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-kltaikok-08",
+          "name": "Dips 8",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-kltaikok-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-kltaikok-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-kltaikok-03",
+          "name": "Rowing 3",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-kltaikok-04",
+          "name": "Pull Up 4",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-kltaikok-05",
+          "name": "T Bar Row 5",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-kltaikok-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-kltaikok-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-kltaikok-03",
+          "name": "Tricep Extension 3",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-kltaikok-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-kltaikok-05",
+          "name": "Preacher Curl 5",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-kltaikok-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-kltaikok-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-kltaikok-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-kltaikok-04",
+          "name": "Functional Trainer 4",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-kltaikok-05",
+          "name": "Stretching Area 5",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "hk-quarrybay-westlands",
+      "name": "Quarry Bay Westlands Centre",
+      "district": "Quarry Bay",
+      "type": "business_residential",
+      "size": "medium",
+      "coordinates": {
+        "lat": 22.2855,
+        "lon": 114.2097
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.8,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "morning_peak": 1.1,
+        "weekend_factor": 0.8
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-quarryba-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-quarryba-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-quarryba-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-quarryba-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-quarryba-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-quarryba-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-quarryba-07",
+          "name": "Treadmill 7",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-quarryba-08",
+          "name": "Exercise Bike 8",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-quarryba-09",
+          "name": "Exercise Bike 9",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-quarryba-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-quarryba-11",
+          "name": "Exercise Bike 11",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-quarryba-12",
+          "name": "Elliptical 12",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-quarryba-13",
+          "name": "Elliptical 13",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-quarryba-14",
+          "name": "Elliptical 14",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-quarryba-15",
+          "name": "Elliptical 15",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-quarryba-16",
+          "name": "Rowing Cardio 16",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-quarryba-17",
+          "name": "Rowing Cardio 17",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-quarryba-18",
+          "name": "Rowing Cardio 18",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-quarryba-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-quarryba-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-quarryba-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-quarryba-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-quarryba-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-quarryba-06",
+          "name": "Leg Curl 6",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-quarryba-07",
+          "name": "Leg Curl 7",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-quarryba-08",
+          "name": "Leg Extension 8",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "leg-extension-quarryba-09",
+          "name": "Leg Extension 9",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-quarryba-10",
+          "name": "Calf Raise 10",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-quarryba-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-quarryba-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-quarryba-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-quarryba-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-quarryba-05",
+          "name": "Incline Press 5",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-quarryba-06",
+          "name": "Incline Press 6",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-quarryba-07",
+          "name": "Chest Fly 7",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-quarryba-08",
+          "name": "Chest Fly 8",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-quarryba-09",
+          "name": "Dips 9",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "dips-quarryba-10",
+          "name": "Dips 10",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-quarryba-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-quarryba-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-quarryba-03",
+          "name": "Lat Pulldown 3",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-quarryba-04",
+          "name": "Rowing 4",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-quarryba-05",
+          "name": "Rowing 5",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-quarryba-06",
+          "name": "Pull Up 6",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "pull-up-quarryba-07",
+          "name": "Pull Up 7",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-quarryba-08",
+          "name": "T Bar Row 8",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-quarryba-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-quarryba-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-quarryba-03",
+          "name": "Tricep Extension 3",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-quarryba-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-quarryba-05",
+          "name": "Preacher Curl 5",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "preacher-curl-quarryba-06",
+          "name": "Preacher Curl 6",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-quarryba-07",
+          "name": "Cable Crossover 7",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "cable-crossover-quarryba-08",
+          "name": "Cable Crossover 8",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-quarryba-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-quarryba-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-quarryba-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "shoulder-press-quarryba-04",
+          "name": "Shoulder Press 4",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-quarryba-05",
+          "name": "Functional Trainer 5",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "functional-trainer-quarryba-06",
+          "name": "Functional Trainer 6",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        }
+      ]
+    },
+    {
+      "id": "nt-maonshan-lee",
+      "name": "Ma On Shan Lee On",
+      "district": "Ma On Shan",
+      "type": "suburban_residential",
+      "size": "medium",
+      "coordinates": {
+        "lat": 22.4257,
+        "lon": 114.2325
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.7,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.5,
+        "weekend_factor": 2.0
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-ntmaonsh-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntmaonsh-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntmaonsh-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntmaonsh-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntmaonsh-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-ntmaonsh-06",
+          "name": "Exercise Bike 6",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-ntmaonsh-07",
+          "name": "Exercise Bike 7",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-ntmaonsh-08",
+          "name": "Exercise Bike 8",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-ntmaonsh-09",
+          "name": "Elliptical 9",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-ntmaonsh-10",
+          "name": "Elliptical 10",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-ntmaonsh-11",
+          "name": "Rowing Cardio 11",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-ntmaonsh-12",
+          "name": "Rowing Cardio 12",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-ntmaonsh-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-ntmaonsh-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-ntmaonsh-03",
+          "name": "Leg Press 3",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-ntmaonsh-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-ntmaonsh-05",
+          "name": "Leg Curl 5",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-ntmaonsh-06",
+          "name": "Leg Extension 6",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-ntmaonsh-07",
+          "name": "Calf Raise 7",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-ntmaonsh-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-ntmaonsh-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-ntmaonsh-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-ntmaonsh-04",
+          "name": "Incline Press 4",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-ntmaonsh-05",
+          "name": "Incline Press 5",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-ntmaonsh-06",
+          "name": "Chest Fly 6",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-ntmaonsh-07",
+          "name": "Dips 7",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-ntmaonsh-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-ntmaonsh-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-ntmaonsh-03",
+          "name": "Rowing 3",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-ntmaonsh-04",
+          "name": "Pull Up 4",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-ntmaonsh-05",
+          "name": "T Bar Row 5",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-ntmaonsh-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-ntmaonsh-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-ntmaonsh-03",
+          "name": "Tricep Extension 3",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-ntmaonsh-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-ntmaonsh-05",
+          "name": "Preacher Curl 5",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-ntmaonsh-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-ntmaonsh-02",
+          "name": "Shoulder Press 2",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-ntmaonsh-03",
+          "name": "Functional Trainer 3",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-ntmaonsh-04",
+          "name": "Stretching Area 4",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "nt-tsuenwan-lik",
+      "name": "Tsuen Wan Lik Sang Plaza",
+      "district": "Tsuen Wan",
+      "type": "suburban_mixed",
+      "size": "medium",
+      "coordinates": {
+        "lat": 22.3701,
+        "lon": 114.1182
+      },
+      "peak_patterns": {
+        "lunch_boost": 1.0,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.3,
+        "weekend_factor": 1.6
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-nttsuenw-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttsuenw-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttsuenw-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttsuenw-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttsuenw-05",
+          "name": "Treadmill 5",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttsuenw-06",
+          "name": "Treadmill 6",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-nttsuenw-07",
+          "name": "Exercise Bike 7",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-nttsuenw-08",
+          "name": "Exercise Bike 8",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-nttsuenw-09",
+          "name": "Exercise Bike 9",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-nttsuenw-10",
+          "name": "Exercise Bike 10",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-nttsuenw-11",
+          "name": "Elliptical 11",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-nttsuenw-12",
+          "name": "Elliptical 12",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-nttsuenw-13",
+          "name": "Elliptical 13",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-nttsuenw-14",
+          "name": "Rowing Cardio 14",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-nttsuenw-15",
+          "name": "Rowing Cardio 15",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-nttsuenw-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-nttsuenw-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-nttsuenw-03",
+          "name": "Squat Rack 3",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-nttsuenw-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-nttsuenw-05",
+          "name": "Leg Press 5",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-nttsuenw-06",
+          "name": "Leg Curl 6",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-curl-nttsuenw-07",
+          "name": "Leg Curl 7",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-nttsuenw-08",
+          "name": "Leg Extension 8",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "calf-raise-nttsuenw-09",
+          "name": "Calf Raise 9",
+          "category": "legs",
+          "type": "calf-raise",
+          "demand_multiplier": 0.7
+        },
+        {
+          "machineId": "bench-press-nttsuenw-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-nttsuenw-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-nttsuenw-03",
+          "name": "Bench Press 3",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-nttsuenw-04",
+          "name": "Bench Press 4",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-nttsuenw-05",
+          "name": "Incline Press 5",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-nttsuenw-06",
+          "name": "Incline Press 6",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-nttsuenw-07",
+          "name": "Chest Fly 7",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "chest-fly-nttsuenw-08",
+          "name": "Chest Fly 8",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-nttsuenw-09",
+          "name": "Dips 9",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-nttsuenw-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "lat-pulldown-nttsuenw-02",
+          "name": "Lat Pulldown 2",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-nttsuenw-03",
+          "name": "Rowing 3",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "rowing-nttsuenw-04",
+          "name": "Rowing 4",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-nttsuenw-05",
+          "name": "Pull Up 5",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-nttsuenw-06",
+          "name": "T Bar Row 6",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-nttsuenw-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "bicep-curl-nttsuenw-02",
+          "name": "Bicep Curl 2",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-nttsuenw-03",
+          "name": "Tricep Extension 3",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "tricep-extension-nttsuenw-04",
+          "name": "Tricep Extension 4",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-nttsuenw-05",
+          "name": "Preacher Curl 5",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-nttsuenw-06",
+          "name": "Cable Crossover 6",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-nttsuenw-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "abs-machine-nttsuenw-02",
+          "name": "Abs Machine 2",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-nttsuenw-03",
+          "name": "Shoulder Press 3",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-nttsuenw-04",
+          "name": "Functional Trainer 4",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-nttsuenw-05",
+          "name": "Stretching Area 5",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "nt-tinshui-tin",
+      "name": "Tin Shui Wai Tin Yiu Plaza",
+      "district": "Tin Shui Wai",
+      "type": "suburban_residential",
+      "size": "small",
+      "coordinates": {
+        "lat": 22.4489,
+        "lon": 114.0022
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.6,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.6,
+        "weekend_factor": 2.2
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-nttinshu-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttinshu-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttinshu-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-nttinshu-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-nttinshu-05",
+          "name": "Exercise Bike 5",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-nttinshu-06",
+          "name": "Exercise Bike 6",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-nttinshu-07",
+          "name": "Exercise Bike 7",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-nttinshu-08",
+          "name": "Elliptical 8",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-nttinshu-09",
+          "name": "Elliptical 9",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-nttinshu-10",
+          "name": "Rowing Cardio 10",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "rowing-cardio-nttinshu-11",
+          "name": "Rowing Cardio 11",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-nttinshu-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-nttinshu-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-nttinshu-03",
+          "name": "Leg Press 3",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-press-nttinshu-04",
+          "name": "Leg Press 4",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-nttinshu-05",
+          "name": "Leg Curl 5",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-nttinshu-06",
+          "name": "Leg Extension 6",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bench-press-nttinshu-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-nttinshu-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-nttinshu-03",
+          "name": "Incline Press 3",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "incline-press-nttinshu-04",
+          "name": "Incline Press 4",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-nttinshu-05",
+          "name": "Chest Fly 5",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-nttinshu-06",
+          "name": "Dips 6",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-nttinshu-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-nttinshu-02",
+          "name": "Rowing 2",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-nttinshu-03",
+          "name": "Pull Up 3",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-nttinshu-04",
+          "name": "T Bar Row 4",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-nttinshu-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-nttinshu-02",
+          "name": "Tricep Extension 2",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-nttinshu-03",
+          "name": "Preacher Curl 3",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-nttinshu-04",
+          "name": "Cable Crossover 4",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-nttinshu-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-nttinshu-02",
+          "name": "Shoulder Press 2",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-nttinshu-03",
+          "name": "Functional Trainer 3",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "stretching-area-nttinshu-04",
+          "name": "Stretching Area 4",
+          "category": "other",
+          "type": "stretching-area",
+          "demand_multiplier": 0.6
+        }
+      ]
+    },
+    {
+      "id": "nt-fanling-green",
+      "name": "Fanling Green Code Plaza",
+      "district": "Fanling",
+      "type": "suburban_residential",
+      "size": "small",
+      "coordinates": {
+        "lat": 22.4928,
+        "lon": 114.1374
+      },
+      "peak_patterns": {
+        "lunch_boost": 0.5,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "morning_peak": 1.7,
+        "weekend_factor": 2.5
+      },
+      "machines": [
+        {
+          "machineId": "treadmill-ntfanlin-01",
+          "name": "Treadmill 1",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntfanlin-02",
+          "name": "Treadmill 2",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntfanlin-03",
+          "name": "Treadmill 3",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "treadmill-ntfanlin-04",
+          "name": "Treadmill 4",
+          "category": "cardio",
+          "type": "treadmill",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "exercise-bike-ntfanlin-05",
+          "name": "Exercise Bike 5",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "exercise-bike-ntfanlin-06",
+          "name": "Exercise Bike 6",
+          "category": "cardio",
+          "type": "exercise-bike",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "elliptical-ntfanlin-07",
+          "name": "Elliptical 7",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "elliptical-ntfanlin-08",
+          "name": "Elliptical 8",
+          "category": "cardio",
+          "type": "elliptical",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "rowing-cardio-ntfanlin-09",
+          "name": "Rowing Cardio 9",
+          "category": "cardio",
+          "type": "rowing-cardio",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "squat-rack-ntfanlin-01",
+          "name": "Squat Rack 1",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "squat-rack-ntfanlin-02",
+          "name": "Squat Rack 2",
+          "category": "legs",
+          "type": "squat-rack",
+          "demand_multiplier": 1.4
+        },
+        {
+          "machineId": "leg-press-ntfanlin-03",
+          "name": "Leg Press 3",
+          "category": "legs",
+          "type": "leg-press",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "leg-curl-ntfanlin-04",
+          "name": "Leg Curl 4",
+          "category": "legs",
+          "type": "leg-curl",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "leg-extension-ntfanlin-05",
+          "name": "Leg Extension 5",
+          "category": "legs",
+          "type": "leg-extension",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bench-press-ntfanlin-01",
+          "name": "Bench Press 1",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "bench-press-ntfanlin-02",
+          "name": "Bench Press 2",
+          "category": "chest",
+          "type": "bench-press",
+          "demand_multiplier": 1.5
+        },
+        {
+          "machineId": "incline-press-ntfanlin-03",
+          "name": "Incline Press 3",
+          "category": "chest",
+          "type": "incline-press",
+          "demand_multiplier": 1.2
+        },
+        {
+          "machineId": "chest-fly-ntfanlin-04",
+          "name": "Chest Fly 4",
+          "category": "chest",
+          "type": "chest-fly",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "dips-ntfanlin-05",
+          "name": "Dips 5",
+          "category": "chest",
+          "type": "dips",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "lat-pulldown-ntfanlin-01",
+          "name": "Lat Pulldown 1",
+          "category": "back",
+          "type": "lat-pulldown",
+          "demand_multiplier": 1.3
+        },
+        {
+          "machineId": "rowing-ntfanlin-02",
+          "name": "Rowing 2",
+          "category": "back",
+          "type": "rowing",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "pull-up-ntfanlin-03",
+          "name": "Pull Up 3",
+          "category": "back",
+          "type": "pull-up",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "t-bar-row-ntfanlin-04",
+          "name": "T Bar Row 4",
+          "category": "back",
+          "type": "t-bar-row",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "bicep-curl-ntfanlin-01",
+          "name": "Bicep Curl 1",
+          "category": "arms",
+          "type": "bicep-curl",
+          "demand_multiplier": 1.1
+        },
+        {
+          "machineId": "tricep-extension-ntfanlin-02",
+          "name": "Tricep Extension 2",
+          "category": "arms",
+          "type": "tricep-extension",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "preacher-curl-ntfanlin-03",
+          "name": "Preacher Curl 3",
+          "category": "arms",
+          "type": "preacher-curl",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "cable-crossover-ntfanlin-04",
+          "name": "Cable Crossover 4",
+          "category": "arms",
+          "type": "cable-crossover",
+          "demand_multiplier": 0.8
+        },
+        {
+          "machineId": "abs-machine-ntfanlin-01",
+          "name": "Abs Machine 1",
+          "category": "other",
+          "type": "abs-machine",
+          "demand_multiplier": 0.9
+        },
+        {
+          "machineId": "shoulder-press-ntfanlin-02",
+          "name": "Shoulder Press 2",
+          "category": "other",
+          "type": "shoulder-press",
+          "demand_multiplier": 1.0
+        },
+        {
+          "machineId": "functional-trainer-ntfanlin-03",
+          "name": "Functional Trainer 3",
+          "category": "other",
+          "type": "functional-trainer",
+          "demand_multiplier": 0.8
+        }
+      ]
+    }
+  ],
+  "usage_patterns": {
+    "peak_hours": {
+      "morning": {
+        "start": 6,
+        "end": 9,
+        "base_occupancy_rate": 0.75,
+        "description": "Morning rush - cardio popular, office workers"
+      },
+      "lunch": {
+        "start": 12,
+        "end": 14,
+        "base_occupancy_rate": 0.55,
+        "description": "Lunch sessions - quick workouts, business areas"
+      },
+      "evening": {
+        "start": 18,
+        "end": 22,
+        "base_occupancy_rate": 0.95,
+        "description": "Prime time - highest demand, all equipment busy"
+      },
+      "late_evening": {
+        "start": 22,
+        "end": 24,
+        "base_occupancy_rate": 0.20,
+        "description": "Wind down - moderate usage, strength training"
+      },
+      "night": {
+        "start": 0,
+        "end": 6,
+        "base_occupancy_rate": 0.05,
+        "description": "Night shift - minimal usage, shift workers"
+      },
+      "midday": {
+        "start": 9,
+        "end": 12,
+        "base_occupancy_rate": 0.25,
+        "description": "Mid-morning - retirees, flexible schedules"
+      },
+      "afternoon": {
+        "start": 14,
+        "end": 18,
+        "base_occupancy_rate": 0.40,
+        "description": "Afternoon - students, part-time workers"
+      }
+    },
+    "equipment_preferences": {
+      "cardio": {
+        "treadmill": {
+          "peak_multiplier": 1.3,
+          "base_demand": 0.78,
+          "description": "Demand multiplier: 1.3"
+        },
+        "exercise-bike": {
+          "peak_multiplier": 1.1,
+          "base_demand": 0.66,
+          "description": "Demand multiplier: 1.1"
+        },
+        "elliptical": {
+          "peak_multiplier": 1.0,
+          "base_demand": 0.6,
+          "description": "Demand multiplier: 1.0"
+        },
+        "rowing-cardio": {
+          "peak_multiplier": 0.9,
+          "base_demand": 0.54,
+          "description": "Demand multiplier: 0.9"
+        }
+      },
+      "legs": {
+        "squat-rack": {
+          "peak_multiplier": 1.4,
+          "base_demand": 0.84,
+          "description": "Demand multiplier: 1.4"
+        },
+        "leg-press": {
+          "peak_multiplier": 1.3,
+          "base_demand": 0.78,
+          "description": "Demand multiplier: 1.3"
+        },
+        "leg-curl": {
+          "peak_multiplier": 1.0,
+          "base_demand": 0.6,
+          "description": "Demand multiplier: 1.0"
+        },
+        "leg-extension": {
+          "peak_multiplier": 0.9,
+          "base_demand": 0.54,
+          "description": "Demand multiplier: 0.9"
+        },
+        "calf-raise": {
+          "peak_multiplier": 0.7,
+          "base_demand": 0.42,
+          "description": "Demand multiplier: 0.7"
+        }
+      },
+      "chest": {
+        "bench-press": {
+          "peak_multiplier": 1.5,
+          "base_demand": 0.8999999999999999,
+          "description": "Demand multiplier: 1.5"
+        },
+        "incline-press": {
+          "peak_multiplier": 1.2,
+          "base_demand": 0.72,
+          "description": "Demand multiplier: 1.2"
+        },
+        "chest-fly": {
+          "peak_multiplier": 1.0,
+          "base_demand": 0.6,
+          "description": "Demand multiplier: 1.0"
+        },
+        "dips": {
+          "peak_multiplier": 0.8,
+          "base_demand": 0.48,
+          "description": "Demand multiplier: 0.8"
+        }
+      },
+      "back": {
+        "lat-pulldown": {
+          "peak_multiplier": 1.3,
+          "base_demand": 0.78,
+          "description": "Demand multiplier: 1.3"
+        },
+        "rowing": {
+          "peak_multiplier": 1.1,
+          "base_demand": 0.66,
+          "description": "Demand multiplier: 1.1"
+        },
+        "pull-up": {
+          "peak_multiplier": 0.8,
+          "base_demand": 0.48,
+          "description": "Demand multiplier: 0.8"
+        },
+        "t-bar-row": {
+          "peak_multiplier": 0.9,
+          "base_demand": 0.54,
+          "description": "Demand multiplier: 0.9"
+        }
+      },
+      "arms": {
+        "bicep-curl": {
+          "peak_multiplier": 1.1,
+          "base_demand": 0.66,
+          "description": "Demand multiplier: 1.1"
+        },
+        "tricep-extension": {
+          "peak_multiplier": 1.0,
+          "base_demand": 0.6,
+          "description": "Demand multiplier: 1.0"
+        },
+        "preacher-curl": {
+          "peak_multiplier": 0.9,
+          "base_demand": 0.54,
+          "description": "Demand multiplier: 0.9"
+        },
+        "cable-crossover": {
+          "peak_multiplier": 0.8,
+          "base_demand": 0.48,
+          "description": "Demand multiplier: 0.8"
+        }
+      },
+      "other": {
+        "abs-machine": {
+          "peak_multiplier": 0.9,
+          "base_demand": 0.54,
+          "description": "Demand multiplier: 0.9"
+        },
+        "shoulder-press": {
+          "peak_multiplier": 1.0,
+          "base_demand": 0.6,
+          "description": "Demand multiplier: 1.0"
+        },
+        "functional-trainer": {
+          "peak_multiplier": 0.8,
+          "base_demand": 0.48,
+          "description": "Demand multiplier: 0.8"
+        },
+        "stretching-area": {
+          "peak_multiplier": 0.6,
+          "base_demand": 0.36,
+          "description": "Demand multiplier: 0.6"
+        }
+      }
+    },
+    "branch_differences": {
+      "hk-central-caine": {
+        "type": "flagship_business",
+        "lunch_boost": 2.0,
+        "morning_peak": 0.5,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "weekend_factor": 0.6,
+        "description": "flagship_business location patterns"
+      },
+      "hk-causeway-hennessy": {
+        "type": "urban_mixed",
+        "lunch_boost": 1.3,
+        "morning_peak": 1.2,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "weekend_factor": 1.4,
+        "description": "urban_mixed location patterns"
+      },
+      "kl-mongkok-nathan": {
+        "type": "urban_dense",
+        "lunch_boost": 1.2,
+        "morning_peak": 0.8,
+        "evening_peak_start": 18,
+        "evening_peak_end": 23,
+        "weekend_factor": 1.5,
+        "description": "urban_dense location patterns"
+      },
+      "kl-tsimshatsui-ashley": {
+        "type": "tourist_business",
+        "lunch_boost": 1.4,
+        "morning_peak": 0.7,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "weekend_factor": 1.6,
+        "description": "tourist_business location patterns"
+      },
+      "kl-jordan-nathan": {
+        "type": "residential_urban",
+        "lunch_boost": 1.0,
+        "morning_peak": 1.3,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "weekend_factor": 1.3,
+        "description": "residential_urban location patterns"
+      },
+      "nt-shatin-fun": {
+        "type": "residential_nt",
+        "lunch_boost": 0.8,
+        "morning_peak": 1.4,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "weekend_factor": 1.8,
+        "description": "residential_nt location patterns"
+      },
+      "kl-taikok-ivy": {
+        "type": "residential_urban",
+        "lunch_boost": 0.9,
+        "morning_peak": 1.3,
+        "evening_peak_start": 18,
+        "evening_peak_end": 22,
+        "weekend_factor": 1.4,
+        "description": "residential_urban location patterns"
+      },
+      "hk-quarrybay-westlands": {
+        "type": "business_residential",
+        "lunch_boost": 1.8,
+        "morning_peak": 1.1,
+        "evening_peak_start": 19,
+        "evening_peak_end": 22,
+        "weekend_factor": 0.8,
+        "description": "business_residential location patterns"
+      },
+      "nt-maonshan-lee": {
+        "type": "suburban_residential",
+        "lunch_boost": 0.7,
+        "morning_peak": 1.5,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "weekend_factor": 2.0,
+        "description": "suburban_residential location patterns"
+      },
+      "nt-tsuenwan-lik": {
+        "type": "suburban_mixed",
+        "lunch_boost": 1.0,
+        "morning_peak": 1.3,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "weekend_factor": 1.6,
+        "description": "suburban_mixed location patterns"
+      },
+      "nt-tinshui-tin": {
+        "type": "suburban_residential",
+        "lunch_boost": 0.6,
+        "morning_peak": 1.6,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "weekend_factor": 2.2,
+        "description": "suburban_residential location patterns"
+      },
+      "nt-fanling-green": {
+        "type": "suburban_residential",
+        "lunch_boost": 0.5,
+        "morning_peak": 1.7,
+        "evening_peak_start": 17,
+        "evening_peak_end": 21,
+        "weekend_factor": 2.5,
+        "description": "suburban_residential location patterns"
+      }
+    },
+    "location_patterns": {
+      "flagship_business": {
+        "description": "Large flagship stores in prime business districts",
+        "lunch_traffic_multiplier": 2.0,
+        "evening_delay": 1,
+        "morning_reduction": 0.5,
+        "weekend_reduction": 0.6,
+        "cardio_preference": 1.2,
+        "quick_session_preference": 1.3
+      },
+      "urban_mixed": {
+        "description": "Mixed commercial and residential areas",
+        "lunch_traffic_multiplier": 1.3,
+        "evening_delay": 0,
+        "morning_boost": 1.2,
+        "weekend_boost": 1.4,
+        "cardio_preference": 1.1,
+        "strength_preference": 1.0
+      },
+      "urban_dense": {
+        "description": "Dense urban areas with young demographics",
+        "lunch_traffic_multiplier": 1.2,
+        "evening_extension": 1,
+        "morning_reduction": 0.8,
+        "weekend_boost": 1.5,
+        "strength_preference": 1.2,
+        "late_night_tolerance": 1.3
+      },
+      "tourist_business": {
+        "description": "Tourist and business mixed areas",
+        "lunch_traffic_multiplier": 1.4,
+        "evening_delay": 1,
+        "morning_reduction": 0.7,
+        "weekend_boost": 1.6,
+        "cardio_preference": 1.3,
+        "irregular_patterns": 1.2
+      },
+      "residential_urban": {
+        "description": "Urban residential neighborhoods",
+        "lunch_traffic_multiplier": 1.0,
+        "morning_boost": 1.3,
+        "weekend_boost": 1.3,
+        "strength_preference": 1.1,
+        "family_friendly_hours": 1.2
+      },
+      "residential_nt": {
+        "description": "New Territories residential areas",
+        "lunch_traffic_multiplier": 0.8,
+        "morning_boost": 1.4,
+        "weekend_boost": 1.8,
+        "evening_early_start": -1,
+        "family_oriented": 1.3
+      },
+      "business_residential": {
+        "description": "Mixed business and residential",
+        "lunch_traffic_multiplier": 1.8,
+        "morning_boost": 1.1,
+        "weekend_reduction": 0.8,
+        "cardio_preference": 1.2,
+        "office_worker_patterns": 1.4
+      },
+      "suburban_residential": {
+        "description": "Suburban family-oriented areas",
+        "lunch_traffic_multiplier": 0.7,
+        "morning_boost": 1.5,
+        "weekend_boost": 2.0,
+        "evening_early_start": -1,
+        "family_sessions": 1.5
+      },
+      "suburban_mixed": {
+        "description": "Suburban areas with some commercial",
+        "lunch_traffic_multiplier": 1.0,
+        "morning_boost": 1.3,
+        "weekend_boost": 1.6,
+        "strength_preference": 1.1,
+        "community_oriented": 1.2
+      }
+    },
+    "timing": {
+      "occupied_duration": {
+        "min": 480,
+        "max": 900,
+        "description": "Strength machines: 8-15 minutes per session"
+      },
+      "cardio_duration": {
+        "min": 900,
+        "max": 2400,
+        "description": "Cardio machines: 15-40 minutes per session"
+      },
+      "rest_duration": {
+        "min": 60,
+        "max": 600,
+        "description": "Rest between sets: 1-10 minutes"
+      },
+      "session_length": {
+        "min": 900,
+        "max": 2700,
+        "description": "Total session length: 15-45 minutes"
+      },
+      "transition_time": {
+        "min": 120,
+        "max": 1800,
+        "description": "Machine changeover: 2-30 minutes"
+      }
+    },
+    "noise": {
+      "false_positive_rate": 0.02,
+      "missed_detection_rate": 0.01,
+      "network_delay_max": 30,
+      "offline_frequency": 0.005
+    }
+  }
+}

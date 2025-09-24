@@ -1,0 +1,11 @@
+[project]
+name = "gym-pulse-simulator"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "awsiotsdk>=1.24.0",
+    "boto3>=1.40.21",
+    "faker>=37.6.0",
+    "python-dotenv>=1.1.1",
+]

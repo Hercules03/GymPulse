@@ -1,0 +1,34 @@
+{
+  "toolSpec": {
+    "name": "getRouteMatrix",
+    "description": "Calculate travel times and distances to multiple gym branches",
+    "inputSchema": {
+      "json": {
+        "type": "object", 
+        "properties": {
+          "userCoord": {
+            "type": "object",
+            "properties": {
+              "lat": {"type": "number"},
+              "lon": {"type": "number"}
+            },
+            "required": ["lat", "lon"]
+          },
+          "branchCoords": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "branchId": {"type": "string"},
+                "lat": {"type": "number"},
+                "lon": {"type": "number"}
+              },
+              "required": ["branchId", "lat", "lon"]
+            }
+          }
+        },
+        "required": ["userCoord", "branchCoords"]
+      }
+    }
+  }
+}

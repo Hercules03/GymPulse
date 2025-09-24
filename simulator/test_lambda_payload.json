@@ -1,0 +1,10 @@
+{
+  "machineId": "chest-press-01",
+  "gymId": "hk-central",
+  "status": "occupied",
+  "timestamp": 1757723500,
+  "category": "chest",
+  "coordinates": {"lat": 22.2819, "lon": 114.1577},
+  "machine_name": "Chest Press Machine 1",
+  "topic": "org/hk-central/machines/chest-press-01/status"
+}

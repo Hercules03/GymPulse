@@ -1,0 +1,51 @@
+{
+    "name": "Equipment",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Name of the equipment"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "legs",
+          "chest",
+          "back",
+          "cardio",
+          "arms",
+          "functional"
+        ],
+        "description": "Equipment category"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "available",
+          "occupied",
+          "offline"
+        ],
+        "default": "available",
+        "description": "Current equipment status"
+      },
+      "location": {
+        "type": "string",
+        "description": "Gym location"
+      },
+      "machine_id": {
+        "type": "string",
+        "description": "Unique machine identifier"
+      },
+      "last_updated": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Last status update timestamp"
+      }
+    },
+    "required": [
+      "name",
+      "category",
+      "status",
+      "location"
+    ]
+  }

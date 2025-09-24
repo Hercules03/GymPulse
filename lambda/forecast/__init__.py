@@ -1,0 +1,1 @@
+# Forecast module for gym machine availability predictions
