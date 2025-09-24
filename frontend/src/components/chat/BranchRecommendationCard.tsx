@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Clock, Users, Navigation, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';

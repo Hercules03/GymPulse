@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Shield, MapPin, Clock, Database, AlertCircle } from 'lucide-react';
 
 interface PrivacyNoticeProps {

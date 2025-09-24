@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Clock, TrendingUp, TrendingDown, AlertCircle, Info } from 'lucide-react';
 
 interface ForecastData {

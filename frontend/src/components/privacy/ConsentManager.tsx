@@ -115,12 +115,12 @@ export default function ConsentManager({
     console.log('All consent withdrawn at:', new Date().toISOString());
   };
 
-  const ConsentToggle = ({ 
-    id, 
-    label, 
-    description, 
-    icon: Icon, 
-    enabled, 
+  const ConsentToggle = ({
+    id: _,
+    label,
+    description,
+    icon: Icon,
+    enabled,
     onChange,
     disabled = false 
   }: {

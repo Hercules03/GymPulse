@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 interface StatusBadgeProps {
   status: 'available' | 'free' | 'occupied' | 'offline' | 'unknown' | 'category_view';

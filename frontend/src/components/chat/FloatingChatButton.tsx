@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, X } from 'lucide-react';
 
@@ -10,23 +10,8 @@ interface FloatingChatButtonProps {
 
 export default function FloatingChatButton({ isOpen, onClick, hasUnreadMessages = false }: FloatingChatButtonProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [dragConstraints, setDragConstraints] = useState({ top: 80, left: 20, right: 0, bottom: 0 });
   const constraintsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const updateConstraints = () => {
-      setDragConstraints({
-        top: 80, // Below header
-        left: 20,
-        right: window.innerWidth - 96, // Account for button width + padding
-        bottom: window.innerHeight - 96
-      });
-    };
-
-    updateConstraints();
-    window.addEventListener('resize', updateConstraints);
-    return () => window.removeEventListener('resize', updateConstraints);
-  }, []);
 
   const handleDragStart = () => {
     setIsDragging(true);

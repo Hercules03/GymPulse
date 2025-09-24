@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X } from 'lucide-react';
 import ChatBubble from './ChatBubble';
@@ -43,7 +43,6 @@ export default function FloatingChat({ isOpen, onClose }: FloatingChatProps) {
   const [hasLocation, setHasLocation] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [showLocationRequest, setShowLocationRequest] = useState(false);
-  const [showInput, setShowInput] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -366,13 +365,12 @@ export default function FloatingChat({ isOpen, onClose }: FloatingChatProps) {
           </AnimatePresence>
 
           {/* Floating Input */}
-          {showInput && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="pointer-events-auto"
-            >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="pointer-events-auto"
+          >
               <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-4">
                 <div className="flex items-center gap-3">
                   <input
@@ -394,8 +392,7 @@ export default function FloatingChat({ isOpen, onClose }: FloatingChatProps) {
                   </button>
                 </div>
               </div>
-            </motion.div>
-          )}
+          </motion.div>
         </div>
       </div>
     </>

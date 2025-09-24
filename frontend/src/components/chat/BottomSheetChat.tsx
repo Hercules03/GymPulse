@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, ChevronDown, Maximize2, Minimize2 } from 'lucide-react';
+import { Send, X, Maximize2, Minimize2 } from 'lucide-react';
 import ChatBubble from './ChatBubble';
 import LocationPermissionRequest from './LocationPermissionRequest';
 import BranchRecommendationCard from './BranchRecommendationCard';

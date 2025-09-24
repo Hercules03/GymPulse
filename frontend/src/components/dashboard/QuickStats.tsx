@@ -1,9 +1,17 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, Users, Clock, AlertTriangle } from 'lucide-react';
 
-export default function QuickStats({ totalEquipment, totalAvailable, peakHours, maintenanceNeeded, rawPeakHours }) {
+interface QuickStatsProps {
+  totalEquipment: number;
+  totalAvailable: number;
+  peakHours: string;
+  maintenanceNeeded: number;
+  rawPeakHours: string;
+}
+
+export default function QuickStats({ totalEquipment, totalAvailable, peakHours, maintenanceNeeded, rawPeakHours }: QuickStatsProps) {
   const stats = [
     {
       label: 'Total Equipment',
@@ -52,7 +60,7 @@ export default function QuickStats({ totalEquipment, totalAvailable, peakHours, 
                   <p className="text-sm text-gray-500 mb-1">{stat.label}</p>
                   <p
                     className="text-2xl font-bold text-gray-900 truncate leading-tight"
-                    title={stat.fullValue ? stat.fullValue : stat.value} // Show full text on hover
+                    title={stat.fullValue ? stat.fullValue : String(stat.value)} // Show full text on hover
                   >
                     {stat.value}
                   </p>

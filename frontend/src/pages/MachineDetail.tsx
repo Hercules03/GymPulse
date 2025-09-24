@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Equipment, MachineUsage } from '@/entities';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, MapPin, Clock, Calendar } from 'lucide-react';
@@ -214,7 +213,7 @@ export default function MachineDetail() {
                 console.log('API did not return machine data, using fallback');
                 const machineObject = {
                   machine_id: machineId,
-                  name: `${category?.charAt(0).toUpperCase() + category?.slice(1)} Machine - ${machineId}`,
+                  name: `${category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Unknown'} Machine - ${machineId}`,
                   category: category || 'legs',
                   location: branch || 'hk-central',
                   status: 'unknown',
@@ -231,7 +230,7 @@ export default function MachineDetail() {
               // Fallback to basic mock data if API fails
               const machineObject = {
                 machine_id: machineId,
-                name: `${category?.charAt(0).toUpperCase() + category?.slice(1)} Machine - ${machineId}`,
+                name: `${category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Unknown'} Machine - ${machineId}`,
                 category: category || 'legs',
                 location: branch || 'hk-central',
                 status: 'unknown',
@@ -248,7 +247,7 @@ export default function MachineDetail() {
             // Fallback to basic mock data if API fails
             const machineObject = {
               machine_id: machineId,
-              name: `${category?.charAt(0).toUpperCase() + category?.slice(1)} Machine - ${machineId}`,
+              name: `${category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Unknown'} Machine - ${machineId}`,
               category: category || 'legs',
               location: branch || 'hk-central',
               status: 'unknown',

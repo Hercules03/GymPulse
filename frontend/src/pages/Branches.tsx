@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { gymService, type Branch } from '@/services/gymService';
+import { gymService } from '@/services/gymService';
+import { Branch } from '@/entities';
 import { extractCategoriesFromBranches } from '@/utils/categoryUtils';
 import BranchList from '@/components/branches/BranchList';
 import BranchSearch from '@/components/branches/BranchSearch';
@@ -67,7 +68,20 @@ export default function BranchesPage() {
       setError(null);
       try {
         const response = await gymService.getBranches();
-        setBranches(response.branches);
+        // Convert gymService.Branch to entities.Branch format
+        const convertedBranches = response.branches.map(branch => ({
+          ...branch,
+          address: branch.name + ', Hong Kong', // Add missing address field
+          availability: undefined,
+          availableMachines: undefined,
+          totalMachines: undefined,
+          distance: undefined,
+          eta: undefined,
+          phone: undefined,
+          hours: undefined,
+          amenities: undefined
+        }));
+        setBranches(convertedBranches);
         
         if (response.warnings) {
           console.warn('API warnings:', response.warnings);
@@ -145,9 +159,9 @@ export default function BranchesPage() {
 
     return branches.map(branch => {
       // Calculate totals across all categories
-      const categoryNames = Object.keys(branch.categories);
-      const totalMachines = categoryNames.reduce((sum, cat) => sum + branch.categories[cat].total, 0);
-      const availableMachines = categoryNames.reduce((sum, cat) => sum + branch.categories[cat].free, 0);
+      const categoryNames = Object.keys(branch.categories || {});
+      const totalMachines = categoryNames.reduce((sum, cat) => sum + (branch.categories?.[cat]?.total || 0), 0);
+      const availableMachines = categoryNames.reduce((sum, cat) => sum + (branch.categories?.[cat]?.free || 0), 0);
       const availability = totalMachines > 0 ? (availableMachines / totalMachines) * 100 : 0;
 
       // Calculate real distance if user location is available

@@ -5,6 +5,21 @@ export interface BranchData {
   phone?: string;
   hours?: string;
   amenities?: string[];
+  availability?: number;
+  availableMachines?: number;
+  totalMachines?: number;
+  distance?: string;
+  eta?: number;
+  coordinates?: {
+    lat: number;
+    lon: number;
+  };
+  categories?: {
+    [category: string]: {
+      free: number;
+      total: number;
+    };
+  };
 }
 
 export class Branch {
@@ -14,6 +29,21 @@ export class Branch {
   phone?: string;
   hours?: string;
   amenities?: string[];
+  availability?: number;
+  availableMachines?: number;
+  totalMachines?: number;
+  distance?: string;
+  eta?: number;
+  coordinates?: {
+    lat: number;
+    lon: number;
+  };
+  categories?: {
+    [category: string]: {
+      free: number;
+      total: number;
+    };
+  };
 
   constructor(data: BranchData) {
     this.id = data.id;
@@ -22,6 +52,13 @@ export class Branch {
     this.phone = data.phone;
     this.hours = data.hours;
     this.amenities = data.amenities;
+    this.availability = data.availability;
+    this.availableMachines = data.availableMachines;
+    this.totalMachines = data.totalMachines;
+    this.distance = data.distance;
+    this.eta = data.eta;
+    this.coordinates = data.coordinates;
+    this.categories = data.categories;
   }
 
   static async list(): Promise<Branch[]> {

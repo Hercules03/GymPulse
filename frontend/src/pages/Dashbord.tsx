@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { gymService } from '@/services/gymService';
 import { motion } from 'framer-motion';
@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
-import { extractCategoriesFromBranches } from '@/utils/categoryUtils';
 
 import CategoryCard from '@/components/dashboard/CategoryCard';
 import QuickStats from '@/components/dashboard/QuickStats';
@@ -31,7 +30,7 @@ interface Branch {
 export default function Dashboard() {
   const { branchId } = useParams<{ branchId: string }>();
   const navigate = useNavigate();
-  const [branches, setBranches] = useState<Branch[]>([]);
+  const [, setBranches] = useState<Branch[]>([]);
   const [currentBranch, setCurrentBranch] = useState<Branch | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdateTime, setLastUpdateTime] = useState(new Date());
@@ -204,7 +203,7 @@ export default function Dashboard() {
 
       // Convert to more compact format while preserving readability
       // Match patterns like "6AM - 9PM" and make them "6-9PM"
-      formatted = formatted.replace(/(\d{1,2})(AM|PM)\s*-\s*(\d{1,2})(AM|PM)/gi, (match, startHour, startPeriod, endHour, endPeriod) => {
+      formatted = formatted.replace(/(\d{1,2})(AM|PM)\s*-\s*(\d{1,2})(AM|PM)/gi, (_, startHour, startPeriod, endHour, endPeriod) => {
         if (startPeriod === endPeriod) {
           return `${startHour}-${endHour}${endPeriod}`;
         }

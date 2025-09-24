@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, Zap, MapPin, Users } from 'lucide-react';
 import ChatInterface from './ChatInterface';

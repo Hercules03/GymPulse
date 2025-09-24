@@ -128,15 +128,15 @@ export default function MachinesPage() {
             console.log('🔬 Using DEVELOPMENT mode - loading real API data');
             // Load real API data in development mode
             try {
-              const historyResponse = await gymService.getMachineHistory(firstMachine.machineId);
+              /*const _historyResponse = */await gymService.getMachineHistory(firstMachine.machineId);
 
               // Transform history data to heatmap format
-              const transformedData = (historyResponse.history || []).map((bin) => ({
+              /*const _transformedData = (historyResponse.history || []).map((bin) => ({
                 hour: new Date(bin.timestamp * 1000).getHours(),
                 usage_percentage: Math.round(bin.occupancyRatio * 100),
                 timestamp: new Date(bin.timestamp * 1000).toISOString(),
                 predicted_free_time: null
-              }));
+              }));*/
 
               // setUsageData(transformedData);
             } catch (historyError) {

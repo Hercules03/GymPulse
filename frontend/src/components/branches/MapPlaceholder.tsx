@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Map, Marker, Overlay } from 'pigeon-maps';
-import { type Branch } from '@/services/gymService';
+import { Branch } from '@/entities';
 import { useGeolocation } from '@/hooks/useGeolocation';
 
 // Custom marker component for availability-based styling
@@ -12,7 +12,7 @@ interface CustomMarkerProps {
   onClick: () => void;
 }
 
-function CustomMarker({ anchor, availability, branch, isSelected, onClick }: CustomMarkerProps) {
+function CustomMarker({ availability, branch, isSelected, onClick }: CustomMarkerProps) {
   const getMarkerColor = (availability: number) => {
     if (availability >= 70) return '#10b981'; // green
     if (availability >= 40) return '#f59e0b'; // yellow
@@ -129,14 +129,17 @@ function PopupOverlay({ anchor, branch, onClose, onViewDetails }: PopupOverlayPr
         <div className="mt-3 pt-3 border-t border-gray-200">
           <div className="text-xs text-gray-500 mb-2">Equipment Categories:</div>
           <div className="space-y-1">
-            {Object.entries(branch.categories || {}).map(([category, data]) => (
-              <div key={category} className="flex justify-between items-center">
-                <span className="text-xs text-gray-600 capitalize">{category}:</span>
-                <span className="text-xs font-medium text-gray-900">
-                  {data.free}/{data.total} free
-                </span>
-              </div>
-            ))}
+            {Object.entries(branch.categories || {}).map(([category, data]) => {
+              const categoryData = data as { free: number; total: number };
+              return (
+                <div key={category} className="flex justify-between items-center">
+                  <span className="text-xs text-gray-600 capitalize">{category}:</span>
+                  <span className="text-xs font-medium text-gray-900">
+                    {categoryData.free}/{categoryData.total} free
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -202,7 +205,7 @@ export default function InteractiveMap({
 
   // Force recalculation after mount to handle timing issues
   useEffect(() => {
-    const timers: NodeJS.Timeout[] = [];
+    const timers: number[] = [];
     
     // Try multiple times with increasing delays to catch when layout is ready
     [100, 250, 500].forEach(delay => {
@@ -260,8 +263,8 @@ export default function InteractiveMap({
 
     // Priority 2: If we have branches, center on them
     if (branches.length > 0) {
-      const lats = branches.map(b => b.coordinates.lat);
-      const lons = branches.map(b => b.coordinates.lon);
+      const lats = branches.map(b => b.coordinates?.lat || 0);
+      const lons = branches.map(b => b.coordinates?.lon || 0);
 
       const minLat = Math.min(...lats);
       const maxLat = Math.max(...lats);
@@ -377,7 +380,7 @@ export default function InteractiveMap({
           return (
             <Marker
               key={branch.id}
-              anchor={[branch.coordinates.lat, branch.coordinates.lon]}
+              anchor={[branch.coordinates?.lat || 0, branch.coordinates?.lon || 0]}
               onClick={() => {
                 console.log('🎯 Marker onClick triggered!', { branchId: branch.id });
                 handleMarkerClick(branch.id);
@@ -385,7 +388,7 @@ export default function InteractiveMap({
               style={{ zIndex: 1 }}
             >
               <CustomMarker
-                anchor={[branch.coordinates.lat, branch.coordinates.lon]}
+                anchor={[branch.coordinates?.lat || 0, branch.coordinates?.lon || 0]}
                 availability={availability}
                 branch={branch}
                 isSelected={isSelected}
@@ -403,7 +406,7 @@ export default function InteractiveMap({
 
             return (
               <PopupOverlay
-                anchor={[branch.coordinates.lat, branch.coordinates.lon]}
+                anchor={[branch.coordinates?.lat || 0, branch.coordinates?.lon || 0]}
                 branch={branch}
                 onClose={handleClosePopup}
                 onViewDetails={() => handleViewDetails(branch.id)}

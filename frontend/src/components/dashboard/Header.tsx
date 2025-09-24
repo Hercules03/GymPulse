@@ -1,8 +1,19 @@
-import React from 'react';
-import { MapPin, ChevronDown } from 'lucide-react';
+
+import { MapPin } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function Header({ selectedLocation, onLocationChange, locations }) {
+interface Location {
+  id: string;
+  name: string;
+}
+
+interface HeaderProps {
+  selectedLocation: string;
+  onLocationChange: (locationId: string) => void;
+  locations: Location[];
+}
+
+export default function Header({ selectedLocation, onLocationChange, locations }: HeaderProps) {
   return (
     <header className="bg-white border-b border-gray-100 px-6 py-6">
       <div className="max-w-7xl mx-auto flex items-center justify-between">

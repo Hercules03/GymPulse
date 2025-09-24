@@ -42,7 +42,7 @@ class WebSocketService {
   private messageListeners: ((message: WebSocketMessage) => void)[] = [];
   private connectionListeners: ((connected: boolean) => void)[] = [];
   private subscriptions: WebSocketSubscriptions = {};
-  private mockUpdateInterval: NodeJS.Timeout | null = null;
+  private mockUpdateInterval: number | null = null;
   private isDevelopmentMode: boolean;
 
   constructor() {
@@ -340,7 +340,7 @@ class WebSocketService {
   /**
    * Start mock updates for development mode
    */
-  private startMockUpdates(subscriptions?: WebSocketSubscriptions): void {
+  private startMockUpdates(_subscriptions?: WebSocketSubscriptions): void {
     if (this.mockUpdateInterval) {
       clearInterval(this.mockUpdateInterval);
     }
