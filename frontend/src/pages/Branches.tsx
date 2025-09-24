@@ -8,7 +8,6 @@ import InteractiveMap from '@/components/branches/MapPlaceholder';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { Settings, X } from 'lucide-react';
-import InteractiveTypingBubble from '@/components/chat/InteractiveTypingBubble';
 
 export default function BranchesPage() {
   const [branches, setBranches] = useState<Branch[]>([]);
@@ -269,17 +268,6 @@ export default function BranchesPage() {
             <BranchSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </div>
 
-          {/* Desktop Interactive Typing Bubble */}
-          <div className="px-6 pb-4">
-            <InteractiveTypingBubble
-              onToggle={() => {}}
-              className="w-full"
-              userLocation={userLocation.latitude && userLocation.longitude ? {
-                lat: userLocation.latitude,
-                lon: userLocation.longitude
-              } : null}
-            />
-          </div>
 
           <div className="flex-1 overflow-y-auto px-6 pb-6">
             {error ? (
@@ -310,17 +298,6 @@ export default function BranchesPage() {
           />
         </div>
 
-        {/* Interactive Typing Bubble - Above the white pill on mobile */}
-        <div className="lg:hidden fixed bottom-20 left-4 right-4 z-50">
-          <InteractiveTypingBubble
-            onToggle={() => {}}
-            className="w-full"
-            userLocation={userLocation.latitude && userLocation.longitude ? {
-              lat: userLocation.latitude,
-              lon: userLocation.longitude
-            } : null}
-          />
-        </div>
 
         {/* Mobile Bottom Sheet Pull-up Indicator - Full Width */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 pointer-events-none">
