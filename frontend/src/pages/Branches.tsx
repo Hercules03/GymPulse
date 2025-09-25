@@ -7,7 +7,7 @@ import BranchSearch from '@/components/branches/BranchSearch';
 import InteractiveMap from '@/components/branches/MapPlaceholder';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { Settings, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 export default function BranchesPage() {
   const [branches, setBranches] = useState<Branch[]>([]);
@@ -36,21 +36,6 @@ export default function BranchesPage() {
       document.body.style.overflow = 'unset';
     };
   }, [isBranchSheetOpen]);
-
-  // App mode state
-  const [appMode, setAppMode] = useState<'demo' | 'development'>(() => {
-    const saved = localStorage.getItem('gym-pulse-app-mode');
-    return (saved as 'demo' | 'development') || 'demo';
-  });
-
-  const toggleAppMode = () => {
-    const newMode = appMode === 'demo' ? 'development' : 'demo';
-    setAppMode(newMode);
-    localStorage.setItem('gym-pulse-app-mode', newMode);
-
-    // Dispatch custom event to notify other components
-    window.dispatchEvent(new CustomEvent('appModeChanged'));
-  };
 
   // Get user location for map centering
   const userLocation = useGeolocation();
@@ -235,26 +220,6 @@ export default function BranchesPage() {
 
   return (
     <div style={{ height: 'calc(100vh - 80px)' }} className="flex flex-col">
-      {/* Page Header - Mobile Optimized */}
-      <div className="bg-white border-b border-gray-100 shrink-0">
-        <div className="flex items-center justify-end px-4 lg:px-6 py-3">
-          {/* App Mode Toggle - Desktop Only */}
-          <div className="hidden lg:flex items-center">
-            <button
-              onClick={toggleAppMode}
-              className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${
-                appMode === 'development'
-                  ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-              title={`Currently in ${appMode} mode. Click to switch to ${appMode === 'demo' ? 'development' : 'demo'} mode`}
-            >
-              <Settings className="w-4 h-4" />
-            </button>
-          </div>
-
-        </div>
-      </div>
 
       {/* Mobile-First Layout */}
       <div className="flex-1 flex flex-col lg:flex-row relative overflow-hidden">

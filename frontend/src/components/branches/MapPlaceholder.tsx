@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Map, Marker, Overlay } from 'pigeon-maps';
 import { Branch } from '@/entities';
 import { useGeolocation } from '@/hooks/useGeolocation';
+import MapLegend from './MapLegend';
 
 // Custom marker component for availability-based styling
 interface CustomMarkerProps {
@@ -339,6 +340,9 @@ export default function InteractiveMap({
         position: 'relative'
       }}
     >
+      {/* Map Legend */}
+      <MapLegend />
+
       <Map
         height={mapHeight}
         width={mapWidth}
