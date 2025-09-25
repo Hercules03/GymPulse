@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { isChatOpen, setIsChatOpen } = useChatContext();
 
   // Check if we're on the branches page
-  const isBranchesPage = location.pathname === '/branches' || location.pathname === '/branches/';
+  const isBranchesPage = location.pathname === '/branches';
 
   return (
     <div className="min-h-screen w-full bg-gray-50">
@@ -41,23 +41,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* Chat Interface - Hide floating button on branches pages but keep chat interface */}
-      <div style={{ display: isBranchesPage ? 'none' : 'block' }}>
-        {!isBranchesPage && (
-          <FloatingChatButton
-            isOpen={isChatOpen}
-            onClick={() => setIsChatOpen(!isChatOpen)}
-          />
-        )}
-      </div>
-
-      {/* Chat Interface - Always show */}
-      <AnimatePresence>
-        <ChatInterface
+      {/* Chat Interface - Only show floating button on non-branches pages */}
+      {!isBranchesPage && (
+        <FloatingChatButton
           isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
+          onClick={() => setIsChatOpen(!isChatOpen)}
         />
-      </AnimatePresence>
+      )}
+
+      {/* Chat Interface - Only show on non-branches pages */}
+      {!isBranchesPage && (
+        <AnimatePresence>
+          <ChatInterface
+            isOpen={isChatOpen}
+            onClose={() => setIsChatOpen(false)}
+          />
+        </AnimatePresence>
+      )}
     </div>
   );
 }

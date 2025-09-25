@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+
+        // Test environment variables
+        console.log('Testing WebSocket connection to real endpoint...');
+
+        const wsUrl = 'wss://f33iwzqgcd.execute-api.ap-east-1.amazonaws.com/prod';
+        console.log('WebSocket URL:', wsUrl);
+
+        const ws = new WebSocket(wsUrl);
+
+        ws.onopen = function() {
+            console.log('WebSocket connected!');
+            statusDiv.innerHTML = '✅ Connected to WebSocket';
+            statusDiv.style.color = 'green';
+        };
+
+        ws.onmessage = function(event) {
+            console.log('Received message:', event.data);
+            const messageDiv = document.createElement('div');
+            messageDiv.innerHTML = '📨 ' + new Date().toLocaleTimeString() + ': ' + event.data;
+            messagesDiv.appendChild(messageDiv);
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+            statusDiv.innerHTML = '❌ WebSocket Error';
+            statusDiv.style.color = 'red';
+        };
+
+        ws.onclose = function(event) {
+            console.log('WebSocket closed:', event.code, event.reason);
+            statusDiv.innerHTML = '🔌 WebSocket Closed (Code: ' + event.code + ')';
+            statusDiv.style.color = 'orange';
+        };
+    </script>
+</body>
+</html>

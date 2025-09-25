@@ -1,13 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { gymService } from '@/services/gymService';
-import { Branch } from '@/entities';
+import { gymService, type Branch } from '@/services/gymService';
 import { extractCategoriesFromBranches } from '@/utils/categoryUtils';
 import BranchList from '@/components/branches/BranchList';
 import BranchSearch from '@/components/branches/BranchSearch';
 import InteractiveMap from '@/components/branches/MapPlaceholder';
 import { useMachineUpdates } from '@/hooks/useWebSocket';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { X } from 'lucide-react';
+import { Settings, X } from 'lucide-react';
 import InteractiveTypingBubble from '@/components/chat/InteractiveTypingBubble';
 
 export default function BranchesPage() {
@@ -38,6 +37,21 @@ export default function BranchesPage() {
     };
   }, [isBranchSheetOpen]);
 
+  // App mode state
+  const [appMode, setAppMode] = useState<'demo' | 'development'>(() => {
+    const saved = localStorage.getItem('gym-pulse-app-mode');
+    return (saved as 'demo' | 'development') || 'demo';
+  });
+
+  const toggleAppMode = () => {
+    const newMode = appMode === 'demo' ? 'development' : 'demo';
+    setAppMode(newMode);
+    localStorage.setItem('gym-pulse-app-mode', newMode);
+
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('appModeChanged'));
+  };
+
   // Get user location for map centering
   const userLocation = useGeolocation();
 
@@ -53,20 +67,7 @@ export default function BranchesPage() {
       setError(null);
       try {
         const response = await gymService.getBranches();
-        // Convert gymService.Branch to entities.Branch format
-        const convertedBranches = response.branches.map(branch => ({
-          ...branch,
-          address: branch.name + ', Hong Kong', // Add missing address field
-          availability: undefined,
-          availableMachines: undefined,
-          totalMachines: undefined,
-          distance: undefined,
-          eta: undefined,
-          phone: undefined,
-          hours: undefined,
-          amenities: undefined
-        }));
-        setBranches(convertedBranches);
+        setBranches(response.branches);
         
         if (response.warnings) {
           console.warn('API warnings:', response.warnings);
@@ -144,9 +145,9 @@ export default function BranchesPage() {
 
     return branches.map(branch => {
       // Calculate totals across all categories
-      const categoryNames = Object.keys(branch.categories || {});
-      const totalMachines = categoryNames.reduce((sum, cat) => sum + (branch.categories?.[cat]?.total || 0), 0);
-      const availableMachines = categoryNames.reduce((sum, cat) => sum + (branch.categories?.[cat]?.free || 0), 0);
+      const categoryNames = Object.keys(branch.categories);
+      const totalMachines = categoryNames.reduce((sum, cat) => sum + branch.categories[cat].total, 0);
+      const availableMachines = categoryNames.reduce((sum, cat) => sum + branch.categories[cat].free, 0);
       const availability = totalMachines > 0 ? (availableMachines / totalMachines) * 100 : 0;
 
       // Calculate real distance if user location is available
@@ -221,6 +222,30 @@ export default function BranchesPage() {
 
   return (
     <div style={{ height: 'calc(100vh - 80px)' }} className="flex flex-col">
+      {/* Page Header - Mobile Optimized */}
+      <div className="bg-white border-b border-gray-100 shrink-0">
+        <div className="flex items-center justify-between px-4 lg:px-6 py-4 lg:py-6">
+          <div>
+            <h1 className="text-xl lg:text-2xl font-bold text-gray-900 tracking-tight">Find a Gym</h1>
+            <p className="text-gray-500 text-xs lg:text-sm mt-1">Select a branch to see details and availability</p>
+          </div>
+          {/* App Mode Toggle - Desktop Only */}
+          <div className="hidden lg:flex items-center">
+            <button
+              onClick={toggleAppMode}
+              className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${
+                appMode === 'development'
+                  ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+              title={`Currently in ${appMode} mode. Click to switch to ${appMode === 'demo' ? 'development' : 'demo'} mode`}
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
+
+        </div>
+      </div>
 
       {/* Mobile-First Layout */}
       <div className="flex-1 flex flex-col lg:flex-row relative overflow-hidden">
@@ -230,6 +255,17 @@ export default function BranchesPage() {
             <BranchSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </div>
 
+          {/* Desktop Interactive Typing Bubble */}
+          <div className="px-6 pb-4">
+            <InteractiveTypingBubble
+              onToggle={() => {}}
+              className="w-full"
+              userLocation={userLocation.latitude && userLocation.longitude ? {
+                lat: userLocation.latitude,
+                lon: userLocation.longitude
+              } : null}
+            />
+          </div>
 
           <div className="flex-1 overflow-y-auto px-6 pb-6">
             {error ? (
@@ -259,7 +295,6 @@ export default function BranchesPage() {
             onBranchNavigate={handleBranchNavigate}
           />
         </div>
-
 
         {/* Interactive Typing Bubble - Above the white pill on mobile */}
         <div className="lg:hidden fixed bottom-20 left-4 right-4 z-50">
