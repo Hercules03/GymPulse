@@ -1,9 +1,0 @@
-export { default as ChatInterface } from './ChatInterface';
-export { default as ChatBubble } from './ChatBubble';
-export { default as LocationPermissionRequest } from './LocationPermissionRequest';
-export { default as BranchRecommendationCard } from './BranchRecommendationCard';
-export { default as FloatingChatButton } from './FloatingChatButton';
-export { default as TypingBubble } from './TypingBubble';
-export { default as BottomSheetChat } from './BottomSheetChat';
-export { default as FloatingChat } from './FloatingChat';
-export { default as InteractiveTypingBubble } from './InteractiveTypingBubble';
