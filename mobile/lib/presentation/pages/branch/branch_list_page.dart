@@ -1145,7 +1145,9 @@ class _BranchListPageState extends State<BranchListPage> with TickerProviderStat
   void _sendMessage(String message) async {
     if (message.trim().isEmpty) return;
 
-    // Add user message
+    final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+
+    // Add user message to local chat
     setState(() {
       _chatMessages.insert(0, ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -1158,18 +1160,38 @@ class _BranchListPageState extends State<BranchListPage> with TickerProviderStat
 
     _chatController.clear();
 
-    // Simulate AI response (replace with actual API call)
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      // Send message to real AI via ChatProvider
+      await chatProvider.sendMessage(message);
 
-    setState(() {
-      _chatMessages.insert(0, ChatMessage(
-        id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
-        content: "Thanks for your question! I'm here to help you find the best gym equipment. Let me check our availability for you.",
-        isUser: false,
-        timestamp: DateTime.now(),
-      ));
-      _isChatLoading = false;
-    });
+      // Get the latest AI response from ChatProvider
+      final chatMessages = chatProvider.messages;
+      if (chatMessages.isNotEmpty) {
+        final latestMessage = chatMessages.last;
+        if (latestMessage.role == 'assistant') {
+          setState(() {
+            _chatMessages.insert(0, ChatMessage(
+              id: latestMessage.id,
+              content: latestMessage.message,
+              isUser: false,
+              timestamp: latestMessage.timestamp,
+            ));
+            _isChatLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      // Handle error case
+      setState(() {
+        _chatMessages.insert(0, ChatMessage(
+          id: (DateTime.now().millisecondsSinceEpoch + 1).toString(),
+          content: "Sorry, I'm having trouble connecting to the server right now. Please check your internet connection and try again.",
+          isUser: false,
+          timestamp: DateTime.now(),
+        ));
+        _isChatLoading = false;
+      });
+    }
   }
 
   String _formatTimestamp(DateTime timestamp) {

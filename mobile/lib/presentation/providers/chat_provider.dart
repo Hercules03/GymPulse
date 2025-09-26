@@ -138,17 +138,19 @@ class ChatProvider extends ChangeNotifier {
     } catch (e) {
       _logger.e('Error sending chat message: $e');
 
-      // Fallback to mock response if API fails
-      final fallbackMessage = ChatMessage(
+      // Set error message instead of using mock response
+      _errorMessage = 'Failed to send message: ${e.toString()}';
+
+      // Add error message to chat
+      final errorMessage = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        message: _generateMockResponse(message),
+        message: 'Sorry, I\'m having trouble connecting to the server right now. Please check your internet connection and try again.',
         role: 'assistant',
         timestamp: DateTime.now(),
-        recommendations: _generateMockRecommendations(),
       );
 
-      _messages.add(fallbackMessage);
-      _logger.w('Using fallback response due to API error');
+      _messages.add(errorMessage);
+      _logger.e('API call failed, showing error message to user');
     }
 
     _isLoading = false;
@@ -193,43 +195,6 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  String _generateMockResponse(String userMessage) {
-    final message = userMessage.toLowerCase();
-    
-    if (message.contains('available') || message.contains('free')) {
-      return 'I can help you find available equipment! Based on current data, there are several machines available in the cardio and legs sections. Would you like me to show you specific recommendations?';
-    } else if (message.contains('busy') || message.contains('crowded')) {
-      return 'Peak hours are typically 6-9 AM and 5-8 PM. Right now, the gym is moderately busy. I recommend checking the real-time status of specific machines before heading over.';
-    } else if (message.contains('recommend') || message.contains('suggest')) {
-      return 'Here are some great options based on your preferences: The leg press machine is currently available, and the cardio section has several open treadmills. Would you like more details about any specific equipment?';
-    } else {
-      return 'I\'m here to help you with gym equipment availability, recommendations, and any questions about your workout! What would you like to know?';
-    }
-  }
-
-  List<ChatRecommendation> _generateMockRecommendations() {
-    return [
-      const ChatRecommendation(
-        type: 'machine',
-        title: 'Leg Press Machine',
-        description: 'Currently available - perfect for leg day!',
-        machineId: 'leg_press_001',
-        category: 'legs',
-      ),
-      const ChatRecommendation(
-        type: 'category',
-        title: 'Cardio Section',
-        description: 'Multiple treadmills and bikes available',
-        category: 'cardio',
-      ),
-      const ChatRecommendation(
-        type: 'branch',
-        title: 'Downtown Branch',
-        description: 'Less crowded right now - 15 min walk away',
-        branchId: 'downtown',
-      ),
-    ];
-  }
 
   void clearMessages() {
     _messages.clear();
