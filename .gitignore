@@ -10,9 +10,12 @@ cdk.out
 node_modules
 
 # Environment files
-.env
+.env*
+!.env.example
 .env.local
 .env.production
+.env.development
+.env.staging
 
 # Build outputs
 dist/
@@ -54,6 +57,24 @@ connect_device_package/
 .DS_Store
 Thumbs.db
 
+# AWS and Security files
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+aws-credentials
+credentials
+config
+
 # CDK context and outputs
 cdk.context.json
 cdk-outputs.json
+
+# Additional common ignores
+.DS_Store?
+*.pid
+*.seed
+*.pid.lock
+coverage/
+.nyc_output/
