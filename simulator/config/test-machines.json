@@ -1,0 +1,95 @@
+{
+  "branches": [
+    {
+      "id": "hk-central",
+      "name": "Central Branch",
+      "coordinates": {
+        "lat": 22.2819,
+        "lon": 114.1577
+      },
+      "machines": [
+        {
+          "machineId": "leg-press-01",
+          "name": "Leg Press Machine 1",
+          "category": "legs",
+          "type": "leg-press"
+        },
+        {
+          "machineId": "leg-press-02",
+          "name": "Leg Press Machine 2",
+          "category": "legs",
+          "type": "leg-press"
+        },
+        {
+          "machineId": "leg-press-03",
+          "name": "Leg Press Machine 3",
+          "category": "legs",
+          "type": "leg-press"
+        }
+      ]
+    }
+  ],
+  "usage_patterns": {
+    "peak_hours": {
+      "morning": {
+        "start": 6,
+        "end": 9,
+        "occupancy_rate": 0.6,
+        "description": "Morning rush (6-9 AM) - 60% busy, cardio equipment popular, office workers before work"
+      },
+      "lunch": {
+        "start": 12,
+        "end": 14,
+        "occupancy_rate": 0.45,
+        "description": "Lunch time (12-2 PM) - 45% busy, business district workers quick sessions"
+      },
+      "evening": {
+        "start": 18,
+        "end": 22,
+        "occupancy_rate": 0.85,
+        "description": "Evening peak (6-10 PM) - 85% busy, highest demand, queues for benches and squat racks"
+      },
+      "midday": {
+        "start": 10,
+        "end": 18,
+        "occupancy_rate": 0.25,
+        "description": "Off-peak daytime (10 AM-6 PM) - 25% busy, mostly retirees and shift workers"
+      },
+      "night": {
+        "start": 22,
+        "end": 6,
+        "occupancy_rate": 0.60,
+        "description": "Late night/early morning (10 PM-6 AM) - 60% busy for fast demo purposes"
+      }
+    },
+    "equipment_preferences": {
+      "legs": {
+        "leg-press": {"peak_multiplier": 1.3, "base_demand": 0.75, "description": "High demand, second most popular legs machine"}
+      }
+    },
+    "timing": {
+      "occupied_duration": {
+        "min": 10,
+        "max": 20
+      },
+      "rest_duration": {
+        "min": 15,
+        "max": 30
+      },
+      "session_length": {
+        "min": 60,
+        "max": 120
+      },
+      "transition_time": {
+        "min": 10,
+        "max": 30
+      }
+    },
+    "noise": {
+      "false_positive_rate": 0.0,
+      "missed_detection_rate": 0.0,
+      "network_delay_max": 30,
+      "offline_frequency": 0.0
+    }
+  }
+}

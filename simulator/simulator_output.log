@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/GitHub/GymPulse/simulator/src/gym_simulator.py", line 14, in <module>
+    from machine_simulator import MachineSimulator
+  File "/Users/GitHub/GymPulse/simulator/src/machine_simulator.py", line 13, in <module>
+    from awsiot import mqtt5_client_builder, mqtt5
+ModuleNotFoundError: No module named 'awsiot'

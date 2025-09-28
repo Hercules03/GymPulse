@@ -1,0 +1,91 @@
+🔄 Fixing regional prefixes in DynamoDB tables...
+Converting hk-* to proper kl-* and nt-* prefixes
+
+📋 Regional Prefix Updates:
+  Kowloon (KL):
+    hk-mongkok-nathan → kl-mongkok-nathan
+    hk-tsimshatsui-ashley → kl-tsimshatsui-ashley
+    hk-jordan-nathan → kl-jordan-nathan
+    hk-taikok-ivy → kl-taikok-ivy
+  New Territories (NT):
+    hk-shatin-fun → nt-shatin-fun
+    hk-maonshan-lee → nt-maonshan-lee
+    hk-tsuenwan-lik → nt-tsuenwan-lik
+    hk-tinshui-tin → nt-tinshui-tin
+    hk-fanling-green → nt-fanling-green
+
+🔄 Updating current-state table regional prefixes...
+  Updating hk-mongkok-nathan → kl-mongkok-nathan
+    Found 75 items to update
+    ❌ Error updating hk-mongkok-nathan: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-tsimshatsui-ashley → kl-tsimshatsui-ashley
+    Found 65 items to update
+    ❌ Error updating hk-tsimshatsui-ashley: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-jordan-nathan → kl-jordan-nathan
+    Found 50 items to update
+    ❌ Error updating hk-jordan-nathan: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-taikok-ivy → kl-taikok-ivy
+    Found 45 items to update
+    ❌ Error updating hk-taikok-ivy: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-shatin-fun → nt-shatin-fun
+    Found 55 items to update
+    ❌ Error updating hk-shatin-fun: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-maonshan-lee → nt-maonshan-lee
+    Found 40 items to update
+    ❌ Error updating hk-maonshan-lee: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-tsuenwan-lik → nt-tsuenwan-lik
+    Found 50 items to update
+    ❌ Error updating hk-tsuenwan-lik: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-tinshui-tin → nt-tinshui-tin
+    Found 35 items to update
+    ❌ Error updating hk-tinshui-tin: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+  Updating hk-fanling-green → nt-fanling-green
+    Found 30 items to update
+    ❌ Error updating hk-fanling-green: An error occurred (ValidationException) when calling the BatchWriteItem operation: Provided list of item keys contains duplicates
+✅ Updated 108 items in current-state table
+
+🔄 Updating events table regional prefixes...
+  Updating hk-mongkok-nathan → kl-mongkok-nathan
+    ❌ Error updating hk-mongkok-nathan: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-tsimshatsui-ashley → kl-tsimshatsui-ashley
+    ❌ Error updating hk-tsimshatsui-ashley: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-jordan-nathan → kl-jordan-nathan
+    ❌ Error updating hk-jordan-nathan: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-taikok-ivy → kl-taikok-ivy
+    ❌ Error updating hk-taikok-ivy: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-shatin-fun → nt-shatin-fun
+    ❌ Error updating hk-shatin-fun: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-maonshan-lee → nt-maonshan-lee
+    ❌ Error updating hk-maonshan-lee: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-tsuenwan-lik → nt-tsuenwan-lik
+    ❌ Error updating hk-tsuenwan-lik: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-tinshui-tin → nt-tinshui-tin
+    ❌ Error updating hk-tinshui-tin: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-fanling-green → nt-fanling-green
+    ❌ Error updating hk-fanling-green: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+✅ Updated 0 items in events table
+
+🔄 Updating aggregates table regional prefixes...
+  Updating hk-mongkok-nathan → kl-mongkok-nathan
+    Found 71412 items to update
+  Updating hk-tsimshatsui-ashley → kl-tsimshatsui-ashley
+    Found 50727 items to update
+  Updating hk-jordan-nathan → kl-jordan-nathan
+    Found 55197 items to update
+    ❌ Error updating hk-jordan-nathan: An error occurred (ResourceNotFoundException) when calling the BatchWriteItem operation: Requested resource not found
+  Updating hk-taikok-ivy → kl-taikok-ivy
+    ❌ Error updating hk-taikok-ivy: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-shatin-fun → nt-shatin-fun
+    ❌ Error updating hk-shatin-fun: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-maonshan-lee → nt-maonshan-lee
+    ❌ Error updating hk-maonshan-lee: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-tsuenwan-lik → nt-tsuenwan-lik
+    ❌ Error updating hk-tsuenwan-lik: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-tinshui-tin → nt-tinshui-tin
+    ❌ Error updating hk-tinshui-tin: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+  Updating hk-fanling-green → nt-fanling-green
+    ❌ Error updating hk-fanling-green: An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found
+✅ Updated 135838 items in aggregates table
+
+✅ Regional prefix update completed!
+🎯 All branches now have correct HK/KL/NT regional organization
