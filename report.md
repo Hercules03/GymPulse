@@ -1,92 +1,33 @@
 # GymPulse - AWS Hong Kong AI Hackathon 2025 Report
 
-## Abstract
-
-GymPulse addresses a critical pain point affecting thousands of gym-goers across Hong Kong's rapidly expanding HK$2.8 billion 24/7 fitness ecosystem: equipment availability uncertainty. Despite hundreds of thousands of active gym memberships across major chains¹ like Anytime Fitness, Snap Fitness, and 247 Fitness, members frequently arrive at gyms only to find their preferred equipment occupied, leading to wasted time, modified workout plans, or abandoned sessions entirely.
-
-Our solution transforms this frustrating experience through an AI-powered real-time intelligence system featuring four core capabilities: an Agentic Chatbot that understands natural language queries like "Leg day nearby?" and provides personalized recommendations; Predictive Insights using machine learning to forecast 30-minute equipment availability; Live Equipment Tracking with sub-15-second latency across multiple gym locations; and Interactive Heatmaps revealing 24-hour availability patterns to help users avoid Hong Kong's problematic peak hours (7-9 AM and 7-10 PM).
-
-Built on AWS's cutting-edge serverless architecture, GymPulse implements a sophisticated data pipeline (IoT Simulator → AWS IoT Core → Lambda Functions → DynamoDB → WebSocket API → Real-time Broadcast → Frontend) processing data from 655 simulated machines across 12 Hong Kong gym branches. The system leverages Google Gemini API for conversational AI with structured tool-use capabilities and employs a multi-model ensemble forecasting engine (MLForecastEngine) combining seasonal decomposition, pattern recognition, trend analysis, and context-aware predictions.
-
-Development was accelerated through Amazon Q Developer's advanced agentic capabilities, enabling rapid implementation of complex AWS service integrations while maintaining production-ready code quality through intelligent code generation, architectural guidance, and automated best practices. Key challenges included mastering AWS cloud infrastructure, orchestrating real-time data pipeline excellence, and implementing WebSocket broadcasting—all overcome through intelligent AI tool assistance.
-
-Our accomplishments demonstrate sophisticated AI integration and an intuitive chat interface that bridges the gap between Hong Kong gym members' natural communication patterns and complex real-time equipment tracking. Looking ahead, GymPulse will evolve into a comprehensive AI-driven fitness ecosystem through an Intelligent Onboarding Chatbot for personalized gym experiences and Complete Fitness Integration combining equipment availability with nutrition coaching, exercise analytics, and wellness monitoring.
-
-GymPulse transforms Hong Kong's gym experience from uncertainty and frustration to informed decision-making, positioning itself as the essential companion for the city's fitness community while showcasing the transformative potential of AWS AI tools in solving real-world urban challenges.
-
-## Table of Contents
-
-1. **[Inspiration](#inspiration)**
-   - 1.1 [The Hong Kong Gym Boom](#the-hong-kong-gym-boom)
-   - 1.2 [The Hidden Frustration](#the-hidden-frustration)
-   - 1.3 [Current Solutions Fall Short](#current-solutions-fall-short)
-   - 1.4 [Our Vision](#our-vision)
-
-2. **[What it does](#what-it-does)**
-   - 2.1 [Agentic Chatbot](#agentic-chatbot)
-   - 2.2 [Predictive Insights](#predictive-insights)
-   - 2.3 [Live Equipment Tracking](#live-equipment-tracking)
-   - 2.4 [Interactive Heatmaps](#interactive-heatmaps)
-
-3. **[How we built it](#how-we-built-it)**
-   - 3.1 [Data Pipeline Architecture](#data-pipeline-architecture)
-   - 3.2 [Overall System Architecture](#overall-system-architecture)
-     - 3.2.1 [Frontend & Backend Stack](#frontend--backend-stack)
-   - 3.3 [AI Function Design](#ai-function-design)
-     - 3.3.1 [Agentic Chatbot Design](#agentic-chatbot-design)
-     - 3.3.2 [Predictive Forecasting Algorithm](#predictive-forecasting-algorithm)
-   - 3.4 [Development & Implementation with Amazon Q Developer](#development--implementation-with-amazon-q-developer)
-     - 3.4.1 [Agentic Development Capabilities](#agentic-development-capabilities)
-     - 3.4.2 [Intelligent AWS Infrastructure Generation](#intelligent-aws-infrastructure-generation)
-     - 3.4.3 [Advanced Code Intelligence and Optimization](#advanced-code-intelligence-and-optimization)
-
-4. **[Challenges we ran into](#challenges-we-ran-into)**
-   - 4.1 [Mastering AWS Cloud Infrastructure Excellence](#1-mastering-aws-cloud-infrastructure-excellence)
-   - 4.2 [Orchestrating AWS Real-Time Data Pipeline Excellence](#2-orchestrating-aws-real-time-data-pipeline-excellence)
-   - 4.3 [Mastering AWS WebSocket Real-Time Broadcasting](#3-mastering-aws-websocket-real-time-broadcasting)
-
-5. **[Accomplishments that we're proud of](#accomplishments-that-were-proud-of)**
-   - 5.1 [Sophisticated AI Integration](#sophisticated-ai-integration)
-   - 5.2 [Intuitive Chat Interface](#intuitive-chat-interface)
-
-6. **[What we learned](#what-we-learned)**
-   - 6.1 [Amazon Q Developer's Agentic Intelligence](#amazon-q-developers-agentic-intelligence)
-   - 6.2 [Kiro's Spec-Driven Development Methodology](#kiros-spec-driven-development-methodology)
-
-7. **[What's next for GymPulse](#whats-next-for-gympulse)**
-   - 7.1 [Intelligent Onboarding Chatbot](#intelligent-onboarding-chatbot)
-   - 7.2 [Complete Fitness Integration](#complete-fitness-integration)
-
----
-
 ## Inspiration
-The inspiration for GymPulse emerged from a widespread frustration shared by thousands of gym-goers across Hong Kong's rapidly expanding 24/7 fitness ecosystem. The city's fitness landscape has been transformed by the proliferation of round-the-clock gym chains including 247 Fitness, Anytime Fitness, Snap Fitness, and GO24 Fitness, each operating extensive multi-branch networks designed to maximize accessibility and convenience.
+The inspiration for GymPulse emerged from a widespread frustration shared by thousands of gym-goers across Hong Kong's rapidly expanding 24/7 fitness ecosystem. The city's fitness landscape has been transformed by the proliferation of round-the-clock gym chains including 247 Fitness, Anytime Fitness, Snap Fitness, and Gym Express, each operating extensive multi-branch networks designed to maximize accessibility and convenience.
 ### The Hong Kong Gym Boom
 
-Hong Kong's unique urban density and demanding work culture have created perfect conditions for the 24/7 gym phenomenon. With a fitness market valued at HK$2.8 billion annually¹, the city has embraced a "train anywhere, anytime" culture that reflects the needs of busy professionals, students, and shift workers who require flexible workout schedules. This substantial market serves hundreds of thousands of fitness enthusiasts across the territory¹.
+Hong Kong's unique urban density and demanding work culture have created perfect conditions for the 24/7 gym phenomenon. With over 300,000 active gym memberships across major chains and a fitness market valued at HK$2.8 billion annually, the city has embraced a "train anywhere, anytime" culture that reflects the needs of busy professionals, students, and shift workers who require flexible workout schedules.
 
-The appeal of these multi-branch networks lies in their promise of ultimate convenience - members can work out at any location, at any hour, fitting exercise around unpredictable schedules. The landscape includes major players like Anytime Fitness (35+ locations)², Snap Fitness (approximately 17-20 locations)³, GO24 Fitness (9+ locations)⁴, and 247 Fitness with its extensive regional network⁵, along with premium chains like Pure Fitness (21+ premier studios)⁶ and boutique studios like H-Kore and Ozone Fitness. These chains have strategically positioned branches in residential areas, business districts, and transport hubs to maximize accessibility.
+The appeal of these multi-branch networks lies in their promise of ultimate convenience - members can work out at any location, at any hour, fitting exercise around unpredictable schedules. The landscape includes major players like 247 Fitness (130+ locations), Anytime Fitness (35+ locations), Snap Fitness (20+ locations), GO24 Fitness (8+ locations), EFX24, and Utime Fitness, along with premium chains like Pure Fitness (11 locations) and boutique studios like H-Kore and Ozone Fitness. These chains have strategically positioned branches in residential areas, business districts, and transport hubs to maximize accessibility.
 ### The Hidden Frustration
 
 However, this convenience comes with a significant drawback that affects gym-goers daily: equipment availability uncertainty. Despite having multiple location options, members frequently experience the frustration of arriving at their chosen gym only to find their preferred equipment occupied, forcing them to either wait, modify their workout plans, or abandon their session entirely.
 
 This problem is particularly acute in Hong Kong's high-density environment where:
 
-**Peak Hours Overwhelm Capacity**: Morning (7-9 AM) and evening (7-10 PM) rushes create equipment bottlenecks across all major chains, with gyms reaching 70-90% capacity during these periods⁷
-**Popular Equipment Creates Queues**: Squat racks, bench presses, and cable machines experience significant wait times at busy locations, with gym members frequently reporting difficulties accessing preferred equipment⁸
-**Branch Hopping Becomes Inefficient**: Members waste time traveling between branches without knowing which locations have available equipment
-**Session Planning Falls Apart**: Structured workout routines get disrupted when key equipment is unavailable, leading to incomplete or abandoned sessions
+Peak Hours Overwhelm Capacity: Morning (7-9 AM) and evening (7-10 PM) rushes create equipment bottlenecks across all major chains
+Popular Equipment Creates Queues: Squat racks, bench presses, and cable machines consistently have 15-30 minute wait times at busy locations
+Branch Hopping Becomes Inefficient: Members waste time traveling between branches without knowing which locations have available equipment
+Session Planning Falls Apart: Structured workout routines get disrupted when key equipment is unavailable, leading to incomplete or abandoned sessions
 ### Current Solutions Fall Short
 
-While major gym chains across the spectrum - from budget-friendly options like Anytime Fitness and Snap Fitness to premium brands like Pure Fitness - offer mobile apps, these typically provide only club-level "busyness" indicators⁹. Members face the fundamental problem: apps show whether a location is "busy" or "quiet" without the granular, machine-level information needed to make informed decisions.
+While major gym chains across the spectrum - from budget-friendly options like 247 Fitness, Anytime Fitness, and Snap Fitness to premium brands like Pure Fitness, Square Fitness, and Waterfall Sports & Wellness - offer mobile apps, these typically provide only club-level "busyness" indicators. Whether it's a HK$475/month Anytime Fitness membership or a premium Pure Fitness package, members face the same fundamental problem: apps show whether a location is "busy" or "quiet" without the granular, machine-level information needed to make informed decisions.
 
 This limitation spans the entire ecosystem:
 
-**24/7 Chains**: Basic occupancy tracking without equipment-specific availability
-**Premium Operators**: Enhanced apps but still lacking equipment-level detail
-**Boutique Studios**: Often no real-time data at all
-**Third-Party Solutions**: Focus on workout tracking rather than availability intelligence
-**Social Workarounds**: Informal social media updates that are unreliable and limited in scope¹⁰
+Budget 24/7 Chains (247, Snap, GO24): Basic occupancy tracking across 150+ combined locations
+Premium Operators (Pure, Square, Waterfall): Enhanced apps but still lacking equipment-level detail
+Boutique Studios (H-Kore, Ozone, 4ward): Often no real-time data at all
+Third-Party Solutions: Focus on workout tracking rather than availability intelligence
+Social Workarounds: Informal WhatsApp groups and social media updates that are unreliable and limited in scope
 ### Our Vision
 
 GymPulse was conceived as a comprehensive solution to bridge this critical information gap across Hong Kong's entire 24/7 fitness ecosystem. Rather than focusing on a single gym chain, we envisioned a platform that could aggregate real-time equipment availability data from multiple gym networks, providing members with the machine-level granularity needed to optimize their workout efficiency.
@@ -94,159 +35,313 @@ GymPulse was conceived as a comprehensive solution to bridge this critical infor
 Our goal is to transform the gym experience from one of uncertainty and frustration to one of informed decision-making, where members can confidently plan their sessions knowing exactly which equipment is available, where, and for how long. By combining real-time IoT data with intelligent routing recommendations, GymPulse aims to eliminate "failed sessions" and maximize the value of Hong Kong's impressive 24/7 fitness infrastructure.
 ## What it does
 
-GymPulse directly addresses the equipment availability uncertainty problem outlined above by providing Hong Kong gym members with machine-level intelligence across multiple gym networks. Our solution transforms the frustrating experience of "arriving at a gym to find equipment occupied" into an informed decision-making process where members know exactly what's available, where, and when.
 
-The platform delivers four core capabilities that solve the critical pain points identified in Hong Kong's 24/7 fitness ecosystem:
+(Two main features: Chatbot, forecast)
 
-### Agentic Chatbot
-An AI-powered conversational assistant that understands natural language queries like "Leg day nearby?" or "Find chest equipment close to me." The chatbot leverages real-time data, location awareness, and intelligent routing to provide personalized recommendations that optimize both equipment availability and travel time, making the multi-branch gym experience truly seamless.
+GymPulse is a comprehensive real-time gym equipment availability system with AI-powered recommendations that delivers:
+### Core Functionality
 
-### Predictive Insights
-Machine learning-powered 30-minute availability forecasting that predicts when equipment will become free, using historical usage patterns and intelligent algorithms. This feature transforms reactive "branch hopping" into proactive planning, allowing members to time their arrivals for maximum equipment availability.
+- **Live Equipment Tracking:** Real-time monitoring of individual gym machines across multiple branches, showing occupied/free status with <15 second latency
+- **Interactive Heatmaps:** 24-hour availability patterns for each machine and equipment category
+- **Predictive Insights:** Machine learning-based 30-minute availability forecasting using historical usage patterns and intelligent threshold tuning
+- **Cross-Branch Discovery:** Compare availability across multiple gym locations with distance/ETA information
+### AI-Powered Assistant
 
-### Live Equipment Tracking
-Real-time monitoring of individual gym machines across multiple branches and gym chains, showing precise occupied/free status with sub-15 second latency. This eliminates the guesswork of whether your preferred squat rack or bench press is available before you travel to the gym, directly solving the "equipment uncertainty" problem that affects thousands of Hong Kong gym-goers daily.
+- **Conversational Interface:** Natural language queries like "Leg day nearby?" or "Find chest equipment close to me"
+- **Tool-Based Intelligence:** AI assistant uses structured tools to:
+  - Query real-time availability by category and location (getAvailabilityByCategory)
+  - Calculate proximity and distance estimates
+  - Rank recommendations by proximity, availability, and forecast likelihood
+- **Location-Aware:** Browser geolocation integration for personalized nearby recommendations
+- **Multi-Modal Responses:** Combines text responses with interactive recommendation cards
+### Technical Architecture
 
-### Interactive Heatmaps
-24-hour availability patterns for each machine and equipment category, providing members with visual insights into peak usage times and optimal workout windows. These heatmaps help users avoid the problematic 7-9 AM and 7-10 PM rush periods that create equipment bottlenecks across major chains, enabling smarter session planning.
+- **IoT Simulation:** Realistic device simulation mimicking 655 machines across 12 gym branches with authentic usage patterns including peak hours, session durations, and sensor noise
+- **Real-time Pipeline:** AWS IoT Core → Lambda processing → DynamoDB storage → WebSocket streaming to frontend
+- **Cloud-Native Infrastructure:** Built entirely on AWS using CDK for infrastructure-as-code
+- **Performance Optimized:** <15s end-to-end latency, cached responses, circuit breakers, and connection pooling
 ## How we built it
+Methodologies (design)
+(
+1. Data pipeline
+2.1 Overall architecture (frontend backend stack)
+2.2 AI function detail design (Chatbot design, forecast algo)
+)
 
-To address Hong Kong's HK$2.8 billion fitness market's equipment availability uncertainty problem, we architected GymPulse as a comprehensive real-time intelligence system that transforms the gym experience from frustration to informed decision-making across the city's hundreds of thousands of fitness enthusiasts¹.
+Methodologies (implementation)
+- Q Dveloper
 
-### Data Pipeline Architecture
+### Technical Stack & Architecture
 
-The foundation enabling our machine-level granularity solution is a robust real-time data pipeline designed to eliminate the "equipment uncertainty" problem affecting thousands of Hong Kong gym-goers daily:
+### Amazon Q Developer Integration
+**Code Generation & Development Acceleration**: Leveraged Amazon Q Developer extensively throughout the development process to accelerate Lambda function creation, CDK infrastructure definitions, and API endpoint implementations. Q Developer's code suggestions significantly reduced development time and ensured AWS best practices.
 
-**IoT Simulator → AWS IoT Core → Lambda Functions → DynamoDB → Lambda Functions → WebSocket API → Real-time Broadcast → Frontend**
+**Documentation & Code Quality**: Used Amazon Q Developer to generate comprehensive inline documentation, optimize code structure, and implement security best practices across all components.
 
-This serverless pipeline captures equipment status changes from 655 simulated machines across 12 gym branches spanning Central, Causeway Bay, Mongkok, Tsim Sha Tsui, Jordan, Shatin, and Quarry Bay, delivering updates within 15 seconds. Unlike existing gym apps that only show club-level "busyness," our pipeline provides the machine-level detail needed to prevent the significant wait times that plague popular equipment like squat racks and bench presses during Hong Kong's peak hours (7-9 AM and 7-10 PM)⁸.
+**Debugging & Optimization**: Applied Q Developer's debugging capabilities to identify performance bottlenecks, resolve integration issues, and optimize serverless function configurations.
 
-### Overall System Architecture
+### AWS Services Implementation
+**Frontend (React/TypeScript):**
 
-#### Frontend & Backend Stack
+- Built with Vite, React Router, and Tailwind CSS for responsive design
+- Real-time WebSocket connections for live machine status updates
+- Interactive chat interface with geolocation integration
+- Framer Motion animations and Lucide React icons
+- Comprehensive component library including heatmaps, status badges, and prediction chips
 
-**Frontend (React/TypeScript)**: Designed specifically for Hong Kong's demanding professionals, students, and shift workers who need flexible workout scheduling. Built with Vite, React Router, and Tailwind CSS to deliver responsive experiences across devices. Real-time WebSocket connections power our live equipment tracking, while geolocation integration enables location-aware recommendations that optimize travel time across Hong Kong's multi-branch networks like Anytime Fitness (35+ locations)², Snap Fitness (approximately 17-20 locations)³, and 247 Fitness with its extensive regional network⁵.
+**Backend (AWS Cloud Infrastructure):**
 
-**Backend (AWS Cloud Infrastructure)**: Fully serverless architecture using AWS CDK for infrastructure-as-code deployment across Hong Kong's gym ecosystem. AWS IoT Core handles device data ingestion from our simulated gym equipment, Lambda functions process real-time updates and AI queries, DynamoDB stores equipment states and historical patterns reflecting authentic Hong Kong 24/7 fitness usage, and API Gateway provides both REST endpoints and WebSocket support for seamless real-time updates.
+- AWS CDK (Python): Infrastructure-as-code for complete cloud deployment
+- AWS IoT Core: MQTT message ingestion with device policies and retained messages
+- AWS Lambda: Serverless functions for data processing, API handling, and tool execution
+- DynamoDB: Multi-table design for current state, events, aggregates, and alerts
+- API Gateway: REST endpoints with rate limiting and WebSocket support for real-time updates
+- Geolocation API: Browser-based location services for proximity calculations
 
-### AI Function Design
+### AI/ML Components:
 
-To deliver the intelligent capabilities that differentiate GymPulse in addressing Hong Kong's specific gym challenges, we implemented two sophisticated AI components:
+- **Google Gemini API Integration:** Conversational AI with structured tool-use capabilities leveraging Google's advanced language model
+- **Forecasting Engine:** Multi-component system with historical pattern analysis, seasonality modeling, confidence scoring, and adaptive threshold tuning for accurate 30-minute predictions
+- **Enhanced Caching:** Multi-layer caching strategy for optimal performance
 
-#### Agentic Chatbot Design
-Our conversational AI leverages Google Gemini API with structured tool-use capabilities to understand natural language queries like "Leg day nearby?" The chatbot combines real-time equipment data with Hong Kong's dense urban geography to provide intelligent routing decisions. By understanding the city's unique "train anywhere, anytime" culture, it optimizes recommendations for busy professionals who need to fit workouts around unpredictable schedules, directly solving the inefficient "branch hopping" problem described in our motivation.
+### IoT Simulation:
 
-#### Predictive Forecasting Algorithm
-Our machine learning forecasting engine employs a sophisticated multi-model ensemble system (MLForecastEngine) specifically tuned for Hong Kong's 24/7 fitness patterns. The system combines multiple machine learning models, statistical analysis, and Gemini AI insights to deliver accurate 30-minute equipment availability predictions.
+- **Custom Python Simulator:** 655 machines across 12 gym branches spanning Central, Causeway Bay, Mongkok, Tsim Sha Tsui, Jordan, Shatin, Quarry Bay, and other key Hong Kong locations
+- **Realistic Usage Patterns:** Hong Kong 24/7 fitness patterns with peak hours, session durations, and noise injection based on actual 247 Fitness branch data
+- **Circuit Breaker Protection:** Connection health monitoring and automatic failover
+- **MQTT Publishing:** Reliable message delivery with retry logic and rate limiting 
+## Forecasting System Deep Dive
 
-**Multi-Model Ensemble Architecture:**
-- **Seasonal Decomposition**: Analyzes weekly patterns with trend calculation using linear regression to understand Hong Kong's unique work-week fitness cycles
-- **Pattern Recognition**: Advanced statistical analysis with weekend/weekday differentiation, capturing the distinct usage patterns of Hong Kong's demanding professional schedule
-- **Trend Analysis**: Momentum indicators with 3-day recent trend analysis and momentum weighting for responsive adaptation to changing gym usage
-- **Context-Aware Forecasting**: Real-time adjustments based on current machine status and time proximity to Hong Kong's critical peak hours
-- **Ensemble Prediction**: Weighted combination of all models (30% seasonal, 30% pattern, 20% trend, 20% context-aware) for robust predictions
+**Architecture Overview:** GymPulse implements an advanced AI-powered forecasting engine (MLForecastEngine) that combines multiple machine learning models, statistical analysis, and Gemini AI insights to predict machine availability.
 
-**AI-Powered Quality Assurance:**
-- **Anomaly Detection**: Statistical z-score analysis (threshold: 2.0 standard deviations) identifies unusual usage patterns affecting forecast reliability
-- **Gemini AI Integration**: Google Gemini 2.0 Flash API generates natural language insights and actionable recommendations for gym management
-- **Dynamic Confidence Scoring**: Multi-factor calculation using data quantity (40%), model agreement (50%), and anomaly penalties (10%) ensures reliable predictions
-- **Quality Validation**: Minimum 48 data points for ML models with automatic fallback to simpler statistical models when insufficient data
+### Core ML Components
 
-**Real-Time Implementation:**
-The system queries 20-day historical windows, processes NumPy structured arrays including Hong Kong-specific indicators (peak hour flags, weekend patterns), and delivers color-coded predictions through React frontend PredictionChip components. This transforms reactive session planning into proactive scheduling, directly addressing the "session planning falls apart" problem by enabling Hong Kong gym members to confidently schedule workouts knowing exactly when their preferred squat rack or bench press will be available.
+#### Multi-Model Ensemble System
 
-### Development & Implementation with Amazon Q Developer
+Seasonal Decomposition: Analyzes weekly patterns with trend calculation using linear regression
+Pattern Recognition: Advanced statistical analysis with weekend/weekday differentiation
+Trend Analysis: Momentum indicators with 3-day recent trend analysis and momentum weighting
+Context-Aware Forecasting: Real-time adjustments based on current machine status and time proximity
+Ensemble Prediction: Weighted combination of all models (30% seasonal, 30% pattern, 20% trend, 20% context-aware)
 
-#### Agentic Development Capabilities
-Amazon Q Developer's 2025 agentic capabilities fundamentally transformed our approach to building complex serverless IoT systems. Unlike traditional code completion tools, Q Developer demonstrated true autonomous intelligence by understanding our entire GymPulse architecture context and proactively suggesting optimal integration patterns across the complete AWS ecosystem. Its workspace context awareness enabled seamless coordination between AWS IoT Core, Lambda functions, DynamoDB optimization, and WebSocket API implementation, automatically generating production-ready infrastructure code that adhered to AWS security and performance best practices.
+#### Anomaly Detection Engine
 
-The tool's autonomous debugging capabilities proved revolutionary when optimizing our machine learning forecasting pipeline for Hong Kong's demanding peak hours (7-9 AM and 7-10 PM). Q Developer didn't just identify performance bottlenecks—it provided comprehensive solutions including optimal Lambda memory allocation strategies, advanced DynamoDB query optimization patterns, and intelligent connection pooling techniques that enabled us to achieve the sub-15-second latency requirements critical for real-time gym equipment recommendations.
+Statistical anomaly detection using z-score analysis (threshold: 2.0 standard deviations)
+Identifies unusual usage patterns that may affect forecast reliability
+Applies anomaly penalties to confidence scoring (2% penalty per anomaly, max 20%)
 
-#### Intelligent AWS Infrastructure Generation
-Q Developer's CDK code generation capabilities accelerated our infrastructure development by orders of magnitude. When we described our requirements for real-time data processing across 12 Hong Kong gym locations, Q Developer autonomously generated comprehensive infrastructure-as-code definitions that included sophisticated error handling, retry logic patterns, and monitoring configurations. The tool's deep understanding of AWS service interdependencies enabled it to suggest architectural improvements we hadn't initially considered, such as optimal DynamoDB table designs specifically tuned for Hong Kong's unique peak hour patterns and sophisticated WebSocket connection management strategies.
+#### Gemini AI Integration
 
-#### Advanced Code Intelligence and Optimization
-Beyond infrastructure generation, Q Developer's advanced code intelligence provided continuous optimization throughout development. Its contextual analysis identified opportunities for performance improvements, suggested more efficient algorithms for our multi-model ensemble forecasting engine, and recommended code patterns that enhanced both maintainability and performance. The tool's ability to understand the broader system context meant its suggestions were always architecturally sound and aligned with our real-time processing requirements, ensuring that every optimization contributed to the overall goal of eliminating equipment uncertainty for Hong Kong gym members. 
+Google Gemini 2.0 Flash API for natural language insights generation
+Analyzes historical patterns and generates actionable recommendations
+Provides operational insights for gym management and user guidance
+Fallback to rule-based insights when API unavailable
 
+#### Dynamic Confidence Scoring
+
+Multi-factor confidence calculation: data quantity (40%), model agreement (50%), anomaly penalty (10%)
+Sample size confidence: 2% per data point, maximum 100%
+Model agreement analysis: lower standard deviation across model predictions = higher confidence
+Real-time confidence thresholds with performance tracking
+
+#### Prediction Workflow
+
+Query aggregated historical data for target machine (20-day window for ML analysis)
+Prepare time series data with NumPy structured arrays including timestamp, occupancy ratio, hour, day of week, weekend flags, and peak hour indicators
+Detect anomalies using statistical z-score analysis
+Generate predictions from all four ML models (seasonal, pattern, trend, context-aware)
+Combine models using weighted ensemble approach with dynamic performance evaluation
+Generate AI insights using Gemini API with data summaries and recommendations
+Calculate multi-factor confidence score and apply threshold classifications
+Return comprehensive forecast with model performance metrics and AI insights
+
+#### Quality Assurance
+
+Minimum sample size requirement (48 data points for ML models, 5 for statistical fallback) for reliable predictions
+Multi-layer confidence filtering with dynamic thresholds and model performance tracking
+Data quality assessment with coverage metrics spanning 672 possible weekly time slots (7 days × 24 hours × 4 slots)
+Real-time model performance evaluation with automatic fallback to simpler models when ML fails
+Hourly forecast validation and accuracy tracking with trend adjustment algorithms
+
+Display Integration: The forecasting system integrates with React frontend through the PredictionChip component, displaying color-coded predictions:
+
+Green: "Likely free in 30m" (70%+ probability, high confidence)
+Yellow: "Possibly free in 30m" (50-70% probability, medium confidence)
+Orange/Red: "Unlikely free in 30m" (<50% probability)
+Gray: Insufficient data or low confidence predictions (hidden from users)
 ## Challenges we ran into
+(Siu D involve Q developer problem (1))
+### Technical Challenges
+1. Real-time Data Pipeline Complexity
 
-Building GymPulse to solve Hong Kong's gym equipment availability crisis required overcoming significant technical challenges, particularly as our first deep dive into AWS cloud infrastructure for a real-time IoT system serving hundreds of thousands of fitness enthusiasts across the city's demanding 24/7 fitness ecosystem¹.
+Challenge: Ensuring <15 second end-to-end latency from IoT device simulation to frontend display
+Solution: Implemented optimized Lambda functions with reserved concurrency, DynamoDB connection pooling, and WebSocket broadcasting for immediate state propagation
 
-### 1. Mastering AWS Cloud Infrastructure Excellence
+2. IoT Device Simulation Realism
 
-**Challenge**: As developers new to AWS cloud infrastructure, we were excited to leverage the powerful ecosystem of AWS IoT Core, Lambda functions, DynamoDB, and WebSocket API to build a sophisticated real-time system for 655 machines across 12 Hong Kong gym branches. The rich feature set and integration possibilities of AWS services presented an exciting opportunity to architect a truly scalable solution with sub-15-second latency capabilities.
+Challenge: Creating authentic gym usage patterns that demonstrate realistic sensor behavior
+Solution: Developed sophisticated usage pattern algorithms incorporating Hong Kong 24/7 gym culture, peak hour patterns, equipment-specific session durations, and PIR sensor noise characteristics
 
-**Amazon Q Developer Enablement**: Q Developer proved to be an exceptional learning accelerator, transforming our AWS journey from exploration to expertise. Its intelligent suggestions guided us through AWS CDK best practices, recommended optimal serverless configurations, and illuminated powerful service integration patterns we hadn't initially considered. When designing our DynamoDB architecture for Hong Kong's unique peak hour patterns (7-9 AM and 7-10 PM), Q Developer's recommendations led us to an elegant multi-table design that perfectly handles current state, events, aggregates, and alerts with impressive efficiency.
+3. AI Tool Integration Complexity
 
-**Achievement**: With Q Developer's intelligent guidance, we rapidly mastered AWS infrastructure-as-code principles and successfully deployed a production-ready serverless architecture. Q Developer's contextual insights helped us implement AWS best practices from day one, resulting in a robust system that showcases the power and flexibility of the AWS ecosystem.
+Challenge: Implementing structured tool-use with Gemini AI for deterministic function calls
+Solution: Built robust tool schemas with strict JSON validation, comprehensive error handling, and fallback mechanisms for graceful degradation
 
-### 2. Orchestrating AWS Real-Time Data Pipeline Excellence
+4. Cross-Service Coordination
 
-**Challenge**: Building an end-to-end real-time data pipeline leveraging AWS's comprehensive IoT and serverless ecosystem (IoT simulator → AWS IoT Core → Lambda → DynamoDB → WebSocket broadcast → frontend) to achieve <15 second latency presented an exciting systems integration opportunity. The sophistication of coordinating multiple AWS services while maintaining real-time performance across 12 Hong Kong gym locations showcased the impressive capabilities of AWS's interconnected service architecture.
+Challenge: Coordinating MQTT publishing, Lambda processing, DynamoDB consistency, and WebSocket broadcasting
+Solution: Implemented circuit breaker patterns, retry logic, and comprehensive monitoring to ensure system reliability under load
+### Development Challenges
+5. Performance Optimization
 
-**Q Developer Intelligence**: Q Developer's advanced debugging capabilities became our secret weapon for optimizing this complex AWS service integration. Its intelligent analysis helped us discover optimal connection pooling strategies for Lambda functions, suggested robust retry logic patterns for MQTT publishing, and revealed powerful WebSocket connection management techniques that maximized reliability for Hong Kong gym members. Q Developer's insights transformed our debugging process into a systematic optimization journey.
+Challenge: Balancing real-time responsiveness with AWS service limits and costs
+Solution: Multi-layer caching strategy, intelligent batching, and connection pooling reduced latency while staying within free tier limits
 
-**Achievement**: Through Q Developer's guidance, we successfully implemented comprehensive monitoring and resilient architecture patterns throughout our AWS pipeline. This systematic approach, enhanced by Q Developer's suggestions for error handling and logging best practices, enabled us to achieve the exceptional real-time performance that makes GymPulse's equipment recommendations truly actionable during Hong Kong's intense peak hours.
+6. Location Services Integration
 
-### 3. Mastering AWS WebSocket Real-Time Broadcasting
+Challenge: Implementing proximity calculations while handling geolocation permissions and privacy concerns
+Solution: Built progressive enhancement with browser geolocation, fallback strategies, and clear privacy notices
 
-**Challenge**: Implementing AWS API Gateway WebSocket for real-time equipment updates represented an exciting opportunity to leverage AWS's advanced real-time communication capabilities. We aimed to ensure that equipment status changes across our 12 simulated Hong Kong gym locations would instantly reach all connected clients, showcasing the impressive real-time potential of AWS's WebSocket infrastructure. The sophistication of managing WebSocket connections through DynamoDB, coordinating broadcast Lambda functions, and integrating with our data pipeline highlighted the robust capabilities of AWS's interconnected services.
+7. State Management Complexity
 
-**Q Developer Architectural Excellence**: Q Developer's architectural intelligence became invaluable for mastering AWS WebSocket patterns and best practices. Its expert recommendations guided us to elegant connection management solutions using DynamoDB, suggested highly efficient broadcasting strategies, and provided deep insights into connection lifecycle optimization. Q Developer's suggestions for API Gateway integration patterns and Lambda function optimization unlocked the full potential of AWS's real-time communication infrastructure for our Hong Kong multi-branch gym network.
-
-**Achievement**: With Q Developer's architectural guidance, we successfully deployed a sophisticated WebSocket broadcasting system that demonstrates the exceptional real-time capabilities of AWS services. This implementation delivers instant equipment availability updates to Hong Kong gym members, perfectly embodying our vision of transforming "equipment uncertainty" into confident, informed workout planning through the power of AWS real-time infrastructure.
-
+Challenge: Managing real-time state across WebSocket connections, chat sessions, and location context
+Solution: Implemented atomic state updates, session management, and consistent error handling across all interfaces
 ## Accomplishments that we're proud of
+(Siu D)
+### Technical Excellence
+1. End-to-End Real-Time System: Successfully delivered a complete IoT-to-frontend pipeline with <15 second latency that processes machine state changes, updates aggregates, triggers alerts, and pushes live updates to connected users.
+.W
 
-We successfully delivered two key innovations that directly address Hong Kong's gym equipment availability crisis:
+2. Production-FReady Architecture: Built comprehensive AWS infrastructure with monitoring, alerting, security best practices, and scalability considerations that could support thousands of machines across multiple locations.
 
-### Sophisticated AI Integration
-Implemented an advanced conversational AI system with structured tool-use capabilities, location awareness, and multi-modal responses that transform Hong Kong's gym experience. Our agentic chatbot leverages Google Gemini API to understand natural language queries and provide actionable recommendations based on real-time equipment data and intelligent routing calculations, directly solving the "branch hopping" inefficiency that plagues Hong Kong's multi-location gym networks.
+3. Sophisticated AI Integration: Implemented advanced conversational AI with structured tool-use, location awareness, and multi-modal responses that provide actionable recommendations based on real-time data and routing calculations.
 
-### Intuitive Chat Interface
-Developed a natural language interface that seamlessly handles complex queries like "Leg day nearby?" and "Find chest equipment close to me," returning structured recommendations with ETA calculations, real-time availability counts, and interactive navigation. This interface successfully bridges the gap between Hong Kong gym members' natural communication patterns and the technical complexity of real-time equipment tracking across 12 gym locations, making machine-level availability intelligence accessible to everyday users.
+4. Realistic IoT Simulation: Created an authentic device simulation that accurately models Hong Kong gym usage patterns, sensor characteristics, and network conditions for convincing demonstration.
+### User Experience Innovation
+
+5. Intuitive Chat Interface: Developed a natural language interface that handles complex queries like "Leg day nearby?" and returns structured recommendations with ETA, availability counts, and interactive navigation.
+
+6. Comprehensive Dashboard: Built a responsive web application with live tiles, 24-hour heatmaps, prediction chips, and alert management that provides immediate value to gym members.
+
+7. Privacy-First Design: Implemented location services with clear consent flows, quiet hours for notifications, and minimal data retention aligned with Hong Kong privacy expectations.
+### Development Process
+
+8. Structured Phase Execution: Successfully completed 8 out of 11 planned development phases in a systematic manner with proper documentation and progress tracking.
+
+9. AI-Enhanced Development: Effectively leveraged AI assistance for infrastructure generation, code implementation, and documentation while maintaining code quality and security standards.
+
+10. Evidence-Based Approach: Implemented comprehensive logging, metrics, and monitoring that provides clear evidence of system performance and reliability for hackathon judging.
 ## What we learned
+(Involve Q developer)
 
-Building GymPulse provided invaluable insights into leveraging Amazon Q Developer's cutting-edge AI capabilities to accelerate complex AWS system implementation:
+### Technical Insights
+1. IoT at Scale Complexity: Building reliable IoT data pipelines requires sophisticated error handling, circuit breakers, and retry logic. Network conditions, device failures, and service limits create cascading challenges that must be anticipated and mitigated.
 
-### Amazon Q Developer's Agentic Intelligence
-Amazon Q Developer's agentic coding capabilities revolutionized our development approach beyond traditional code completion. The tool's ability to autonomously perform multistep tasks—from generating comprehensive CDK infrastructure definitions to implementing complex WebSocket broadcasting patterns—demonstrated the power of workspace context awareness. Q Developer's understanding of our entire project structure enabled it to suggest AWS service integration patterns we hadn't initially considered, such as optimal DynamoDB table designs for Hong Kong's peak hour patterns and sophisticated Lambda optimization strategies. This experience taught us that modern AI development assistants can serve as architectural advisors, not just code generators, fundamentally changing how we approach complex serverless system development.
+2. Real-Time System Design: Achieving sub-15 second latency across cloud services requires careful optimization of every component - from Lambda cold starts to DynamoDB consistency models to WebSocket connection management.
+
+3. AI Tool Integration Patterns: Effective AI tool-use requires strict schema definitions, comprehensive validation, and graceful fallback mechanisms. The gap between conversational AI and structured system integration requires careful bridge design.
+
+4. Serverless Performance Optimization: AWS Lambda performance depends on memory allocation, connection pooling, reserved concurrency, and warm-up strategies. Small optimizations compound significantly at scale.
+### User Experience Learnings
+
+5. Location Privacy Balance: Users want location-based recommendations but are cautious about privacy. Progressive enhancement with clear consent flows and immediate value demonstration builds trust.
+
+6. Real-Time Expectations: Once users see live data, they expect consistent real-time performance. Any delays or stale data immediately degrades perceived reliability.
+
+7. Conversational AI UX: Natural language interfaces need example prompts, progressive disclosure, and error recovery paths to be truly usable. Technical capabilities must be wrapped in intuitive interaction patterns.
+### Development Process Insights
+
+8. Infrastructure-as-Code Value: Using CDK for complete infrastructure definition enabled rapid iteration, consistent deployments, and comprehensive documentation that accelerated development velocity.
 ## What's next for GymPulse
 
-Building on our successful solution to Hong Kong's gym equipment availability crisis, GymPulse will evolve into a comprehensive AI-driven fitness ecosystem through two transformative developments:
+### Immediate Roadmap (Next 3 Months)
+#### Enhanced Forecasting
 
-### Intelligent Onboarding Chatbot
-An advanced AI assistant that personalizes the entire gym experience from the moment users join. This chatbot will guide new members through personalized gym plan setup based on their fitness goals, experience level, schedule constraints, and Hong Kong lifestyle preferences. By understanding whether users are busy Central district professionals needing quick 30-minute sessions or shift workers requiring flexible late-night access, the onboarding bot will configure optimal equipment preferences, workout style selections, and availability notification settings tailored to Hong Kong's unique 24/7 fitness culture.
+- Expand from current 30-minute predictions to 2-hour and same-day forecasting horizons
+- Implement advanced machine learning models for improved accuracy beyond current 70% precision
+- Add anomaly detection for equipment downtime and maintenance needs using statistical outlier detection
+- Integrate weather data and local events for external factor modeling
+- Develop peak hour optimization recommendations based on historical patterns
 
-### Complete Fitness Integration
-Transform GymPulse from equipment tracking into the "must-have" comprehensive fitness app that seamlessly orchestrates every aspect of the fitness journey. This evolution will integrate our real-time equipment availability intelligence with:
+#### Expanded Coverage
 
-- **AI Nutrition Coach**: Meal planning and macro tracking synchronized with workout schedules and gym availability, optimized for Hong Kong's dining culture and busy professional lifestyle
-- **Exercise Analytics**: Comprehensive workout logging with AI-powered form feedback and performance tracking that correlates with equipment usage patterns across gym locations
-- **Wellness Ecosystem**: Holistic health monitoring including water intake, body measurements, and progress visualization, all connected through "behind-the-scenes" automation that links equipment availability with personalized workout plans, nutrition timing, and recovery scheduling
+- Scale simulation to 10+ gym branches across Hong Kong
+- Add 50+ machine types with category-specific usage patterns
+- Implement branch-specific scheduling and peak hour analysis
 
-This integrated approach will position GymPulse as the essential companion for Hong Kong's fitness community, transforming our equipment uncertainty solution into a complete fitness ecosystem that eliminates friction between intention and action across every aspect of the fitness journey.
+#### Advanced Features
 
----
+- Booking system integration for high-demand equipment
+- Workout plan optimization based on real-time availability
+- Social features for workout partner coordination
+### Medium-Term Vision (6-12 Months)
 
-## References
+#### Real Hardware Integration
 
-1. China Daily Hong Kong. "Hong Kong fitness market valued at HK$2.8 billion annually." [https://www.chinadailyhk.com/hk/article/131382](https://www.chinadailyhk.com/hk/article/131382)
+- Partner with gym chains for pilot deployment with actual IoT sensors
+- Develop PIR sensor integration with vibration/reed switch fusion for improved accuracy
+- Implement over-the-air device management and security updates
 
-2. South China Morning Post. "US-based Anytime Fitness picks three new locations in Hong Kong." [https://www.scmp.com/business/article/3177372/us-based-anytime-fitness-picks-three-new-locations-hong-kong-it-targets](https://www.scmp.com/business/article/3177372/us-based-anytime-fitness-picks-three-new-locations-hong-kong-it-targets)
+#### Operator Dashboard
 
-3. Hong Kong City Guide. "Guide to the biggest gym chains in Hong Kong." [https://www.hk-cityguide.com/expat-guide/guide-to-the-biggest-gym-chains-in-hong-kong](https://www.hk-cityguide.com/expat-guide/guide-to-the-biggest-gym-chains-in-hong-kong)
+- Comprehensive analytics for gym operators including utilization optimization, maintenance scheduling, and capacity planning
+- Revenue optimization insights based on peak hour patterns and equipment popularity
+- Automated reporting and trend analysis
 
-4. InvestHK. "US gym brand GO24 Fitness expands in Hong Kong." [https://www.investhk.gov.hk/ja/news/us-gym-brand-go24-fitness-expands-in-hong-kong/](https://www.investhk.gov.hk/ja/news/us-gym-brand-go24-fitness-expands-in-hong-kong/)
+#### Multi-Platform Expansion
 
-5. 247 Fitness. "Find Us - Location Directory." [https://247.fitness/en/find-us/](https://247.fitness/en/find-us/)
+- Mobile app development for iOS and Android with push notifications
+- Integration with popular fitness tracking apps and wearables
+- API platform for third-party fitness application integration
+### Long-Term Goals (1-2 Years)
 
-6. Pure Fitness. "21 premier studios in Hong Kong." [https://www.pure-360.com.hk/en/](https://www.pure-360.com.hk/en/)
+#### Market Expansion
 
-7. Pursue Fitness. "When is the gym least busy - Peak hours analysis." [https://www.pursuefitness.com/blogs/news/when-is-the-gym-least-busy-your-guide-to-peaceful-workouts](https://www.pursuefitness.com/blogs/news/when-is-the-gym-least-busy-your-guide-to-peaceful-workouts)
+- Expand beyond Hong Kong to Singapore, Taiwan, and other 24/7 fitness markets
+- Develop franchise and licensing models for global gym chain adoption
+- Build partnerships with equipment manufacturers for integrated IoT solutions
 
-8. Reddit Hong Kong. "Weightlifting gyms - Equipment availability discussions." [https://www.reddit.com/r/HongKong/comments/9etlyw/weightlifting_gyms/](https://www.reddit.com/r/HongKong/comments/9etlyw/weightlifting_gyms/)
+#### Advanced Intelligence
 
-9. App Store. "Anytime Fitness App - Features and functionality." [https://apps.apple.com/us/app/af-app/id1598355340](https://apps.apple.com/us/app/af-app/id1598355340)
+- Predictive maintenance using equipment usage patterns and IoT sensor data
+- Dynamic pricing optimization based on demand forecasting
+- Personalized workout recommendations using individual usage history and preferences
 
-10. GeoExpat Forum. "Hong Kong gym discussions and member experiences." [https://geoexpat.com/forum/33/thread244774.html](https://geoexpat.com/forum/33/thread244774.html)
+#### Platform Evolution
+
+- Transform into a comprehensive gym technology platform
+- Offer white-label solutions for gym chains and fitness centers
+- Develop enterprise analytics suite for multi-location fitness businesses
+
+#### AI-Powered Comprehensive Fitness Ecosystem
+
+- **Intelligent Onboarding Chatbot:** AI assistant for personalized gym plan setup based on user goals, fitness level, schedule, and preferences. Guides new users through equipment preferences, workout style selection, and availability notification setup
+- **Complete Fitness Integration:** Transform into the "must-have" gym app combining equipment availability with comprehensive fitness tracking:
+  - **Nutrition Intelligence:** AI nutrition coach with meal planning, macro tracking, and food logging integrated with workout schedules
+  - **Exercise Analytics:** Comprehensive workout logging with form feedback using computer vision and AI pose analysis
+  - **Wellness Monitoring:** Water intake tracking, body measurements, daily check-ins, and progress visualization
+  - **Personalized Insights:** AI-generated comprehensive reports correlating equipment usage, workout performance, nutrition, and wellness metrics
+  - **Ecosystem Integration:** "Behind-the-scenes" automation connecting equipment availability with personalized workout plans, nutrition timing, and recovery scheduling to create seamless fitness experiences
+### Technical Evolution
+
+#### Scalability & Performance
+
+- Migrate to multi-region deployment for global scale
+- Implement edge computing for reduced latency in high-density areas
+- Develop automated scaling and capacity planning systems
+
+#### Security & Compliance
+
+- Achieve SOC 2 and ISO 27001 compliance for enterprise adoption
+- Implement advanced threat detection and response systems
+- Develop comprehensive data governance and privacy controls
+
+#### Innovation Areas
+
+- Computer vision integration for automated occupancy detection
+- Voice interface integration with smart speakers and mobile assistants
+- Augmented reality wayfinding for large fitness facilities
+
+GymPulse represents the future of comprehensive, AI-driven fitness experiences that eliminate friction between intention and action. Our hackathon prototype demonstrates the technical feasibility and user value of machine-level gym intelligence, establishing the foundation for a complete fitness ecosystem where equipment availability, personalized coaching, nutrition guidance, and wellness tracking converge into a single, indispensable platform.
+
+By solving the fundamental problem of equipment uncertainty while building toward comprehensive fitness integration, GymPulse aims to become the essential companion for every gym-goer in Hong Kong and beyond - transforming from "nice to have" equipment tracking into the "must-have" app that seamlessly orchestrates every aspect of the fitness journey.
